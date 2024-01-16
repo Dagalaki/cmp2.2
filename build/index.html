@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>GDPR Documentation</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+        
+        <script>
+		function listenerCmpEvents(cmpEvent) {
+			console.log("[CMP LOG] CMP EVENT!!!!!! ", cmpEvent);
+			/* if(cmpEvent.event === "cmpReady") {
+			   window.cmpInterval = setTimeout(function() {__tcfapi("showConsentTool"); }, 200);
+				__tcfapi("getVendorConsents", null, function(e) {__tcfapi("getPublisherConsents", null, function(e) {clearTimeout(window.cmpInterval); }); });
+			} */
+		}
+		// CMP CODE START
+		(function(window) {
+			window.__tcfapi = (function() {
+				var listen = window.attachEvent || window.addEventListener;
+				listen('message', function(event) {
+					window.__tcfapi.receiveMessage(event);
+				});
+
+				var commandQueue = [];
+				var cmp = function(command, parameter, callback) {
+					commandQueue.push({
+						command: command,
+						parameter: parameter,
+						callback: callback
+					});
+				};
+				cmp.commandQueue = commandQueue;
+				cmp.receiveMessage = function(event) {
+					var data = event && event.data && event.data.__tcfapiCall;
+					if (data) {
+						commandQueue.push({
+							callId: data.callId,
+							command: data.command,
+							parameter: data.parameter,
+							event: event
+						});
+					}
+				};
+				cmp.config = {
+					customPurposeListLocation: 'purposes.json',
+					globalConsentLocation: 'docs/portal.html',                                        
+					storeConsentGlobally: true,
+					gdprApplies: true,
+					forceLocale: 'en',
+					storePublisherData: true,
+					gdprAppliesGlobally: true,
+					logging: 'debug',
+				};
+				return cmp;
+			}());
+		})(window);
+		__tcfapi("addEventListener", "isShown", listenerCmpEvents);
+		__tcfapi("addEventListener", "onSubmit", listenerCmpEvents);
+		__tcfapi("addEventListener", "isLoaded", listenerCmpEvents);
+		__tcfapi("addEventListener", "cmpReady", listenerCmpEvents);
+		//__tcfapi('showConsentTool', false);
+		// CMP CODE ENDS
+	</script>
+</head>
+<body>
+<script type="text/javascript" src="./cmp.bundle.js"></script></body>
+</html>
