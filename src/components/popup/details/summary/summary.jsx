@@ -162,6 +162,7 @@ export default class Summary extends Component {
 			onVendorListClick,
 			onPurposeListClick,
 			theme,
+			vendors
 		} = props;
                 
 		const {
@@ -170,6 +171,16 @@ export default class Summary extends Component {
 			dividerColor,
 			textLinkColor
 		} = theme;  
+
+		const filteredPurposes = Object.values(purposes).filter((purposeItem) =>
+			vendors.some(
+				(vendor) =>
+				vendor.purposes.includes(purposeItem.id) ||
+				vendor.legIntPurposes.includes(purposeItem.id) ||
+				vendor.flexiblePurposes.includes(purposeItem.id) ||
+				vendor.specialPurposes.includes(purposeItem.id)
+			)
+		);
                // console.log("visitedCustomPurposes", visitedCustomPurposes);
 		return (
 			<div 
@@ -194,7 +205,7 @@ export default class Summary extends Component {
 					<LocalLabel localizeKey='links.purposes.titleGeneral'></LocalLabel>
 				</div>                
 				<div class={style.purposeItems}>
-					{purposes.map((purposeItem, index) => (
+					{Object.values(filteredPurposes).map((purposeItem, index) => (
 						
 						<div  class={style.purposeItem} style={{borderColor: dividerColor}}>
 							<span class={style.purposeTitle}><PurposesLabel localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel></span>

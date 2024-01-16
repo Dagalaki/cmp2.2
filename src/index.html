@@ -10,16 +10,16 @@
 		function listenerCmpEvents(cmpEvent) {
 			console.log("[CMP LOG] CMP EVENT!!!!!! ", cmpEvent);
 			/* if(cmpEvent.event === "cmpReady") {
-			   window.cmpInterval = setTimeout(function() {__tcfapi("showConsentTool"); }, 200);
-				__tcfapi("getVendorConsents", null, function(e) {__tcfapi("getPublisherConsents", null, function(e) {clearTimeout(window.cmpInterval); }); });
+			   window.cmpInterval = setTimeout(function() {__cmp("showConsentTool"); }, 200);
+				__cmp("getVendorConsents", null, function(e) {__cmp("getPublisherConsents", null, function(e) {clearTimeout(window.cmpInterval); }); });
 			} */
 		}
 		// CMP CODE START
 		(function(window) {
-			window.__tcfapi = (function() {
+			window.__cmp = (function() {
 				var listen = window.attachEvent || window.addEventListener;
 				listen('message', function(event) {
-					window.__tcfapi.receiveMessage(event);
+					window.__cmp.receiveMessage(event);
 				});
 
 				var commandQueue = [];
@@ -32,7 +32,7 @@
 				};
 				cmp.commandQueue = commandQueue;
 				cmp.receiveMessage = function(event) {
-					var data = event && event.data && event.data.__tcfapiCall;
+					var data = event && event.data && event.data.__cmpCall;
 					if (data) {
 						commandQueue.push({
 							callId: data.callId,
@@ -55,11 +55,11 @@
 				return cmp;
 			}());
 		})(window);
-		__tcfapi("addEventListener", "isShown", listenerCmpEvents);
-		__tcfapi("addEventListener", "onSubmit", listenerCmpEvents);
-		__tcfapi("addEventListener", "isLoaded", listenerCmpEvents);
-		__tcfapi("addEventListener", "cmpReady", listenerCmpEvents);
-		//__tcfapi('showConsentTool', false);
+		__cmp("addEventListener", "isShown", listenerCmpEvents);
+		__cmp("addEventListener", "onSubmit", listenerCmpEvents);
+		__cmp("addEventListener", "isLoaded", listenerCmpEvents);
+		__cmp("addEventListener", "cmpReady", listenerCmpEvents);
+		//__cmp('showConsentTool', false);
 		// CMP CODE ENDS
 	</script>
 </head>

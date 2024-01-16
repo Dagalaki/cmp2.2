@@ -203,7 +203,7 @@ export default class Vendors extends Component {
 		} = selectedPurposeDetails;
 
 		const validVendors = vendors
-			.filter(({legIntPurposeIds = [], purposeIds = []}) => legIntPurposeIds.indexOf(selectedPurposeId) > -1 || purposeIds.indexOf(selectedPurposeId) > -1);
+			.filter(({legIntPurposes = [], purposes = []}) => legIntPurposes.indexOf(selectedPurposeId) > -1 || purposes.indexOf(selectedPurposeId) > -1);
 
 
 			for(var i=0; i< validVendors.length; i++){
@@ -240,7 +240,7 @@ export default class Vendors extends Component {
 				<div class={style.vendorContent}>
 					<table class={style.vendorList}>
 						<tbody>
-							{validVendors.map(({id, name, purposeIds, policyUrl, policyUrlDisplay}, index) => (
+							{validVendors.map(({id, name, purposes: purposeIds, policyUrl, policyUrlDisplay}, index) => (
 
 								<tr key={id} class={index % 2 === 0 ? style.even : ''}>
 									<td>

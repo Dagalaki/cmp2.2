@@ -2,10 +2,12 @@ import log from './log';
 
 // These options are documented at https://acdn.adnxs.com/cmp/docs/#/config
 // We highly recommend reading the options as the defaults may not fit your goals.
+
+
 const defaultConfig = {
 	customPurposeListLocation: '../cmp/src/docs/assets/purposes.json',
 	// The location of the latest vendorlist to use.
-	globalVendorListLocation: '../cmp/src/docs/assets/anixe_vendorlist.json',
+	globalVendorListLocation: '../cmp_demo/getLatestVendorList.php',
 	globalConsentLocation: './index.html',
 	storeConsentGlobally: false,
 	storePublisherData: false,
@@ -14,7 +16,7 @@ const defaultConfig = {
 	forceLocale: null,
 	gdprApplies: true,
 	gdprAppliesGlobally: false,
-	allowedVendorIds: null,
+	allowedVendorIds: ["47","126"],
 	theme: {}
 };
 

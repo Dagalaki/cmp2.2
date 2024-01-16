@@ -6,7 +6,7 @@ import {js_beautify as beautify} from 'js-beautify';
 
 const script = beautify(`
 window.__cmp.config = {
-	globalVendorListLocation:"../vendorlist.json", /* 'https://vendorlist.consensu.org/vendorlist.json',*/
+	globalVendorListLocation: 'https://vendorlist.consensu.org/vendorlist.json',
 	globalConsentLocation: './portal.html',
 	customPurposeListLocation: './purposes.json',
 	storeConsentGlobally: true,

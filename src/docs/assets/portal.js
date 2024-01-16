@@ -20,6 +20,7 @@ const readVendorListPromise = fetch('./vendorlist.json', {
 	});
 
 function readCookie(name) {
+	console.log("assets/portal.js : readCookie("+name+")");
 	const value = '; ' + document.cookie;
 	const parts = value.split('; ' + name + '=');
 	if (parts.length === 2) {
@@ -29,6 +30,7 @@ function readCookie(name) {
 }
 
 function writeCookie({ name, value, path = '/'}) {
+	console.log("assets/portal.js : writeCookie("+name+", "+value+", "+path+")");
 	document.cookie = `${name}=${value}${COOKIE_DOMAIN};path=${path};max-age=${COOKIE_MAX_AGE}`;
 	return Promise.resolve();
 }
@@ -47,6 +49,7 @@ const commands = {
 
 window.addEventListener('message', (event) => {
 	const data = event.data.vendorConsent;
+	console.log("assets/portal.js : message command: " + data.command);
 	if (data && typeof commands[data.command] === 'function') {
 		const { command } = data;
 		commands[command](data).then(result => {

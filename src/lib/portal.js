@@ -20,6 +20,7 @@ const portalCallMap = {};
  * @returns Promise resolved with the iframe reference
  */
 function openGlobalVendorPortal() {
+	console.log("portal.js : openGlobalVendorPortal");
 	// Only ever create a single iframe
         
 	if (!globalVendorPortal) {
@@ -73,6 +74,7 @@ function openGlobalVendorPortal() {
  * @returns Promise resolved with postMessage response result
  */
 function sendPortalCommand(message) {
+	console.log("portal.js : sendPortalCommand");
 	// Increment counter to use as unique callId
 	const callId = `vp:${++portalCallCount}`;
 

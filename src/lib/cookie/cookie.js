@@ -20,6 +20,7 @@ const VENDOR_CONSENT_COOKIE_MAX_AGE = 33696000;
 
 
 function encodeVendorIdsToBits(maxVendorId, selectedVendorIds = new Set()) {
+	console.log("cookie.js : encodeVendorIdsToBits");
 	let vendorString = '';
 	for (let id = 1; id <= maxVendorId; id++) {
 		vendorString += (selectedVendorIds.has(id) ? '1' : '0');
@@ -28,6 +29,7 @@ function encodeVendorIdsToBits(maxVendorId, selectedVendorIds = new Set()) {
 }
 
 function encodePurposeIdsToBits(purposes, selectedPurposeIds = new Set()) {
+	console.log("cookie.js : encodePurposeIdsToBits");
 	const maxPurposeId = Math.max(0,
 		...purposes.map(({id}) => id),
 		...Array.from(selectedPurposeIds));
@@ -39,6 +41,7 @@ function encodePurposeIdsToBits(purposes, selectedPurposeIds = new Set()) {
 }
 
 function decodeBitsToIds(bitString) {
+	console.log("cookie.js : decodeBitsToIds");
 	return bitString.split('').reduce((acc, bit, index) => {
 		if (bit === '1') {
 			acc.add(index + 1);
@@ -48,6 +51,7 @@ function decodeBitsToIds(bitString) {
 }
 
 function convertVendorsToRanges(maxVendorId, selectedIds) {
+	console.log("cookie.js : convertVendorsToRanges");
 	let range = [];
 	const ranges = [];
 	for (let id = 1; id <= maxVendorId; id++) {
@@ -71,6 +75,7 @@ function convertVendorsToRanges(maxVendorId, selectedIds) {
 }
 
 function encodeVendorConsentData(vendorData) {
+	console.log("cookie.js : encodeVendorConsentData");
 	const {vendorList = {}, selectedPurposeIds, selectedVendorIds, maxVendorId} = vendorData;
 	const {purposes = []} = vendorList;
 
@@ -98,6 +103,7 @@ function encodeVendorConsentData(vendorData) {
 }
 
 function decodeVendorConsentData(cookieValue) {
+	console.log("cookie.js : decodeVendorConsentData");
 	const {
 		cookieVersion,
 		cmpId,
@@ -153,6 +159,7 @@ function decodeVendorConsentData(cookieValue) {
 }
 
 function encodePublisherConsentData(publisherData) {
+	console.log("cookie.js : encodePublisherConsentData");
 	const {
 		vendorList = {},
 		customPurposeList = {},
@@ -171,6 +178,7 @@ function encodePublisherConsentData(publisherData) {
 }
 
 function decodePublisherConsentData(cookieValue) {
+	console.log("cookie.js : decodePublisherConsentData");
 	const {
 		cookieVersion,
 		cmpId,
@@ -194,6 +202,7 @@ function decodePublisherConsentData(cookieValue) {
 }
 
 function readCookie(name) {
+	console.log("cookie.js : readCookie");
 	const value = `; ${document.cookie}`;
 	const parts = value.split(`; ${name}=`);
 
@@ -203,12 +212,14 @@ function readCookie(name) {
 }
 
 function writeCookie(name, value, maxAgeSeconds, path = '/') {
+	console.log("cookie.js : writeCookie");
 	const maxAge = maxAgeSeconds === null ? '' : `;max-age=${maxAgeSeconds}`;
 	const expires = maxAgeSeconds === null ? '' : ';expires=' + new Date(new Date() * 1 + maxAgeSeconds * 1000).toUTCString();
 	document.cookie = `${name}=${value};path=${path}${maxAge}${expires}`;
 }
 
 function readPublisherConsentCookie() {
+	console.log("cookie.js : readPublisherConsentCookie");
 	// If configured try to read publisher cookie
 	if (config.storePublisherData) {
 		const cookie = readCookie(PUBLISHER_CONSENT_COOKIE_NAME);
@@ -220,6 +231,7 @@ function readPublisherConsentCookie() {
 }
 
 function writePublisherConsentCookie(publisherConsentData) {
+	console.log("cookie.js : writePublisherConsentCookie");
 	log.debug('Write publisher consent data to local cookie', publisherConsentData);
 	writeCookie(PUBLISHER_CONSENT_COOKIE_NAME,
 		encodePublisherConsentData(publisherConsentData),
@@ -235,6 +247,7 @@ function writePublisherConsentCookie(publisherConsentData) {
  * @returns Promise resolved with decoded cookie object
  */
 function readGlobalVendorConsentCookie() {
+	console.log("cookie.js : readGlobalVendorConsentCookie");
 	log.debug('Request consent data from global cookie');
 	return sendPortalCommand({
 		command: 'readVendorConsent',
@@ -255,6 +268,7 @@ function readGlobalVendorConsentCookie() {
  * @returns Promise resolved after cookie is written
  */
 function writeGlobalVendorConsentCookie(vendorConsentData) {
+	console.log("cookie.js : writeGlobalVendorConsentCookie");
 	log.debug('Write consent data to global cookie', vendorConsentData);
 	return sendPortalCommand({
 		command: 'writeVendorConsent',
@@ -273,6 +287,7 @@ function writeGlobalVendorConsentCookie(vendorConsentData) {
  * @returns Promise resolved with decoded cookie object
  */
 function readLocalVendorConsentCookie() {
+	console.log("cookie.js : readLocalVendorConsentCookie");
 	//console.log("[CMP LOG] - readLocalVendorConsentCookie", this);
 	const cookie = readCookie(VENDOR_CONSENT_COOKIE_NAME);
 	log.debug('Read consent data from local cookie', cookie);
@@ -286,6 +301,8 @@ function readLocalVendorConsentCookie() {
  * @returns Promise resolved after cookie is written
  */
 function writeLocalVendorConsentCookie(vendorConsentData) {
+	console.log("cookie.js : writeGlobalVendorConsentCookie");
+	console.trace();
 	log.debug('Write consent data to local cookie', vendorConsentData);
 	return Promise.resolve(writeCookie(VENDOR_CONSENT_COOKIE_NAME,
 		encodeVendorConsentData(vendorConsentData),
@@ -294,12 +311,14 @@ function writeLocalVendorConsentCookie(vendorConsentData) {
 }
 
 function readVendorConsentCookie() {
+	console.log("cookie.js : readVendorConsentCookie");
 	//console.log("[CMP LOG - store consent globally", config.storeConsentGlobally);
 	return config.storeConsentGlobally ?
 		readGlobalVendorConsentCookie() : readLocalVendorConsentCookie();
 }
 
 function writeVendorConsentCookie(vendorConsentData) {
+	console.log("cookie.js : writeVendorConsentCookie");
 	return config.storeConsentGlobally ?
 		writeGlobalVendorConsentCookie(vendorConsentData) : writeLocalVendorConsentCookie(vendorConsentData);
 }

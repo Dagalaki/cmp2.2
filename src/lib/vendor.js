@@ -9,6 +9,7 @@ const PUB_VENDOR_LOCATION = '/.well-known/pubvendors.json';
  * Fetch the pubvendors.json from the local domain
  */
 function fetchPubVendorList() {
+	console.log("vendor.js : fetchPurposeList");
 	return fetch(PUB_VENDOR_LOCATION)
 		.then(res => res.json())
 		.catch(() => {});
@@ -18,6 +19,7 @@ function fetchPubVendorList() {
  * Fetch the global vendor list if the location is configured
  */
 function fetchGlobalVendorList() {
+	console.log("vendor.js : fetchGlobalVendorList");
 	const {globalVendorListLocation} = config;
 
 	return (globalVendorListLocation ?
@@ -30,6 +32,7 @@ function fetchGlobalVendorList() {
 }
 
 function fetchPurposeList() {
+	console.log("vendor.js : fetchPurposeList");
 	if (!config.storePublisherData || !config.customPurposeListLocation) {
 		return Promise.resolve();
 	}

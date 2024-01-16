@@ -175,11 +175,14 @@ export default class Details extends Component {
                 }                
                 //console.log("[CMP LOG] details.jsx...visitedCustomPurposes (2)", this.visitedCustomPurposes, this.visitedCustomPurposes.length);
                 
-		const formattedVendors = vendors
-			.map(vendor => ({
-				...vendor,
-				policyUrl: vendor.policyUrl.indexOf('://') > -1 ? vendor.policyUrl : `http://${vendor.policyUrl}`
-			}))
+		const formattedVendors = Object.values(vendors)
+			.map(vendor => {
+				console.log('Current vendor:', vendor); // Log the current vendor
+    			return {
+      				...vendor,
+      				policyUrl: vendor.policyUrl && vendor.policyUrl.indexOf('://') > -1 ? vendor.policyUrl : `http://${vendor.policyUrl}`
+    			};
+    		})
 			.sort(({ name: n1 }, { name: n2 }) => n1.toLowerCase() === n2.toLowerCase() ? 0 : n1.toLowerCase() > n2.toLowerCase() ? 1 : -1);
 
 		return (
@@ -209,6 +212,7 @@ export default class Details extends Component {
 							onPurposeListClick={this.handlePanelClick(SECTION_PURPOSE_LIST)}
 							theme={theme}
 							setSummaryRef={ref => this.summaryRef= global.config.summaryRef = ref}
+							vendors={formattedVendors}
 						/>
 						<VendorList
                             purposes={purposes}

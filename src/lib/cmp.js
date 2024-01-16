@@ -24,12 +24,14 @@ export default class Cmp {
 
 	commands = {
 		setDataAlreadyStored: () => {
+			console.log("cmp.js : setDataAlreadyStored");
 			this.isConsentDataAlreadyStored = true;
 		},
 		/**
 		 * Get all publisher consent data from the data store.
 		 */
 		enablePurpose: (id, state) => {
+			console.log("cmp.js : enablePurpose(" +id+", "+state+")");
 			if (id === "all") {
 				this.store.selectAllPurposes(state);
 				//console.log("Set All Purposes to state " + state);
@@ -41,6 +43,7 @@ export default class Cmp {
 			}
 		},
 		getPublisherConsents: (purposeIds, callback = () => {}) => {
+			console.log("cmp.js : getPublisherConsents");
 			const {
 				persistedPublisherConsentData,
 				persistedVendorConsentData,
@@ -76,7 +79,7 @@ export default class Cmp {
 		 * @param {Array} vendorIds Array of vendor IDs to retrieve.  If empty return all vendors.
 		 */
 		getVendorConsents: (vendorIds, callback = () => {}) => {
-
+console.log("cmp.js : getVendorConsents");
 			// Encode limited fields for "metadata"
 			const {persistedVendorConsentData} = this.store;
 			const metadata = persistedVendorConsentData && encodeVendorCookieValue(persistedVendorConsentData, [
@@ -104,6 +107,7 @@ export default class Cmp {
 		 * Get the encoded vendor consent data value.
 		 */
 		getConsentData: (_, callback = () => {}) => {
+			console.log("cmp.js : getConsentData");
 			const consentData = {
 				gdprApplies: config.gdprApplies,
 				hasGlobalScope: config.storeConsentGlobally,
@@ -116,6 +120,7 @@ export default class Cmp {
 		 * Get the entire vendor list
 		 */
 		getVendorList: (vendorListVersion, callback = () => {}) => {
+			console.log("cmp.js : getVendorList ("+vendorListVersion+")");
 			const {vendorList} = this.store;
 			const {vendorListVersion: listVersion} = vendorList || {};
 			if (!vendorListVersion || vendorListVersion === listVersion) {
@@ -179,6 +184,8 @@ export default class Cmp {
 		 * Trigger the consent tool banner to be shown
 		 */
 		showConsentTool: (_, callback = () => {}) => {
+			
+			console.log("cmp.js : showConsentTool");
 			this.store.toggleConsentToolShowing(true);
 			callback(true);
 		},
@@ -187,14 +194,16 @@ export default class Cmp {
 		 * Trigger the consent tool modal to be shown
 		 */
 		showModal: (_, callback = () => {}) => {
+			console.log("cmp.js : showModal");
 			this.store.toggleModalShowing(true);
 			callback(true);
 		}
 	};
 	storeChange = (_store) => {
-		//console.log("[CMP LOG] STORECHANGED - store passed object", _store)
-		//console.log("[CMP LOG] STORE VISIBILITY: " + _store.isModalShowing + " = " + _store.isBannerShowing);
-		//console.log("[CMP LOG] this.showStatus VISIBILITY: " + this.showStatus.isModalShowing + " = " + this.showStatus.isBannerShowing);
+		console.log("cmp.js : storeChange()");
+		console.log("[CMP LOG] STORECHANGED - store passed object", _store)
+		console.log("[CMP LOG] STORE VISIBILITY: " + _store.isModalShowing + " = " + _store.isBannerShowing);
+		console.log("[CMP LOG] this.showStatus VISIBILITY: " + this.showStatus.isModalShowing + " = " + this.showStatus.isBannerShowing);
 		if (_store.isBannerShowing === false && this.showStatus.isBannerShowing === true) {
 			this.notify("isBannerHidden");
 		} else if (_store.isBannerShowing === true && this.showStatus.isBannerShowing === false) {
@@ -208,6 +217,7 @@ export default class Cmp {
 		this.showStatus.isBannerShowing = _store.isBannerShowing;
 	};
 	generateConsentString = () => {
+		console.log("cmp.js : generateConsentString");
 		const {
 			persistedVendorConsentData,
 			vendorList,
@@ -228,6 +238,7 @@ export default class Cmp {
 		});
 	};
 	processCommandQueue = () => {
+		console.log("cmp.js : processCommandQueue");
 		const queue = [...this.commandQueue];
 		if (queue.length) {
 			log.info(`Process ${queue.length} queued commands`);
@@ -255,6 +266,7 @@ export default class Cmp {
 	 * call `processCommand`
 	 */
 	receiveMessage = ({ data, origin, source }) => {
+		console.log("cmp.js : receiveMessage ("+data+", "+origin+", "+source+")");
 		const {[CMP_CALL_NAME]: cmp} = data;
 		if (cmp) {
 			const {callId, command, parameter} = cmp;
@@ -275,6 +287,9 @@ export default class Cmp {
 	 * @param {*} parameter Expected parameter for command
 	 */
 	processCommand = (command, parameter, callback) => {
+		console.log("cmp.js : processCommand("+command+", "+parameter+")");
+		console.log("Parameter : "+ JSON.stringify(parameter) );
+		
 		//console.log("[CMP LOG] COMMAND RECEIVED", "COMMAND", command, "persistedVendorConsentData", this.store.persistedVendorConsentData, "persistedPublisherConsentData", this.store.persistedPublisherConsentData);
 		if (typeof this.commands[command] !== 'function') {
 			log.error(`Invalid CMP command "${command}"`);

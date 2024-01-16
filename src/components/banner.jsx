@@ -302,7 +302,7 @@ export default class Banner extends Component {
 										style={{ color: textLightColor }}
 									>
 										<ul>
-											{purposes.map((purposeItem, index) => (
+											{Object.values(purposes).map((purposeItem, index) => (
 												<li class={style.purposeItem}>
 													<a class={style.learnMore} onClick={this.handlePurposeItemClick(purposeItem)} style={{color: textLinkColor}}>
 														<PurposesLabel localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel>

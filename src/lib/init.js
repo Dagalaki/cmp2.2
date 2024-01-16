@@ -18,11 +18,13 @@ const CMP_ID = 0;
 const COOKIE_VERSION = 1;
 
 export function init(configUpdates) {
+	console.log("init.js : init");
 	config.update(configUpdates);
 	log.debug('Using configuration:', config);
 	const startTime = Date.now();
 
 	// Fetch the current vendor consent before initializing
+	console.log("init.js : fetch the current vendor before initializing");
 	return Promise.all([
 		readVendorConsentCookie(),
 		fetchPubVendorList()
@@ -31,11 +33,13 @@ export function init(configUpdates) {
 			const {vendors} = pubVendorsList || {};
                                 
 			// Check config for allowedVendorIds then the pubVendorList
+			console.log("init.js : check config for allowedVendorIds then the pubVendorList");
 			const {allowedVendorIds: configVendorIds} = config;
 			const allowedVendorIds = configVendorIds instanceof Array && configVendorIds.length ? configVendorIds :
 				vendors && vendors.map(vendor => vendor.id);
 
 			// Initialize the store with all of our consent data
+			console.log("init.js : Initialize the store with all of our consent data");
 			const store = new Store({
 				cmpVersion: CMP_VERSION,
 				cmpId: CMP_ID,
@@ -45,7 +49,7 @@ export function init(configUpdates) {
 				pubVendorsList,
 				allowedVendorIds
 			});
-			//console.log("[CMP LOG] VENDOR CONSENT DATA", vendorConsentData);
+			console.log("[CMP LOG] VENDOR CONSENT DATA", vendorConsentData);
 			// Pull queued command from __tcfapi stub
 			const {commandQueue = []} = window[CMP_GLOBAL_NAME] || {};
 

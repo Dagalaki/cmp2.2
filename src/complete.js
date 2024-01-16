@@ -8,7 +8,7 @@ import 'core-js/fn/set';
 import log from './lib/log';
 import { init } from './lib/init';
 import { CMP_GLOBAL_NAME, CMP_CALL_NAME, CMP_LOCATOR_NAME } from "./lib/cmp";
-
+console.log(CMP_GLOBAL_NAME);
 function handleConsentResult(cmp, {vendorListVersion: listVersion} = {}, {created, vendorListVersion} = {}, publisherConsents) {
 	try {
 		//console.log("[CMP LOG] - handleConsentResult");
@@ -133,4 +133,5 @@ listen('message', event => {
 }, false);
 
 // Initialize CMP and then check if we need to ask for consent
+console.log("Initialize CMP and then check if we need to ask for consent");
 init(configUpdates).then(() => checkConsent(window[CMP_GLOBAL_NAME]));

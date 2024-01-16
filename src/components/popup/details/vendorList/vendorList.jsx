@@ -142,7 +142,7 @@ export default class VendorList extends Component {
 				</div>
 				<a id="customize" onClick={onBack} style={{color: textLinkColor}} class={style.customize}><LocalLabel localizeKey='back'></LocalLabel></a>
 				<table>
-					{vendors.map(({name, policyUrl, legIntPurposeIds, featureIds, purposeIds}, index) => (
+					{Object.values(vendors).map(({name, urls, legIntPurposes, features, purposes:purposeIds, flexiblePurposes, specialPurposes, specialFeatures}, index) => (
 						<tr class={index % 2 === 0 ? style.even : style.odd}>
 							<td>
 								<div 
@@ -150,21 +150,21 @@ export default class VendorList extends Component {
 									style={{color: textLightColor}}
 								>
 								
-								<h4 class={style.fpvendor} >{name}<a href={policyUrl} className={style.policy} style={{color: textLinkColor}} target='_blank'><ExternalLinkIcon color={textLinkColor} /></a></h4>
-									<LocalLabel class={[style.fptitle, (legIntPurposeIds.length < 1) ? style.fptitlehidden : ''].join(' ')} localizeKey='legint'></LocalLabel>
-									{legIntPurposeIds.map(function(value) {
+								<h4 class={style.fpvendor} >{name}<a href={urls[0].privacy} className={style.policy} style={{color: textLinkColor}} target='_blank'><ExternalLinkIcon color={textLinkColor} /></a></h4>
+									<LocalLabel class={[style.fptitle, (legIntPurposes.length < 1) ? style.fptitlehidden : ''].join(' ')} localizeKey='legint'></LocalLabel>
+									{legIntPurposes.map(function(value) {
 											return <Label className={style.fpvalue} localizeKey={`purposes.purpose${value}.title`}>{purposes[value-1].name}</Label>
 									})}
 										
 																			
-									<LocalLabel className={[style.fptitle, (featureIds.length < 1) ? style.fptitlehidden : ''].join(' ')} localizeKey='features'></LocalLabel>
-									{featureIds.map(function(value){										
+									<LocalLabel className={[style.fptitle, (features.length < 1) ? style.fptitlehidden : ''].join(' ')} localizeKey='features'></LocalLabel>
+									{features.map(function(value){										
 										return <Label className={style.fpvalue} localizeKey={`features.feature${value}.name`}></Label>
 									})}
 										
-									<LocalLabel className={[style.fptitle, (purposeIds.length < 1) ? style.fptitlehidden : ''].join(' ')} localizeKey='purposes'></LocalLabel>
+									<LocalLabel className={[style.fptitle, (features.length < 1) ? style.fptitlehidden : ''].join(' ')} localizeKey='purposes'></LocalLabel>
 									{purposeIds.map(function(value){
-										return <Label className={style.fpvalue} localizeKey={`purposes.purpose${value}.title`}>{purposes[value-1].name}</Label>
+										return <Label className={style.fpvalue} localizeKey={`purposes.purpose${value}.title`}>{purposes[value].name}</Label>
 									})}
 										
 									

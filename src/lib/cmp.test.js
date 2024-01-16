@@ -214,7 +214,7 @@ describe('cmp', () => {
 		const processSpy = jest.spyOn(cmp, 'processCommand');
 		cmp.receiveMessage({
 			data: {
-				__tcfapiCall: { command: 'showConsentTool' }
+				__cmpCall: { command: 'showConsentTool' }
 			},
 			origin: {},
 			source

@@ -2,6 +2,7 @@ import translations from './translations';
 import config from './config';
 
 export function findLocale() {
+	console.log("localize.js : findLocale");
 	const locale = config.forceLocale ||
 		(navigator && (
 			navigator.language ||
@@ -10,16 +11,20 @@ export function findLocale() {
 			(navigator.languages && navigator.languages[0]) ||
 			'en-us'
 		));
-//	return locale.toLowerCase();
-return "en-us";
+	console.log(locale.toLowerCase());
+	//return locale.toLowerCase();
+	return "en-us";
 }
 
 
 export class Localize {
 	constructor(localizedData = { ...translations, ...config.localization }) {
 		const localizedMap = this.processLocalized(localizedData);
+		
 		const currentLocal = findLocale();
+		
 		const [language] = currentLocal.split('-');
+		
 		this.localizedValues = {
 			...localizedMap[language],
 			...localizedMap[currentLocal]
@@ -27,10 +32,13 @@ export class Localize {
 	}
 
 	lookup = key => {
+		console.log("localize.js : lookup, localizedValues: ");
+		//console.log(this.localizedValues);
 		return this.localizedValues[key];
 	};
 
 	processLocalized = (data = {}) => {
+		console.log("localize.js : processLocalized");
 		// Lowercase top level object properties which are locale names
 		const [locales, localizedData] = Object.keys(data).reduce(([locales, localeData], key) => {
 			const locale = key.toLowerCase();
@@ -57,6 +65,7 @@ export class Localize {
 	};
 
 	flattenObject = (data) => {
+		console.log("localize.js : flattenObject");
 		const flattened = {};
 
 		function flatten(part, prefix) {
