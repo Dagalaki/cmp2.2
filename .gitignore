@@ -1,0 +1,19 @@
+/node_modules
+/npm-debug.log
+/build
+.DS_Store
+/coverage
+/.idea
+/.vscode
+/CMP AppNexus/nbproject/private/
+/CMP - AppNexus/nbproject/private/
+/nbproject/private/
+CMP - AppNexus/main.js
+CMP - AppNexus/nbproject/project.properties
+CMP - AppNexus/nbproject/project.xml
+CMP - AppNexus/public/index.html
+nbproject/project.properties
+nbproject/project.xml
+package.json
+yarn.lock
+src/purposes.json

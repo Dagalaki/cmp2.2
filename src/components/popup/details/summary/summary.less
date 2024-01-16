@@ -1,0 +1,96 @@
+@import '../../../../style/variables';
+
+.summary {
+    
+	.purposeItems {
+		padding-bottom: 20px;
+	}
+	.purposeItem {
+		display: flex;
+		border-top: 1px solid @color-border;
+		padding: 8px 0;
+		color: @color-textLight;
+
+		&:last-child {
+			border-bottom: 1px solid @color-border;
+		}
+
+		@media @smartphone {
+			padding: 15px 0;
+			display: block;
+			line-height: 16px;
+		}
+	}
+
+	.learnMore {
+		font-size: 14px;
+		@media @smartphone {
+			font-size: 12px;
+		}
+	} 
+
+	.purposeTitle {
+		flex: 1;
+		font-size: 18px;
+		@media @smartphone {
+			font-size: 14px;
+			display: block;
+			margin-bottom: 0;
+		}
+	}
+	.customPurposeItems {
+		margin: 0 0 15px 0;
+		padding: 0;
+	}
+	.customPurposeItem {
+		display: flex;
+		margin-top: 0px;
+		border-top: 1px solid @color-border;
+		padding: 8px 0;		
+		color: @color-textLight;		
+		&:last-child { 
+			border-bottom: 1px solid @color-border;
+		}
+
+		@media @smartphone {
+			padding: 10px 0px 0px 0;
+			display: block;
+			line-height: 16px;
+		}
+	}
+	.customPurposeTitle {
+		flex: 1;
+		font-size: 18px;
+		@media @smartphone {
+			font-size: 14px;
+			display: block;
+			float: left;
+			width: auto;
+			margin-bottom: 0;
+		}
+	}
+	.customPurposeSwitch {
+		float: right;
+		margin-right: 10px;
+		position: relative; 
+		top: 0px;
+	}
+	
+	.customPurposeDesc {
+		padding-bottom: 10px;
+		color: #888888;
+		border-bottom: 1px solid hsla(0,0%,47%,.65);
+		font-size: 14px;
+		line-height: 18px;
+		margin-top: 0px;
+		font-size: 11px;
+		color: @color-textLight;
+	}
+	.customPurposeSeparator {
+		height: 20px;
+		margin-top: 20px;
+		margin-bottom: 10px;
+		font-weight: bold;
+		color: #656565;
+	}
+}
