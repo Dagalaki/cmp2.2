@@ -31,7 +31,7 @@ function encodeVendorIdsToBits(maxVendorId, selectedVendorIds = new Set()) {
 function encodePurposeIdsToBits(purposes, selectedPurposeIds = new Set()) {
 	console.log("cookie.js : encodePurposeIdsToBits");
 	const maxPurposeId = Math.max(0,
-		...purposes.map(({id}) => id),
+		...Object.values(purposes).map(({id}) => id),
 		...Array.from(selectedPurposeIds));
 	let purposeString = '';
 	for (let id = 1; id <= maxPurposeId; id++) {
@@ -77,13 +77,13 @@ function convertVendorsToRanges(maxVendorId, selectedIds) {
 function encodeVendorConsentData(vendorData) {
 	console.log("cookie.js : encodeVendorConsentData");
 	const {vendorList = {}, selectedPurposeIds, selectedVendorIds, maxVendorId} = vendorData;
-	const {purposes = []} = vendorList;
+	const {purposes = {}} = vendorList;
 
 	// Encode the data with and without ranges and return the smallest encoded payload
 	const noRangesData = encodeVendorCookieValue({
 		...vendorData,
 		maxVendorId,
-		purposeIdBitString: encodePurposeIdsToBits(purposes, selectedPurposeIds),
+		purposeIdBitString: encodePurposeIdsToBits(Object.values(purposes), selectedPurposeIds),
 		isRange: false,
 		vendorIdBitString: encodeVendorIdsToBits(maxVendorId, selectedVendorIds)
 	});
@@ -92,7 +92,7 @@ function encodeVendorConsentData(vendorData) {
 	const rangesData = encodeVendorCookieValue({
 		...vendorData,
 		maxVendorId,
-		purposeIdBitString: encodePurposeIdsToBits(purposes, selectedPurposeIds),
+		purposeIdBitString: encodePurposeIdsToBits(Object.values(purposes), selectedPurposeIds),
 		isRange: true,
 		defaultConsent: false,
 		numEntries: vendorRangeList.length,
@@ -167,12 +167,12 @@ function encodePublisherConsentData(publisherData) {
 		selectedCustomPurposeIds
 	} = publisherData;
 	const {purposes: customPurposes = []} = customPurposeList;
-	const {purposes = []} = vendorList;
+	const {purposes = {}} = vendorList;
 
 	return encodePublisherCookieValue({
 		...publisherData,
 		numCustomPurposes: customPurposes.length,
-		standardPurposeIdBitString: encodePurposeIdsToBits(purposes, selectedPurposeIds),
+		standardPurposeIdBitString: encodePurposeIdsToBits(Object.values(purposes), selectedPurposeIds),
 		customPurposeIdBitString: encodePurposeIdsToBits(customPurposes, selectedCustomPurposeIds)
 	});
 }
