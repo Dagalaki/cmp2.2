@@ -291,7 +291,7 @@ export default class Cmp {
 	 * call `processCommand`
 	 */
 	receiveMessage = ({ data, origin, source }) => {
-		console.log("cmp.js : receiveMessage ("+data+", "+origin+", "+source+")");
+		//console.log("cmp.js : receiveMessage ("+data+", "+origin+", "+source+")");
 		const {[CMP_CALL_NAME]: cmp} = data;
 		if (cmp) {
 			const {callId, command, parameter} = cmp;
