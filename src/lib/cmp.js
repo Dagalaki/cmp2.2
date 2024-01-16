@@ -78,8 +78,8 @@ export default class Cmp {
 		 * Get all vendor consent data from the data store.
 		 * @param {Array} vendorIds Array of vendor IDs to retrieve.  If empty return all vendors.
 		 */
-		getVendorConsents: (vendorIds, callback = () => {}) => {
-console.log("cmp.js : getVendorConsents");
+		getTCData: (vendorIds, callback = () => {}) => {
+			console.log("cmp.js : getVendorConsents");
 			// Encode limited fields for "metadata"
 			const {persistedVendorConsentData} = this.store;
 			const metadata = persistedVendorConsentData && encodeVendorCookieValue(persistedVendorConsentData, [
@@ -92,15 +92,30 @@ console.log("cmp.js : getVendorConsents");
 				'consentLanguage',
 				'vendorListVersion',
 			]);
-
-			const consent = {
+			const tcData = {
+				tcString: this.generateConsentString(),
+				tcfPolicyVersion: 4,
+  				cmpId:1000,
+  				cmpVersion: 1000,
+  				gdprApplies: config.gdprApplies,
+  				eventStatus: "",
+  				listenerId: undefined,
+  				isServiceSpecific: !config.storeConsentGlobally,
+  				useNonStandardTexts: false,
+  				publisherCC: "GR",
+  				purposeOneTreatment: false,
+  				...this.store.getVendorConsentsObject(vendorIds)
+			}
+			//console.log(tcData);
+			/*const consent = {
 				metadata,
+				tcData,
 				gdprApplies: config.gdprApplies,
 				hasGlobalScope: config.storeConsentGlobally,
 				...this.store.getVendorConsentsObject(vendorIds)
-			};
+			};*/
 
-			callback(consent, true);
+			callback(tcData, true);
 		},
 
 		/**
@@ -131,12 +146,20 @@ console.log("cmp.js : getVendorConsents");
 		},
 
 		ping: (_, callback = () => {}) => {
-			const result = {
-				gdprAppliesGlobally: config.gdprAppliesGlobally,
-				cmpLoaded: true
-			};
-			callback(result, true);
-		},
+			const pingReturn = {
+				gdprApplies: config.gdprAppliesGlobally,
+				cmpLoaded: true,
+				cmpStatus: 'loaded',
+                               displayStatus: 'hidden', // Adjust as needed based on your implementation
+                               apiVersion: '2.0', // Update to the correct TCF 2.2 API version
+                               cmpVersion: undefined, // Update with the actual version if available
+                               cmpId: undefined, // Update with the actual CMP ID if available
+                               gvlVersion: 35, // Update with the actual GVL version if available
+                               tcfPolicyVersion: undefined // Update with the actual TCF version if available
+                           };
+
+                           callback(pingReturn);
+                       },
 
 		/**
 		 * Add a callback to be fired on a specific event.
@@ -154,6 +177,8 @@ console.log("cmp.js : getVendorConsents");
 			if (event === 'cmpReady' && this.cmpReady) {
 				callback({event});
 			}
+			const tcData = this.getTCData(2);
+			callback(tcData, true);
 		},
 
 		/**

@@ -36,7 +36,11 @@ export default class Store {
 		this.vendorConsentData = Object.assign(
 			{
 				selectedPurposeIds: new Set(),
-				selectedVendorIds: new Set()
+				selectedVendorIds: new Set(),
+				selectedFeatureOptInsIds: new Set(),
+				selectedPublisherIds: new Set(),
+				selectedCustomPurposeIds: new Set(),
+				restrictions: new Set()
 			},
 			vendorConsentData,
 			{
@@ -72,19 +76,19 @@ export default class Store {
 	 * vendorList.
 	 */
 	getVendorConsentsObject = (vendorIds) => {
-		console.log("store.js : getVendorConsentsObject");
+		console.log("store.js : getVendorConsentsObject", this);
 		const {
 			vendorList = {},
 			persistedVendorConsentData = {},
 			pubVendorsList = {},
 			allowedVendorIds,
 		} = this;
-
+		console.log("pubVendorsList",pubVendorsList);
 		const {
 			publisherVendorsVersion,
 			globalVendorListVersion
 		} = pubVendorsList;
-
+		console.log("persistedVendorConsentData", persistedVendorConsentData);
 		const {
 			cookieVersion,
 			created,
@@ -98,8 +102,8 @@ export default class Store {
 			selectedVendorIds = new Set(),
 			selectedPurposeIds = new Set()
 		} = persistedVendorConsentData;
-
-		const {purposes = [], vendors = []} = vendorList;
+		console.log("vendorList",vendorList);
+		const {purposes = [], vendors = [], specialFeatures = [], specialPurposes = []} = vendorList;
 
 		// Map requested vendorIds
 		const vendorMap = {};
@@ -130,7 +134,12 @@ export default class Store {
 		for (let i = 1; i <= lastPurposeId; i++) {
 			purposeMap[i] = selectedPurposeIds.has(i);
 		}
-
+		const vendor = {consents:vendorMap, legitimateInterests: {}};
+		const purpose = {consents:purposeMap, legitimateInterests: {}};
+		const specialFeatureOptins = {};
+		const publisher = {consents: {}, legitimateInterests: {}};
+		const customPurpose = {consents:{}, legitimateInterests: {}};
+		const restrictions = {};
 		return {
 			cookieVersion,
 			created,
@@ -143,8 +152,12 @@ export default class Store {
 			globalVendorListVersion,
 			vendorListVersion,
 			maxVendorId,
-			purposeConsents: purposeMap,
-			vendorConsents: vendorMap
+			purpose,
+			vendor,
+			specialFeatureOptins,
+			publisher,
+			customPurpose,
+			restrictions
 		};
 	};
 	
