@@ -79,6 +79,8 @@ function encodeVendorConsentData(vendorData) {
 	const {vendorList = {}, selectedPurposeIds, selectedVendorIds, maxVendorId} = vendorData;
 	const {purposes = {}} = vendorList;
 
+	console.log(vendorData);
+
 	// Encode the data with and without ranges and return the smallest encoded payload
 	const noRangesData = encodeVendorCookieValue({
 		...vendorData,
@@ -319,6 +321,7 @@ function readVendorConsentCookie() {
 
 function writeVendorConsentCookie(vendorConsentData) {
 	console.log("cookie.js : writeVendorConsentCookie");
+	console.log(vendorConsentData);
 	return config.storeConsentGlobally ?
 		writeGlobalVendorConsentCookie(vendorConsentData) : writeLocalVendorConsentCookie(vendorConsentData);
 }
