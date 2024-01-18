@@ -1,59 +1,28 @@
 export default {
-	version: 1,
+	version: 2,
 	fields: [
-		{ name: 'cookieVersion', type: 'int', numBits: 6 },
-		{ name: 'created', type: 'date', numBits: 36 },
-		{ name: 'lastUpdated', type: 'date', numBits: 36 },
-		{ name: 'cmpId', type: 'int', numBits: 12 },
-		{ name: 'cmpVersion', type: 'int', numBits: 12 },
-		{ name: 'consentScreen', type: 'int', numBits: 6 },
-		{ name: 'consentLanguage', type: '6bitchar', numBits: 12 },
-		{ name: 'vendorListVersion', type: 'int', numBits: 12 },
-		{ name: 'purposeIdBitString', type: 'bits', numBits: 24 },
-		{ name: 'maxVendorId', type: 'int', numBits: 16 },
-		{ name: 'isRange', type: 'bool', numBits: 1 },
+		{ name: 'Version', type: 'int', numBits: 6 },
+		{ name: 'Created', type: 'date', numBits: 36 },
+		{ name: 'LastUpdated', type: 'date', numBits: 36 },
+		{ name: 'CmpId', type: 'int', numBits: 12 },
+		{ name: 'CmpVersion', type: 'int', numBits: 12 },
+		{ name: 'ConsentScreen', type: 'int', numBits: 6 },
+		{ name: 'ConsentLanguage', type: '6bitchar', numBits: 12 },
+		{ name: 'VendorListVersion', type: 'int', numBits: 12 },
+		{ name: 'TcfPolicyVersion', type: 'int', numBits: 6 },
+		{ name: 'IsServiceSpecific', type: 'bits', numBits: 1 },
+		{ name: 'UseNonStandardTexts', type: 'bits', numBits: 1 },
+		{ name: 'SpecialFeatureOptIns', type: 'bits', numBits: 24 },
+		{ name: 'PurposesConsent', type: 'bits', numBits: 24 },
+		{ name: 'PurposesLITransparency', type: 'bits', numBits: 24 },
+		/*{ name: 'publisherPurposeVersion', type: 'int', numBits: 12 },
+		{ name: 'standardPurposeIdBitString', type: 'bits', numBits: 24 },
+		{ name: 'numCustomPurposes', type: 'int', numBits: 6 },
 		{
-			name: 'vendorIdBitString',
+			name: 'customPurposeIdBitString',
 			type: 'bits',
-			numBits: (decodedObject) => decodedObject.maxVendorId,
-			validator: (decodedObject) => !decodedObject.isRange,
-		},
-		{
-			name: 'defaultConsent',
-			type: 'bool',
-			numBits: 1,
-			validator: (decodedObject) => decodedObject.isRange,
-		},
-		{
-			name: 'numEntries',
-			numBits: 12,
-			type: 'int',
-			validator: (decodedObject) => decodedObject.isRange,
-		},
-		{
-			name: 'vendorRangeList',
-			type: 'list',
-			listCount: (decodedObject) => decodedObject.numEntries,
-			validator: (decodedObject) => decodedObject.isRange,
-			fields: [
-				{
-					name: 'isRange',
-					type: 'bool',
-					numBits: 1
-				},
-				{
-					name: 'startVendorId',
-					type: 'int',
-					numBits: 16
-				},
-				{
-					name: 'endVendorId',
-					type: 'int',
-					numBits: 16,
-					validator: (decodedObject) => decodedObject.isRange
-				}
-			]
-		}
+			numBits: (decodedObject) => decodedObject.numCustomPurposes
+		}*/
 	]
 };
 

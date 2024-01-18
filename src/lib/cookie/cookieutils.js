@@ -118,7 +118,7 @@ function encodeField({ input, field }) {
 				fields: field.fields
 			}), '');
 		default:
-			log.warn(`Cookie definition field found without encoder or type: ${name}`);
+			console.error(`Cookie definition field found without encoder or type: ${name}`);
 			return '';
 	}
 }
@@ -171,7 +171,7 @@ function decodeField({ input, output, startPosition, field }) {
 				};
 			}, { fieldValue: [], newPosition: startPosition });
 		default:
-			log.warn(`Cookie definition field found without decoder or type: ${name}`);
+			console.error(`Cookie definition field found without decoder or type: ${name}`);
 			return {};
 	}
 }
@@ -210,21 +210,36 @@ function decodeFields({ input, fields, startPosition = 0 }) {
  */
 function encodeDataToBits(data, definitionMap, includeFields) {
 	const { cookieVersion } = data;
-
+	console.log("encodeDataToBits -> version",cookieVersion);
 	if (typeof cookieVersion !== 'number') {
-		log.error('Could not find cookieVersion to encode');
+		console.error('Could not find cookieVersion to encode');
 	}
 	else if (!definitionMap[cookieVersion]) {
-		log.error(`Could not find definition to encode cookie version ${cookieVersion}`);
+		console.error(`Could not find definition to encode cookie version ${cookieVersion}`);
 	}
 	else {
 		let cookieFields = definitionMap[cookieVersion].fields;
-
+		const renamedData = {
+			Version:data.cookieVersion,
+			Created: data.created,
+			LastUpdated:data.lastUpdated,
+			CmpId:data.cmpId,
+			CmpVersion:data.cmpVersion,
+			ConsentLanguage: data.consentLanguage,
+			VendorListVersion: data.vendorListVersion,
+			TcfPolicyVersion: data.tcfPolicyVersion,
+			IsServiceSpecific: data.isServiceSpecific,
+			UseNonStandardTexts: data.useNonStandardTexts,
+			SpecialFeatureOptIns: data.SpecialFeatureOptIns,
+			PurposesConsent: data.PurposesConsent,
+			PurposesLITransparency: data.PurposesLITransparency
+		}
+		console.log("cookieFields",cookieFields, includeFields);
 		// Filter the set of fields to encode if "includeFields" is provided
 		if (includeFields && includeFields instanceof Array) {
 			cookieFields = cookieFields.filter(({name}) => includeFields.indexOf(name) > -1);
 		}
-		return encodeFields({ input: data, fields: cookieFields });
+		return encodeFields({ input: renamedData, fields: cookieFields });
 	}
 }
 
@@ -233,7 +248,9 @@ function encodeDataToBits(data, definitionMap, includeFields) {
  * URL safe Base64 encoded value.
  */
 function encodeCookieValue(data, definitionMap, includeFields) {
+	console.log("args:",data,definitionMap,includeFields);
 	const binaryValue = encodeDataToBits(data, definitionMap, includeFields);
+	console.log("encoding -> binaryValue:",binaryValue);
 	if (binaryValue) {
 
 		// Pad length to multiple of 8
@@ -287,26 +304,29 @@ function decodeB64toBitString(cookieValue) {
  */
 function decodeCookieValue(cookieValue, definitionMap, includeFields) {
 	const inputBits = decodeB64toBitString(cookieValue);
+	console.log("inputBits",inputBits, "definitionMap", definitionMap, "includeFields",includeFields);
 	return decodeCookieBitValue(inputBits, definitionMap, includeFields);
 }
 
 function decodeCookieBitValue(bitString, definitionMap, includeFields) {
 	const cookieVersion = decodeBitsToInt(bitString, 0, NUM_BITS_VERSION);
+	console.log("Version:",cookieVersion);
 	if (typeof cookieVersion !== 'number') {
-		log.error('Could not find cookieVersion to decode');
+		console.error('Could not find cookieVersion to decode');
 		return {};
 	}
 	else if (!vendorVersionMap[cookieVersion]) {
-		log.error(`Could not find definition to decode cookie version ${cookieVersion}`);
+		console.error(`Could not find definition to decode cookie version ${cookieVersion}`);
 		return {};
 	}
 	let cookieFields = definitionMap[cookieVersion].fields;
-
+	console.log("cookieFields",cookieFields);
 	// Filter the set of fields to decode if "includeFields" is provided
 	if (includeFields && includeFields instanceof Array) {
 		cookieFields = cookieFields.filter(({name}) => includeFields.indexOf(name) > -1);
 	}
 	const { decodedObject } = decodeFields({ input: bitString, fields: cookieFields });
+	console.log("decodedObject",decodedObject);
 	return decodedObject;
 }
 

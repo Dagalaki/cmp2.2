@@ -92,11 +92,12 @@ export default class Cmp {
 				'consentLanguage',
 				'vendorListVersion',
 			]);
+			console.log("METADATA:",persistedVendorConsentData,metadata);
 			const tcData = {
 				tcString: this.generateConsentString(),
-				tcfPolicyVersion: 4,
-  				cmpId:1000,
-  				cmpVersion: 1000,
+				TcfPolicyVersion: 4,
+  				CmpId:1,
+  				CmpVersion: 1,
   				gdprApplies: config.gdprApplies,
   				eventStatus: "",
   				listenerId: undefined,
@@ -106,7 +107,7 @@ export default class Cmp {
   				purposeOneTreatment: false,
   				...this.store.getVendorConsentsObject(vendorIds)
 			}
-			//console.log(tcData);
+			console.log("TCDATA",tcData);
 			/*const consent = {
 				metadata,
 				tcData,
@@ -152,8 +153,8 @@ export default class Cmp {
 				cmpStatus: 'loaded',
                                displayStatus: 'hidden', // Adjust as needed based on your implementation
                                apiVersion: '2.0', // Update to the correct TCF 2.2 API version
-                               cmpVersion: undefined, // Update with the actual version if available
-                               cmpId: undefined, // Update with the actual CMP ID if available
+                               cmpVersion: 1, // Update with the actual version if available
+                               cmpId: 1, // Update with the actual CMP ID if available
                                gvlVersion: 35, // Update with the actual GVL version if available
                                tcfPolicyVersion: undefined // Update with the actual TCF version if available
                            };
@@ -177,8 +178,10 @@ export default class Cmp {
 			if (event === 'cmpReady' && this.cmpReady) {
 				callback({event});
 			}
-			const tcData = this.getTCData(2);
-			callback(tcData, true);
+			
+			this.commands.getTCData(null, (tcData, success) => {
+				callback(tcData, true);
+			});
 		},
 
 		/**

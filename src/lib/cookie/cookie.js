@@ -41,7 +41,8 @@ function encodePurposeIdsToBits(purposes, selectedPurposeIds = new Set()) {
 }
 
 function decodeBitsToIds(bitString) {
-	console.log("cookie.js : decodeBitsToIds");
+	console.log("cookie.js : decodeBitsToIds", bitString);
+	console.trace();
 	return bitString.split('').reduce((acc, bit, index) => {
 		if (bit === '1') {
 			acc.add(index + 1);
@@ -77,19 +78,20 @@ function convertVendorsToRanges(maxVendorId, selectedIds) {
 function encodeVendorConsentData(vendorData) {
 	console.log("cookie.js : encodeVendorConsentData");
 	const {vendorList = {}, selectedPurposeIds, selectedVendorIds, maxVendorId} = vendorData;
+	console.log("vendorData",vendorData);
 	const {purposes = {}} = vendorList;
-
+	console.log("purposes",purposes);
 	// Encode the data with and without ranges and return the smallest encoded payload
 	const noRangesData = encodeVendorCookieValue({
 		...vendorData,
 		maxVendorId,
 		purposeIdBitString: encodePurposeIdsToBits(Object.values(purposes), selectedPurposeIds),
 		isRange: false,
-		vendorIdBitString: encodeVendorIdsToBits(maxVendorId, selectedVendorIds)
+		vendorIdBitString: encodeVendorIdsToBits(selectedVendorIds)
 	});
 
-	const vendorRangeList = convertVendorsToRanges(maxVendorId, selectedVendorIds);
-	const rangesData = encodeVendorCookieValue({
+//	const vendorRangeList = convertVendorsToRanges(maxVendorId, selectedVendorIds);
+/*	const rangesData = encodeVendorCookieValue({
 		...vendorData,
 		maxVendorId,
 		purposeIdBitString: encodePurposeIdsToBits(Object.values(purposes), selectedPurposeIds),
@@ -98,43 +100,174 @@ function encodeVendorConsentData(vendorData) {
 		numEntries: vendorRangeList.length,
 		vendorRangeList
 	});
-
-	return noRangesData.length < rangesData.length ? noRangesData : rangesData;
+*/
+//	return noRangesData.length < rangesData.length ? noRangesData : rangesData;
+	return noRangesData;
 }
+function stringToBinary(string) {
+  let binary = '';
+  for (let i = 0; i < string.length; i++) {
+    const charCode = string.charCodeAt(i).toString(2);
+    binary += charCode;// + '0'.repeat(8 - charCode.length);
+  }
+  return binary;
+}
+const fields = [
+	{name:'Version', length:6,type:"int"},
+	{name:'Created', length:36,type:"date"},
+	{name:'LastUpdated',length:36,type:"date"},
+	{name:'CmpId',length:12,type:"int"},
+	{name:'CmpVersion', length:12,type:"int"},
+	{name:'ConsentScreen', length:6,type:"int"},
+	{name:'ConsentLanguage', length:12,type:"string"},
+	{name:'VendorListVersion',length:12,type:"int"},
+	{name:'TcfPolicyVersion', length:6,type:"int"},
+	{name:'IsServiceSpecific', length:1,type:"boolean"},
+	{name:'UseNonStandardTexts', length:1,type:"boolean"},
+	{name:'SpecialFeatureOptins',length:12,type:"binary"},
+	{name:'PurposesConsent',length:24,type:"binary"},
+	{name:'PurposesLITransparency',length:24,type:"binary"}
+];
+function base64ToBinarySplit6(base64) {
+  const binaryString = atob(base64);
+  let result = '';
 
+  let remainingBits = '';
+
+  for (let i = 0; i < binaryString.length; i++) {
+    const byte = binaryString.charCodeAt(i).toString(2).padStart(8, '0');
+    const combinedBits = remainingBits + byte;
+
+    // Split the combined bits into 6-bit chunks
+	  var j = 0;
+    for (j = 0; j < combinedBits.length - 5; j += 6) {
+      result += combinedBits.slice(j, j + 6);
+    }
+
+    // Save any remaining bits for the next iteration
+    remainingBits = combinedBits.slice(j);
+  }
+
+  return result.trim();
+}
+function convertBinaryToObject(binary, type) {
+  if (type === 'int') {
+    return parseInt(binary, 2);
+  } else if (type === 'date') {
+    // Implement date conversion logic based on your requirements
+    return 'Date Conversion Not Implemented';
+  } else if (type === 'boolean') {
+    return binary === '1';
+  } else if (type === 'string') {
+    // Convert binary to string
+    let result = '';
+    for (let i = 0; i < binary.length; i += 8) {
+      const byte = binary.slice(i, i + 8);
+      result += String.fromCharCode(parseInt(byte, 2));
+    }
+    return result;
+  } else {
+    // Assume binary type, return as is
+    return binary;
+  }
+}
+function splitCoreString(coreString) {
+		console.log("fields", fields);
+	var binaryCoreString = stringToBinary(atob(coreString));
+	let startIndex = 0;
+	console.log("binary string", binaryCoreString);
+	const binaryFields = fields.map(item => {
+		console.log(startIndex, startIndex + item.length);
+    		var fieldBinary = binaryCoreString.slice(startIndex, startIndex + item.length);
+		startIndex += item.length; // Move to the next field
+		console.log(item.name+" - ",fieldBinary);
+		//fieldBinary = '0'.repeat(fieldBinary.length%8) + fieldBinary;
+		return fieldBinary;
+	});
+
+  return binaryFields;
+}
+function toLittleEndian(binary) {
+  return binary
+    .match(/.{1,8}/g) // Split into 8-bit chunks
+    .map(chunk => chunk.split('').reverse().join('')) // Reverse the bits within each chunk
+    .join(''); // Join the chunks back together
+}
+function binaryToDecimal(binary, type) {
+  if (type === 'int') {
+    return parseInt(binary, 2);
+  } else if (type === 'date') {
+    // Implement date conversion logic based on your requirements
+    return 'Date Conversion Not Implemented';
+  } else if (type === 'boolean') {
+    return binary === '1';
+  } else {
+    // Assume binary type, return as is
+    return binary;
+  }
+}
+function printConvertedFields(binaryFields) {
+  const littleEndianFields = binaryFields.map((field, index) => toLittleEndian(field));
+  littleEndianFields.forEach((field, index) => {
+    const decimalValue = binaryToDecimal(field, fields[index].type);
+    console.log(`${fields[index].name}:\n   Binary: ${binaryFields[index]}\n   Little Endian: ${field}\n   Converted Value: ${decimalValue}\n`);
+  });
+}
 function decodeVendorConsentData(cookieValue) {
-	console.log("cookie.js : decodeVendorConsentData");
+	console.log("cookie.js : decodeVendorConsentData", cookieValue);
+// Replace URL-safe characters
+	var binaryFields = base64ToBinarySplit6(cookieValue.split('.')[0]);
+	//printConvertedFields(binaryFields);
+	console.log("binary fields:", binaryFields);
+
+	const objectsArray = fields.map((field) => {
+		var start = 0;
+	  const bytes = binaryFields.slice(start, start+field.length);
+	  binaryFields = binaryFields.slice(start+field.length);
+		start+=field.length;
+	  return { ...field, bytes };
+	});
+	console.log("objectArray",objectsArray);
+	const objectsArrayConverted = objectsArray.map((obj) => ({
+	  ...obj,
+	  value: convertBinaryToObject(obj.bytes, obj.type),
+	}));
+	console.log("Objects Array Converted:", objectsArrayConverted);
 	const {
-		cookieVersion,
-		cmpId,
-		cmpVersion,
-		consentScreen,
-		consentLanguage,
-		vendorListVersion,
-		purposeIdBitString,
-		maxVendorId,
-		created,
-		lastUpdated,
-		isRange,
-		defaultConsent,
-		vendorIdBitString,
-		vendorRangeList
+		Version,
+		CmpId,
+		CmpVersion,
+		ConsentScreen,
+		ConsentLanguage,
+		VendorListVersion,
+		PurposesConsent,
+		Created,
+		LastUpdated,
+		IsServiceSpecific,
+		PurposesLITransparency,
+		SpecialFeatureOptIns,
+		TcfPolicyVersion,
+		UseNonStandardTexts
 	} = decodeVendorCookieValue(cookieValue);
-
+	console.log("decoding cookie:", decodeVendorCookieValue(cookieValue));
+	console.log("purposeIdBitString",PurposesConsent);
 	const cookieData = {
-		cookieVersion,
-		cmpId,
-		cmpVersion,
-		consentScreen,
-		consentLanguage,
-		vendorListVersion,
-		selectedPurposeIds: decodeBitsToIds(purposeIdBitString),
-		maxVendorId,
-		created,
-		lastUpdated
-	};
+		cookieVersion: Version,
+		created: Created,
+		lastUpdated: LastUpdated,
+		cmpId: CmpId,
+		cmpVersion: CmpVersion,
+		consentScreen: ConsentScreen,
+		consentLanguage: ConsentLanguage,
+		vendorListVersion: VendorListVersion,
+		PurposesConsent: decodeBitsToIds(PurposesConsent),
+		PurposesLITransparency: decodeBitsToIds(PurposesLITransparency),
+		SpeacialFeatureOptIns: decodeBitsToIds(SpecialFeatureOptIns)
 
-	if (isRange) {
+
+	};
+	console.log("data",cookieData);
+	if (typeof isRange !== "undefined" && isRange) {
 		const idMap = vendorRangeList.reduce((acc, {isRange, startVendorId, endVendorId}) => {
 			const lastVendorId = isRange ? endVendorId : startVendorId;
 			for (let i = startVendorId; i <= lastVendorId; i++) {
@@ -152,7 +285,7 @@ function decodeVendorConsentData(cookieValue) {
 		}
 	}
 	else {
-		cookieData.selectedVendorIds = decodeBitsToIds(vendorIdBitString);
+		//cookieData.selectedVendorIds = decodeBitsToIds(vendorIdBitString);
 	}
 
 	return cookieData;
@@ -290,7 +423,7 @@ function readLocalVendorConsentCookie() {
 	console.log("cookie.js : readLocalVendorConsentCookie");
 	//console.log("[CMP LOG] - readLocalVendorConsentCookie", this);
 	const cookie = readCookie(VENDOR_CONSENT_COOKIE_NAME);
-	log.debug('Read consent data from local cookie', cookie);
+	console.log('Read consent data from local cookie', cookie);
 	return Promise.resolve(cookie && decodeVendorConsentData(cookie));
 }
 
