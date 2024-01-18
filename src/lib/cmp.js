@@ -79,7 +79,7 @@ export default class Cmp {
 		 * @param {Array} vendorIds Array of vendor IDs to retrieve.  If empty return all vendors.
 		 */
 		getTCData: (vendorIds, callback = () => {}) => {
-			console.log("cmp.js : getVendorConsents");
+			console.log("cmp.js : getVendorConsents", this.store);
 			// Encode limited fields for "metadata"
 			const {persistedVendorConsentData} = this.store;
 			const metadata = persistedVendorConsentData && encodeVendorCookieValue(persistedVendorConsentData, [
@@ -321,7 +321,7 @@ export default class Cmp {
 	processCommand = (command, parameter, callback) => {
 		console.log("cmp.js : processCommand("+command+", "+parameter+")");
 		console.log("Parameter : "+ JSON.stringify(parameter) );
-		
+		console.trace();	
 		//console.log("[CMP LOG] COMMAND RECEIVED", "COMMAND", command, "persistedVendorConsentData", this.store.persistedVendorConsentData, "persistedPublisherConsentData", this.store.persistedPublisherConsentData);
 		if (typeof this.commands[command] !== 'function') {
 			log.error(`Invalid CMP command "${command}"`);

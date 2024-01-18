@@ -216,11 +216,11 @@ function printConvertedFields(binaryFields) {
 function decodeVendorConsentData(cookieValue) {
 	console.log("cookie.js : decodeVendorConsentData", cookieValue);
 // Replace URL-safe characters
-	var binaryFields = base64ToBinarySplit6(cookieValue.split('.')[0]);
+	//var binaryFields = base64ToBinarySplit6(cookieValue.split('.')[0]);
 	//printConvertedFields(binaryFields);
-	console.log("binary fields:", binaryFields);
+	//console.log("binary fields:", binaryFields);
 
-	const objectsArray = fields.map((field) => {
+	/*const objectsArray = fields.map((field) => {
 		var start = 0;
 	  const bytes = binaryFields.slice(start, start+field.length);
 	  binaryFields = binaryFields.slice(start+field.length);
@@ -232,7 +232,7 @@ function decodeVendorConsentData(cookieValue) {
 	  ...obj,
 	  value: convertBinaryToObject(obj.bytes, obj.type),
 	}));
-	console.log("Objects Array Converted:", objectsArrayConverted);
+	console.log("Objects Array Converted:", objectsArrayConverted);*/
 	const {
 		Version,
 		CmpId,

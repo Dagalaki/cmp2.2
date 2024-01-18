@@ -438,11 +438,16 @@ export default class Store {
 		} = vendorList || {};
 
 		const purposesArray = Object.values(purposes);
+		console.log("WHAT");
+		console.log("PURPOSES IN STORE", purposes);
+		console.log("PURPOSESARRAY IN STORE", purposesArray);
 		// If vendor consent data has never been persisted set default selected status
 		if (!created) {
 			this.vendorConsentData.selectedPurposeIds = new Set(purposesArray.map(p => p.id));
+			console.log(this.vendorConsentData.selectedPurposeIds);
 			const vendorsArray = Object.values(vendors);
 			this.vendorConsentData.selectedVendorIds = new Set(vendorsArray.map(v => v.id));
+			console.log(this.vendorConsentData.selectedVendorIds);
 		}
 
 		const {selectedVendorIds = new Set()} = this.vendorConsentData;
@@ -452,6 +457,7 @@ export default class Store {
 			...Object.values(vendors).map(({id}) => id),
 			...Array.from(selectedVendorIds)
 		);
+		console.log(this.vendorConsentData);
 		this.vendorList = vendorList;
 		this.storeUpdate();
 	};

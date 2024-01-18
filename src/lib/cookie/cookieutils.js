@@ -28,7 +28,7 @@ function encodeIntToBits(number, numBits) {
 	if (typeof number === 'number' && !isNaN(number)) {
 		bitString = parseInt(number, 10).toString(2);
 	}
-
+	console.log("encode int to bits", bitString);
 	// Pad the string if not filling all bits
 	if (numBits >= bitString.length) {
 		bitString = padLeft(bitString, numBits - bitString.length);
@@ -38,6 +38,7 @@ function encodeIntToBits(number, numBits) {
 	if (bitString.length > numBits) {
 		bitString = bitString.substring(0, numBits);
 	}
+	console.log(bitString);
 	return bitString;
 }
 
@@ -47,9 +48,12 @@ function encodeIntToBits(number, numBits) {
  */
 function encode6BitCharacters(string, numBits) {
 	const encoded = typeof string !== 'string' ? '' : string.split('').map(char => {
+		
 		const int = Math.max(0, char.toUpperCase().charCodeAt(0) - SIX_BIT_ASCII_OFFSET);
+		console.log("encode6BitCharacters:",int);
 		return encodeIntToBits(int > 25 ? 0 : int, 6);
 	}).join('');
+	console.log("encode6BitCharacters:"+string+" - numBits:"+numBits+" encoded:"+encoded);
 	return padRight(encoded, numBits).substr(0, numBits);
 }
 
@@ -82,6 +86,8 @@ function decode6BitCharacters(bitString, start, length) {
 		decoded += String.fromCharCode(SIX_BIT_ASCII_OFFSET + decodeBitsToInt(bitString, decodeStart, 6));
 		decodeStart += 6;
 	}
+	console.log("decode6BitCharactrs", bitString);
+	console.log("decoded", decoded);
 	return decoded;
 }
 
@@ -101,6 +107,7 @@ function encodeField({ input, field }) {
 
 	const inputValue = input[name];
 	const fieldValue = inputValue === null || inputValue === undefined ? '' : inputValue;
+	console.log("encodeField -> name:"+name+",type:"+type+",numBits:"+numBits+"   value:",fieldValue); 
 	switch (type) {
 		case 'int':
 			return encodeIntToBits(fieldValue, bitCount);
@@ -125,7 +132,10 @@ function encodeField({ input, field }) {
 
 function encodeFields({ input, fields }) {
 	return fields.reduce((acc, field) => {
-		acc += encodeField({ input, field });
+		var addition = encodeField({ input, field });
+		acc += addition;
+		//acc += encodeField({ input, field });
+		console.log("encodeFields:",{input, fields}, addition);
 		return acc;
 	}, '');
 }
@@ -219,6 +229,7 @@ function encodeDataToBits(data, definitionMap, includeFields) {
 		console.error(`Could not find definition to encode cookie version ${cookieVersion}`);
 	}
 	else {
+		console.log('originalData', data);
 		let cookieFields = definitionMap[cookieVersion].fields;
 		const renamedData = {
 			Version:data.cookieVersion,
@@ -227,14 +238,17 @@ function encodeDataToBits(data, definitionMap, includeFields) {
 			CmpId:data.cmpId,
 			CmpVersion:data.cmpVersion,
 			ConsentLanguage: data.consentLanguage,
+			ConsentScreen: 1,
 			VendorListVersion: data.vendorListVersion,
-			TcfPolicyVersion: data.tcfPolicyVersion,
-			IsServiceSpecific: data.isServiceSpecific,
-			UseNonStandardTexts: data.useNonStandardTexts,
-			SpecialFeatureOptIns: data.SpecialFeatureOptIns,
-			PurposesConsent: data.PurposesConsent,
-			PurposesLITransparency: data.PurposesLITransparency
+			TcfPolicyVersion: 4,
+			IsServiceSpecific: data.isRange?1:0,
+			UseNonStandardTexts: 0,
+			SpecialFeatureOptIns: "111111111111",
+			PurposesConsent: data.purposeIdBitString,
+			PurposesLITransparency: data.purposeIdBitString
 		}
+		
+		console.log('renamedData',renamedData);
 		console.log("cookieFields",cookieFields, includeFields);
 		// Filter the set of fields to encode if "includeFields" is provided
 		if (includeFields && includeFields instanceof Array) {
@@ -255,8 +269,10 @@ function encodeCookieValue(data, definitionMap, includeFields) {
 	if (binaryValue) {
 
 		// Pad length to multiple of 8
-		const paddedBinaryValue = padRight(binaryValue, 7 - (binaryValue.length + 7) % 8);
-
+		console.log(7+" - ("+binaryValue.length+" + 7 ) % 8");
+		//const paddedBinaryValue = padRight(binaryValue, 7 - (binaryValue.length + 7) % 8);
+		const paddedBinaryValue = padRight(binaryValue, 264 - binaryValue.length);	
+		console.log(paddedBinaryValue);
 		// Encode to bytes
 		let bytes = '';
 		for (let i = 0; i < paddedBinaryValue.length; i += 8) {

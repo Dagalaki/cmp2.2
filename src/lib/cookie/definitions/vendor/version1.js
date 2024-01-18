@@ -12,7 +12,7 @@ export default {
 		{ name: 'TcfPolicyVersion', type: 'int', numBits: 6 },
 		{ name: 'IsServiceSpecific', type: 'bits', numBits: 1 },
 		{ name: 'UseNonStandardTexts', type: 'bits', numBits: 1 },
-		{ name: 'SpecialFeatureOptIns', type: 'bits', numBits: 24 },
+		{ name: 'SpecialFeatureOptIns', type: 'bits', numBits: 12 },
 		{ name: 'PurposesConsent', type: 'bits', numBits: 24 },
 		{ name: 'PurposesLITransparency', type: 'bits', numBits: 24 },
 		/*{ name: 'publisherPurposeVersion', type: 'int', numBits: 12 },
