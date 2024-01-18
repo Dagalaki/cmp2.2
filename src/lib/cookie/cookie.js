@@ -345,7 +345,7 @@ function readCookie(name) {
 }
 
 function writeCookie(name, value, maxAgeSeconds, path = '/') {
-	console.log("cookie.js : writeCookie");
+	console.log("cookie.js : writeCookie", name, value);
 	const maxAge = maxAgeSeconds === null ? '' : `;max-age=${maxAgeSeconds}`;
 	const expires = maxAgeSeconds === null ? '' : ';expires=' + new Date(new Date() * 1 + maxAgeSeconds * 1000).toUTCString();
 	document.cookie = `${name}=${value};path=${path}${maxAge}${expires}`;

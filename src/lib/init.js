@@ -8,14 +8,14 @@ import log from './log';
 import pack from '../../package.json';
 import config from './config';
 
-const CMP_VERSION = 1.1;
+const CMP_VERSION = 1;
 
 // CMP_ID is the ID of your consent management provider according to the IAB. Get an ID here: https://advertisingconsent.eu/cmps/
 //const CMP_ID = 223;
-const CMP_ID = 0;
+const CMP_ID = 1;
 
 // The cookie specification version, as determined by the IAB. Current is 1.
-const COOKIE_VERSION = 1;
+const COOKIE_VERSION = 2;
 
 export function init(configUpdates) {
 	console.log("init.js : init");

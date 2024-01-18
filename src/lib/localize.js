@@ -2,7 +2,7 @@ import translations from './translations';
 import config from './config';
 
 export function findLocale() {
-	console.log("localize.js : findLocale");
+	//console.log("localize.js : findLocale");
 	const locale = config.forceLocale ||
 		(navigator && (
 			navigator.language ||
@@ -11,7 +11,7 @@ export function findLocale() {
 			(navigator.languages && navigator.languages[0]) ||
 			'en-us'
 		));
-	console.log(locale.toLowerCase());
+	//console.log(locale.toLowerCase());
 	//return locale.toLowerCase();
 	return "en-us";
 }
@@ -32,13 +32,13 @@ export class Localize {
 	}
 
 	lookup = key => {
-		console.log("localize.js : lookup, localizedValues: ");
+		//console.log("localize.js : lookup, localizedValues: ");
 		//console.log(this.localizedValues);
 		return this.localizedValues[key];
 	};
 
 	processLocalized = (data = {}) => {
-		console.log("localize.js : processLocalized");
+		//console.log("localize.js : processLocalized");
 		// Lowercase top level object properties which are locale names
 		const [locales, localizedData] = Object.keys(data).reduce(([locales, localeData], key) => {
 			const locale = key.toLowerCase();
@@ -65,7 +65,7 @@ export class Localize {
 	};
 
 	flattenObject = (data) => {
-		console.log("localize.js : flattenObject");
+		//console.log("localize.js : flattenObject");
 		const flattened = {};
 
 		function flatten(part, prefix) {

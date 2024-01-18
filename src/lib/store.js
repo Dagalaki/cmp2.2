@@ -21,7 +21,7 @@ export default class Store {
 	constructor( {
 		cmpId = 1,
 		cmpVersion = 1,
-		cookieVersion = 1,
+		cookieVersion = 2,
 		vendorConsentData,
 		publisherConsentData,
 		vendorList,
@@ -29,10 +29,12 @@ export default class Store {
 		pubVendorsList,
 		allowedVendorIds
 	} = {}) {
+		console.log("store.js constructor cookieVersion before:", cookieVersion);
+
 		// Keep track of data that has already been persisted
 		this.persistedVendorConsentData = copyData(vendorConsentData);
 		this.persistedPublisherConsentData = copyData(publisherConsentData);
-
+		console.log("store.js constructor cookieVersion:", cookieVersion);
 		this.vendorConsentData = Object.assign(
 			{
 				selectedPurposeIds: new Set(),
@@ -50,7 +52,7 @@ export default class Store {
 				consentLanguage: findLocale().substr(0, 2).toUpperCase()
 			}
 		);
-
+		console.log("storejs constructor -> vendorConsentData", this.vendorConsentData);
 		this.publisherConsentData = Object.assign(
 			{
 				selectedCustomPurposeIds: new Set()
@@ -261,7 +263,7 @@ export default class Store {
 			vendorList,
 			customPurposeList
 		} = this;
-
+		console.log("store.js : vendorConsentData", vendorConsentData);
 		const { vendorListVersion = 1 } = vendorList || {};
 
 		// Update modification dates and write the cookies

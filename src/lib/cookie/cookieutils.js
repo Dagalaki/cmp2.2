@@ -211,6 +211,7 @@ function decodeFields({ input, fields, startPosition = 0 }) {
 function encodeDataToBits(data, definitionMap, includeFields) {
 	const { cookieVersion } = data;
 	console.log("encodeDataToBits -> version",cookieVersion);
+	console.trace();
 	if (typeof cookieVersion !== 'number') {
 		console.error('Could not find cookieVersion to encode');
 	}

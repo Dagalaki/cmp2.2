@@ -109,12 +109,12 @@ export default class Banner extends Component {
 		for(var i=0; i<me.rmlength; i++){
 			if(i == me.rmfocusedId){
 				var o = RM.getElementsByTagName("a")[i];
-				console.log(o);
+				//console.log(o);
 				o.style.backgroundColor = "#41afbb";
 				o.style.color = "#fff";
 			}else{
 				var o = RM.getElementsByTagName("a")[i];
-				console.log(o);
+				//console.log(o);
 				o.style.color = "#41afbb";
 				o.style.backgroundColor = "#fff";
 			}
@@ -126,7 +126,7 @@ export default class Banner extends Component {
 		}
 		for(var i=0; i < this.RMB.length; i++){
 			var o = this.RMB[i];
-			console.log(o);
+			//console.log(o);
 			if(i!=3)
 				o.classList.remove("banner_expanded--2lZxB");
 			else
@@ -144,7 +144,7 @@ export default class Banner extends Component {
 		}
 		var me =this;
 		for(var i=0; i < this.RMB.length; i++){
-			console.log(i,me.rmfocusedIdBullet,  this.RMB[i]) ;
+			//console.log(i,me.rmfocusedIdBullet,  this.RMB[i]) ;
 			if(i == me.rmfocusedIdBullet){
 				
 
@@ -311,8 +311,8 @@ export default class Banner extends Component {
 	}
 
 	handlePurposeItemClick = purposeItem => {
-		console.log("banner.jsx handlePurposeItemClick, purposeItem");
-		console.log(purposeItem);
+	//	console.log("banner.jsx handlePurposeItemClick, purposeItem");
+	//	console.log(purposeItem);
 		return () => {
 			this.props.onSelectPurpose(purposeItem);
 		};
