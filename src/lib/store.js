@@ -216,6 +216,44 @@ export default class Store {
 		};
 	};
 	persist = () => {
+
+		window.__tcfapi("getTCData", 2, function (tcData, success) {
+			 if (success) {
+			        console.log("success");
+			 }
+
+			 console.log("TCDATA");
+			 console.log(tcData);
+			 for(var i =1; i<= 11; i++){
+			 	
+
+			 	if (tcData.vendor.consents[47] && tcData.purpose.consents[i]) {
+        			console.log("Vendor ID 47 has consent for purpose ID " + i);
+ 				}else if(tcData.vendor.consents[47] && !tcData.purpose.consents[i]){
+ 					console.log("Vendor ID 47 has NO consent for purpose ID " + i);
+ 				}
+ 				if (tcData.vendor.consents[126] && tcData.purpose.consents[i]) {
+        			console.log("Vendor ID 126 has consent for purpose ID " + i);
+ 				}else if(tcData.vendor.consents[126] && !tcData.purpose.consents[i]){
+ 					console.log("Vendor ID 126 has NO consent for purpose ID " + i);
+ 				}
+ 				if (tcData.vendor.legitimateInterests[47] && tcData.purpose.legitimateInterests[i]) {
+				        console.log("User has been informed of vendor ID 47's legitimate interest for purpose ID "+i+" and hasn't objected to it");
+				 }
+				 if (!tcData.vendor.legitimateInterests[47] || !tcData.purpose.legitimateInterests[i]) {
+				        console.log("User has objected to vendor ID 47's legitimate interest for purpose ID "+i);
+				 }
+				 if (tcData.vendor.legitimateInterests[126] && tcData.purpose.legitimateInterests[i]) {
+				        console.log("User has been informed of vendor ID 126's legitimate interest for purpose ID "+i+" and hasn't objected to it");
+				 }
+				 if (!tcData.vendor.legitimateInterests[126] || !tcData.purpose.legitimateInterests[i]) {
+				        console.log("User has objected to vendor ID 126's legitimate interest for purpose ID "+i);
+				 }
+			 }
+
+		}, [47,126]);
+
+		
 		console.log("store.js : persist");
 		const {
 			vendorConsentData,
@@ -255,6 +293,10 @@ export default class Store {
 		}
 
 		// Store the persisted data
+		console.log("store.js persist vendorConsentData");
+		console.log(vendorConsentData);
+		console.log("store.js persist publisherConsentData");
+		console.log(publisherConsentData);
 		this.persistedVendorConsentData = copyData(vendorConsentData);
 		this.persistedPublisherConsentData = copyData(publisherConsentData);
 

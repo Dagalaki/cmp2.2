@@ -178,10 +178,12 @@ export default class Cmp {
 			if (event === 'cmpReady' && this.cmpReady) {
 				callback({event});
 			}
+
 			
 			this.commands.getTCData(null, (tcData, success) => {
 				callback(tcData, true);
 			});
+
 		},
 
 		/**
@@ -267,6 +269,8 @@ export default class Cmp {
 	};
 	processCommandQueue = () => {
 		console.log("cmp.js : processCommandQueue");
+		
+		
 		const queue = [...this.commandQueue];
 		if (queue.length) {
 			log.info(`Process ${queue.length} queued commands`);
@@ -354,8 +358,10 @@ export default class Cmp {
 
 		// Process any queued commands that were waiting for consent data
 		if (event === 'onSubmit') {
+			console.log(")))))) Submit consent data");
 			//console.log("[CMP LOG] consent already stored", this.isConsentDataAlreadyStored);
 			if(this.isConsentDataAlreadyStored === true) {
+				console.log("consent data alredy stored");
 				this.notify("onConsentChanged");
 			}
 			this.processCommandQueue();
