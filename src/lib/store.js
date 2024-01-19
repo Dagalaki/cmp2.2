@@ -122,6 +122,82 @@ export default class Store {
 	 * list will only return consent=true for vendors that exist in the current
 	 * vendorList.
 	 */
+	getVendorConsentsBits = (vendorIds) => {
+		console.log("store.js : getVendorConsentsBits", this);
+		const {
+			vendorList = {},
+			persistedVendorConsentData = {},
+			pubVendorsList = {},
+			allowedVendorIds,
+		} = this;
+		console.log("pubVendorsList",pubVendorsList);
+		const {
+			publisherVendorsVersion,
+			globalVendorListVersion
+		} = pubVendorsList;
+		console.log("persistedVendorConsentData", persistedVendorConsentData);
+		const {
+			cookieVersion,
+			created,
+			lastUpdated,
+			cmpId,
+			cmpVersion,
+			consentScreen,
+			consentLanguage,
+			vendorListVersion,
+			maxVendorId = 0,
+			selectedVendorIds = new Set(),
+			selectedPurposeIds = new Set()
+		} = persistedVendorConsentData;
+		console.log("vendorList",vendorList);
+		const {purposes = [], vendors = [], specialFeatures = [], specialPurposes = []} = vendorList;
+
+		// Map requested vendorIds
+		const vendorMap = {};
+		if (vendorIds && vendorIds.length) {
+			vendorIds.forEach(id => vendorMap[id] = selectedVendorIds.has(id) && (!allowedVendorIds.size || allowedVendorIds.has(id)));
+		} else {
+			// In case the vendor list has not been loaded yet find the highest
+			// vendor ID to map any consent data we already have
+			var vendorArray = Object.values(vendors);
+			const lastVendorId = Math.max(maxVendorId,
+				...vendorArray.map(({id}) => id),
+				...Array.from(selectedVendorIds)
+			);
+
+			// Map all IDs up to the highest vendor ID found
+			for (let i = 1; i <= lastVendorId; i++) {
+				vendorMap[i] = selectedVendorIds.has(i) && (!allowedVendorIds.size || allowedVendorIds.has(i))?'1':'0';
+			}
+		}
+
+		// Map all purpose IDs
+		const lastPurposeId = Math.max(
+			...Object.values(purposes).map(({id}) => id),
+			...Array.from(selectedPurposeIds)
+		);
+
+		const purposeMap = {};
+		for (let i = 1; i <= lastPurposeId; i++) {
+			purposeMap[i] = selectedPurposeIds.has(i)?'1':'0';
+		}
+		console.log("vendorMap:",vendorMap);
+		console.log("vendor bit string:", Object.values(vendorMap).join(""));
+		const vendor = {consents:Object.values(vendorMap).join(""), legitimateInterests: {}};
+		const purpose = {consents:Object.valus(purposeMap).join(""), legitimateInterests: {}};
+		const specialFeatureOptins = {};
+		const publisher = {consents: {}, legitimateInterests: {}};
+		const customPurpose = {consents:{}, legitimateInterests: {}};
+		const restrictions = {};
+		return {
+			vendor,
+			specialFeatureOptins,
+			publisher,
+			purpose,
+			restrictions
+		};
+	};
+	
 	getVendorConsentsObject = (vendorIds) => {
 		console.log("store.js : getVendorConsentsObject", this);
 		const {
@@ -324,7 +400,8 @@ export default class Store {
 
 		// Update modification dates and write the cookies
 		const now = new Date();
-		vendorConsentData.created = vendorConsentData.created || now;
+		now.setHours(0,0,0,0);
+		vendorConsentData.created = /*vendorConsentData.created ||*/ now;
 		vendorConsentData.lastUpdated = now;
 
 		// Update version of list to one we are using
@@ -332,7 +409,7 @@ export default class Store {
 		publisherConsentData.vendorListVersion = vendorListVersion;
 		//console.log("Publisher Consent Data", publisherConsentData);
 		//console.log("Custom Purposes", this.customPurposeList);
-		publisherConsentData.created = publisherConsentData.created || now;
+		publisherConsentData.created = /*publisherConsentData.created ||*/ now;
 		publisherConsentData.lastUpdated = now;
 
 		// Write vendor cookie to appropriate domain

@@ -82,7 +82,7 @@ export default class Cmp {
 			console.log("cmp.js : getVendorConsents", this.store);
 			// Encode limited fields for "metadata"
 			const {persistedVendorConsentData} = this.store;
-			const metadata = persistedVendorConsentData && encodeVendorCookieValue(persistedVendorConsentData, [
+			/*const metadata = persistedVendorConsentData && encodeVendorCookieValue(persistedVendorConsentData, [
 				'cookieVersion',
 				'created',
 				'lastUpdated',
@@ -92,11 +92,11 @@ export default class Cmp {
 				'consentLanguage',
 				'vendorListVersion',
 			]);
-			console.log("METADATA:",persistedVendorConsentData,metadata);
+			console.log("METADATA:",persistedVendorConsentData,metadata);*/
 			const tcData = {
 				tcString: this.generateConsentString(),
-				TcfPolicyVersion: 4,
-  				CmpId:1000,
+				tcfPolicyVersion: 4,
+  				cmpId:1000,
   				CmpVersion: 1,
   				gdprApplies: config.gdprApplies,
   				eventStatus: "",
@@ -104,7 +104,7 @@ export default class Cmp {
   				isServiceSpecific: !config.storeConsentGlobally,
   				useNonStandardTexts: false,
   				publisherCC: "GR",
-  				purposeOneTreatment: false,
+  				purposeOneTreatment: 0,
   				...this.store.getVendorConsentsObject(vendorIds)
 			}
 			console.log("TCDATA",tcData);
@@ -125,17 +125,17 @@ export default class Cmp {
 
 			const inAppTCData = {
 				tcString: this.generateConsentString(),
-				TcfPolicyVersion: 4,
-  				CmpId:1000,
-  				CmpVersion: 1,
+				tcfPolicyVersion: 4,
+  				cmpId:1000,
+  				cmpVersion: 1,
   				gdprApplies: config.gdprApplies,
   				eventStatus: "",
   				listenerId: undefined,
   				isServiceSpecific: !config.storeConsentGlobally,
   				useNonStandardTexts: false,
   				publisherCC: "GR",
-  				purposeOneTreatment: false,
-  				...this.store.getVendorConsentsObject(vendorIds)
+  				purposeOneTreatment: 0,
+  				...this.store.getVendorConsentsBits(vendorIds)
 			}
 			console.log("inAppTCDATA",inAppTCData);
 			/*const consent = {
@@ -188,7 +188,7 @@ export default class Cmp {
 			const pingReturn = {
 				gdprApplies: config.gdprAppliesGlobally,
 				cmpLoaded: true,
-				cmpStatus: 'loaded',
+				cmpStatus: this.isLoaded,
                                displayStatus: 'hidden', // Adjust as needed based on your implementation
                                apiVersion: '2.2', // Update to the correct TCF 2.2 API version
                                cmpVersion: 1, // Update with the actual version if available
@@ -196,8 +196,8 @@ export default class Cmp {
                                gvlVersion: 35, // Update with the actual GVL version if available
                                tcfPolicyVersion: 4 // Update with the actual TCF version if available
                            };
-
-                           callback(pingReturn);
+				console.log(pingReturn);
+                           callback(pingReturn, true);
                        },
 
 		/**
@@ -217,8 +217,9 @@ export default class Cmp {
 				callback({event});
 			}
 
-			
+			console.log("event not isLoaded or cmpReady:");	
 			this.commands.getTCData(null, (tcData, success) => {
+				console.log("addEventListener getting tcData:",tcData);
 				callback(tcData, true);
 			});
 
