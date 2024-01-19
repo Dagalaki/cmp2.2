@@ -348,11 +348,18 @@ export default class Store {
 			 console.log("TCDATA");
 			 console.log(tcData);
 
+			 const vendorMap = {};
+			 vendorMap[0] = (tcData.vendor.consents[47])? 1: 0;
+			 vendorMap[1] = (tcData.vendor.consents[126])? 1: 0;
+
+			 const purposeMap = {};
+
 			 var url = "sendToDB.php?v47=" + tcData.vendor.consents[47] + "&v126="+ tcData.vendor.consents[126] ;
 			 for(var i=1;i<=11; i++){
-			 	url += "&p"+i+"=" + tcData.purpose.consents[i];
+			 	purposeMap[i] = (tcData.purpose.consents[i])? 1: 0;
 			 }
-			 console.log(">>>>>>>>> store.js persist: " + url);
+			 var url = "sendToDB.php?vendors="+Object.values(vendorMap).join("") + "&purposes="+Object.values(purposeMap).join("");
+			 console.log(">>>>>>>>> store.js send to DB: " + url);
 			 createHttpRequest(url, function(ret){
 			 	console.log(ret);
 
