@@ -276,7 +276,7 @@ export default class Store {
 			 for(var i=1;i<=11; i++){
 			 	url += "&p"+i+"=" + tcData.purpose.consents[i];
 			 }
-			 alert(url);
+			 console.log(">>>>>>>>> store.js persist: " + url);
 			 createHttpRequest(url, function(ret){
 			 	console.log(ret);
 
