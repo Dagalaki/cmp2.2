@@ -2,7 +2,7 @@ import log from './log';
 import config from './config';
 import { encodeVendorConsentData } from './cookie/cookie';
 import { encodeVendorCookieValue, encodePublisherCookieValue } from "./cookie/cookieutils";
-
+import { fetchPubVendorList, fetchGlobalVendorList, fetchPurposeList } from './vendor';
 export const CMP_GLOBAL_NAME = '__tcfapi';
 export const CMP_CALL_NAME = CMP_GLOBAL_NAME + 'Call';
 export const CMP_LOCATOR_NAME = CMP_GLOBAL_NAME + 'Locator';
@@ -96,7 +96,7 @@ export default class Cmp {
 			const tcData = {
 				tcString: this.generateConsentString(),
 				TcfPolicyVersion: 4,
-  				CmpId:1,
+  				CmpId:1000,
   				CmpVersion: 1,
   				gdprApplies: config.gdprApplies,
   				eventStatus: "",
@@ -118,7 +118,36 @@ export default class Cmp {
 
 			callback(tcData, true);
 		},
+		getInAppTCData: (vendorIds, callback = () => {}) => {
+			console.log("cmp.js : getVendorConsents", this.store);
+			// Encode limited fields for "metadata"
+			const {persistedVendorConsentData} = this.store;
 
+			const inAppTCData = {
+				tcString: this.generateConsentString(),
+				TcfPolicyVersion: 4,
+  				CmpId:1000,
+  				CmpVersion: 1,
+  				gdprApplies: config.gdprApplies,
+  				eventStatus: "",
+  				listenerId: undefined,
+  				isServiceSpecific: !config.storeConsentGlobally,
+  				useNonStandardTexts: false,
+  				publisherCC: "GR",
+  				purposeOneTreatment: false,
+  				...this.store.getVendorConsentsObject(vendorIds)
+			}
+			console.log("inAppTCDATA",inAppTCData);
+			/*const consent = {
+				metadata,
+				tcData,
+				gdprApplies: config.gdprApplies,
+				hasGlobalScope: config.storeConsentGlobally,
+				...this.store.getVendorConsentsObject(vendorIds)
+			};*/
+
+			callback(inAppTCData, true);
+		},
 		/**
 		 * Get the encoded vendor consent data value.
 		 */
@@ -138,11 +167,20 @@ export default class Cmp {
 		getVendorList: (vendorListVersion, callback = () => {}) => {
 			console.log("cmp.js : getVendorList ("+vendorListVersion+")");
 			const {vendorList} = this.store;
+			console.log("vendorList", vendorList);
 			const {vendorListVersion: listVersion} = vendorList || {};
+			console.log(vendorListVersion, listVersion);
 			if (!vendorListVersion || vendorListVersion === listVersion) {
 				callback(vendorList, true);
 			} else {
-				callback(null, false);
+				console.log("else");
+				if(vendorListVersion == "LATEST"){
+					console.log("LATEST");
+					callback(fetchGlobalVendorList(), true);
+				}else{
+					console.log("not latest");
+					callback(null, false);
+				}
 			}
 		},
 
@@ -152,11 +190,11 @@ export default class Cmp {
 				cmpLoaded: true,
 				cmpStatus: 'loaded',
                                displayStatus: 'hidden', // Adjust as needed based on your implementation
-                               apiVersion: '2.0', // Update to the correct TCF 2.2 API version
+                               apiVersion: '2.2', // Update to the correct TCF 2.2 API version
                                cmpVersion: 1, // Update with the actual version if available
-                               cmpId: 1, // Update with the actual CMP ID if available
+                               cmpId: 1000, // Update with the actual CMP ID if available
                                gvlVersion: 35, // Update with the actual GVL version if available
-                               tcfPolicyVersion: undefined // Update with the actual TCF version if available
+                               tcfPolicyVersion: 4 // Update with the actual TCF version if available
                            };
 
                            callback(pingReturn);
@@ -273,7 +311,8 @@ export default class Cmp {
 		
 		const queue = [...this.commandQueue];
 		if (queue.length) {
-			log.info(`Process ${queue.length} queued commands`);
+			console.log(`Process ${queue.length} queued commands`);
+			console.log(`callId: ${callId}, command: ${command}, parameter: ${parameter}`);
 			this.commandQueue = [];
 			queue.forEach(({ callId, command, parameter, callback, event }) => {
 				// If command is queued with an event we will relay its result via postMessage
@@ -324,7 +363,7 @@ export default class Cmp {
 		console.trace();	
 		//console.log("[CMP LOG] COMMAND RECEIVED", "COMMAND", command, "persistedVendorConsentData", this.store.persistedVendorConsentData, "persistedPublisherConsentData", this.store.persistedPublisherConsentData);
 		if (typeof this.commands[command] !== 'function') {
-			log.error(`Invalid CMP command "${command}"`);
+			console.error(`Invalid CMP command "${command}"`);
 		}
 		// Special case where we have the full CMP implementation loaded but
 		// we still queue these commands until there is data available. This
@@ -332,14 +371,14 @@ export default class Cmp {
 		else if (
 			(!this.store.persistedVendorConsentData && (command === 'getVendorConsents' || command === 'getConsentData')) ||
 			(!this.store.persistedPublisherConsentData && command === 'getPublisherConsents')) {
-			log.info(`Queuing command: ${command} until consent data is available`);
+			console.log(`Queuing command: ${command} until consent data is available`);
 			this.commandQueue.push({
 				command,
 				parameter,
 				callback
 			});
 		} else {
-			log.info(`Proccess command: ${command}, parameter: ${parameter}`);
+			console.log(`Proccess command: ${command}, parameter: ${parameter}`);
 			this.commands[command](parameter, callback);
 		}
 	}
@@ -350,7 +389,7 @@ export default class Cmp {
 	 * @param {*} data Data that will be passed to each callback
 	 */
 	notify = (event, data) => {
-		log.info(`Notify event: ${event}`);
+		console.log(`Notify event: ${event}`);
 		const eventSet = this.eventListeners[event] || new Set();
 		eventSet.forEach(listener => {
 			listener({event, data});
