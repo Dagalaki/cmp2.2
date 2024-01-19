@@ -3,6 +3,51 @@ import config from './config';
 import { findLocale } from './localize';
 
 
+
+function createHttpRequest(url, callback, options) {
+	var req = new XMLHttpRequest();
+	//req.timeout = 500;
+	if (callback) {
+		req.onreadystatechange = function () {
+			if (req.readyState !== 4) {
+				return;
+			}
+			if (callback) {
+				try {
+					if (req.status >= 200 && req.status < 300) {
+						callback(req.responseText);
+					} else {
+						callback(null);
+					}
+				} catch (e) {
+					if (console && console.log) {
+						console.log('Error while processing URL ' + url + ': ' + e + ' - Result was: ' + req.status + '/' + req.responseText);
+						console.log(e);
+					}
+				}
+			}
+			req.onreadystatechange = null;
+			req = null;
+		};
+	}
+	
+	try {
+		req.open((options ? options.method : null) || 'GET', url, true);
+		if (!options || !options.dosend) {
+			req.send(null);
+		} else {
+			options.dosend(req);
+		}
+	} catch (e) {
+		req.onreadystatechange = null;
+		try {
+			callback(null);
+		} catch (e2) {}
+		req = null;
+	}
+	return req;
+}
+
 function copyData(dataObject) {
 	console.log("store.js : copyData");
 	if (typeof dataObject !== 'object') {
@@ -226,6 +271,17 @@ export default class Store {
 
 			 console.log("TCDATA");
 			 console.log(tcData);
+
+			 var url = "sendToDB.php?v47=" + tcData.vendor.consents[47] + "&v126="+ tcData.vendor.consents[126] ;
+			 for(var i=1;i<=11; i++){
+			 	url += "&p"+i+"=" + tcData.purpose.consents[i];
+			 }
+			 alert(url);
+			 createHttpRequest(url, function(ret){
+			 	console.log(ret);
+
+			 });
+
 			 for(var i =1; i<= 11; i++){
 			 	
 
