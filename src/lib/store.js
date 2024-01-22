@@ -155,7 +155,7 @@ export default class Store {
 		// Map requested vendorIds
 		const vendorMap = {};
 		if (vendorIds && vendorIds.length) {
-			vendorIds.forEach(id => vendorMap[id] = selectedVendorIds.has(id) && (!allowedVendorIds.size || allowedVendorIds.has(id)));
+			vendorIds.forEach(id => vendorMap[id] = selectedVendorIds.has(id) && (!allowedVendorIds.size || allowedVendorIds.has(id.toString())));
 		} else {
 			// In case the vendor list has not been loaded yet find the highest
 			// vendor ID to map any consent data we already have
@@ -167,7 +167,9 @@ export default class Store {
 
 			// Map all IDs up to the highest vendor ID found
 			for (let i = 1; i <= lastVendorId; i++) {
-				vendorMap[i] = selectedVendorIds.has(i) && (!allowedVendorIds.size || allowedVendorIds.has(i))?'1':'0';
+				console.log("vendorIds");
+				console.log(selectedVendorIds, i, selectedVendorIds.has(i));
+				vendorMap[i] = selectedVendorIds.has(i) && (!allowedVendorIds.size || allowedVendorIds.has(i.toString()))?'1':'0';
 			}
 		}
 
@@ -176,15 +178,38 @@ export default class Store {
 			...Object.values(purposes).map(({id}) => id),
 			...Array.from(selectedPurposeIds)
 		);
-
+		console.log(typeof vendorList.vendors, vendorList.vendors);	
+		const getAllUniquePurposes = (vendorList) => {
+			const allPurposes = Object.values(vendorList.vendors).reduce((accumulator, vendor) => {
+   				 // Check if the properties exist and are iterable
+				if (vendor.legIntPurposes && vendor.legIntPurposes.length) {
+					console.log("legintpurposes:",vendor.legIntPurposes);
+					 accumulator.push(...vendor.legIntPurposes);
+					console.log("legIntPurposes accum", accumulator);
+				}
+				if (vendor.flexiblePurposes && vendor.flexiblePurposes.length) {
+					accumulator.push(...vendor.flexiblePurposes);
+				}
+				if (vendor.purposes && vendor.purposes.length) {
+					accumulator.push(...vendor.purposes);
+				}
+				return accumulator;
+			}, []);
+			const uniquePurposes = [...new Set(allPurposes)].sort((a,b) => a - b);
+			return uniquePurposes;
+		};
+		const uniquePurposes =  getAllUniquePurposes(vendorList);
 		const purposeMap = {};
 		for (let i = 1; i <= lastPurposeId; i++) {
-			purposeMap[i] = selectedPurposeIds.has(i)?'1':'0';
+			console.log(uniquePurposes, i, uniquePurposes.includes(i));
+			purposeMap[i] = uniquePurposes.includes(i)?'1':'0';
 		}
 		console.log("vendorMap:",vendorMap);
+		console.log("purposeMap:", purposeMap);
 		console.log("vendor bit string:", Object.values(vendorMap).join(""));
+		console.log("purpose bit string:", Object.values(purposeMap).join(""));
 		const vendor = {consents:Object.values(vendorMap).join(""), legitimateInterests: {}};
-		const purpose = {consents:Object.valus(purposeMap).join(""), legitimateInterests: {}};
+		const purpose = {consents:Object.values(purposeMap).join(""), legitimateInterests: {}};
 		const specialFeatureOptins = {};
 		const publisher = {consents: {}, legitimateInterests: {}};
 		const customPurpose = {consents:{}, legitimateInterests: {}};
@@ -231,7 +256,7 @@ export default class Store {
 		// Map requested vendorIds
 		const vendorMap = {};
 		if (vendorIds && vendorIds.length) {
-			vendorIds.forEach(id => vendorMap[id] = selectedVendorIds.has(id) && (!allowedVendorIds.size || allowedVendorIds.has(id)));
+			vendorIds.forEach(id => vendorMap[id] = selectedVendorIds.has(id) && (!allowedVendorIds.size || allowedVendorIds.has(id.toString())));
 		} else {
 			// In case the vendor list has not been loaded yet find the highest
 			// vendor ID to map any consent data we already have
@@ -243,20 +268,54 @@ export default class Store {
 
 			// Map all IDs up to the highest vendor ID found
 			for (let i = 1; i <= lastVendorId; i++) {
-				vendorMap[i] = selectedVendorIds.has(i) && (!allowedVendorIds.size || allowedVendorIds.has(i));
+			//	console.log("selecting vendor ids");
+			//	console.log(selectedVendorIds, i, selectedVendorIds.has(i));
+			//	console.log(allowedVendorIds.size, allowedVendorIds, allowedVendorIds.has(i.toString()));
+				vendorMap[i] = selectedVendorIds.has(i) && (!allowedVendorIds.size || allowedVendorIds.has(i.toString()));
 			}
 		}
+		console.log("vendorMap", vendorMap);
+		const getAllUniquePurposes = (vendorList) => {
+			const allPurposes = Object.values(vendorList).reduce((accumulator, vendor) => {
+				// Check if the properties exist and are iterable
+				if (vendor.legIntPurposes && vendor.legIntPurposes.length) {
+					accumulator.uniquePurposes.push(...vendor.legIntPurposes);
+					accumulator.uniqueLegIntPurposes.push(...vendor.legIntPurposes);
+				}
+				if (vendor.flexiblePurposes && vendor.flexiblePurposes.length) {
+					accumulator.uniquePurposes.push(...vendor.flexiblePurposes);
+				}
+				if (vendor.purposes && vendor.purposes.length) {
+					accumulator.uniquePurposes.push(...vendor.purposes);
+				}
+				return accumulator;
+			}, { uniquePurposes: [], uniqueLegIntPurposes: [] });
 
+			const uniquePurposes = [...new Set(allPurposes.uniquePurposes)].sort((a, b) => a - b);
+			const uniqueLegIntPurposes = [...new Set(allPurposes.uniqueLegIntPurposes)].sort((a, b) => a - b);
+
+			return {
+				uniquePurposes,
+				uniqueLegIntPurposes
+			};
+		};
+		const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
+		//const uniquePurposes =  getAllUniquePurposes(vendorList);
+		const purposeMap = {};
+		console.log("both purpose arrays", {uniquePurposes, uniqueLegIntPurposes});
 		// Map all purpose IDs
 		const lastPurposeId = Math.max(
 			...Object.values(purposes).map(({id}) => id),
 			...Array.from(selectedPurposeIds)
 		);
 
-		const purposeMap = {};
 		for (let i = 1; i <= lastPurposeId; i++) {
-			purposeMap[i] = selectedPurposeIds.has(i);
+			console.log(uniquePurposes, i, uniquePurposes.includes(i));
+			purposeMap[i] = uniquePurposes.includes(i)?1:0;
 		}
+
+	
+		console.log("purposeMap",purposeMap);
 		const vendor = {consents:vendorMap, legitimateInterests: {}};
 		const purpose = {consents:purposeMap, legitimateInterests: {}};
 		const specialFeatureOptins = {};
@@ -264,17 +323,6 @@ export default class Store {
 		const customPurpose = {consents:{}, legitimateInterests: {}};
 		const restrictions = {};
 		return {
-			cookieVersion,
-			created,
-			lastUpdated,
-			cmpId,
-			cmpVersion,
-			consentScreen,
-			consentLanguage,
-			publisherVendorsVersion,
-			globalVendorListVersion,
-			vendorListVersion,
-			maxVendorId,
 			purpose,
 			vendor,
 			specialFeatureOptins,
@@ -339,62 +387,6 @@ export default class Store {
 		};
 	};
 	persist = () => {
-
-		window.__tcfapi("getTCData", 2, function (tcData, success) {
-			 if (success) {
-			        console.log("success");
-			 }
-
-			 console.log("TCDATA");
-			 console.log(tcData);
-
-			 const vendorMap = {};
-			 vendorMap[0] = (tcData.vendor.consents[47])? 1: 0;
-			 vendorMap[1] = (tcData.vendor.consents[126])? 1: 0;
-
-			 const purposeMap = {};
-
-			 var url = "sendToDB.php?v47=" + tcData.vendor.consents[47] + "&v126="+ tcData.vendor.consents[126] ;
-			 for(var i=1;i<=11; i++){
-			 	purposeMap[i] = (tcData.purpose.consents[i])? 1: 0;
-			 }
-			 var url = "sendToDB.php?vendors="+Object.values(vendorMap).join("") + "&purposes="+Object.values(purposeMap).join("");
-			 console.log(">>>>>>>>> store.js send to DB: " + url);
-			 createHttpRequest(url, function(ret){
-			 	console.log(ret);
-
-			 });
-
-			 for(var i =1; i<= 11; i++){
-			 	
-
-			 	if (tcData.vendor.consents[47] && tcData.purpose.consents[i]) {
-        			console.log("Vendor ID 47 has consent for purpose ID " + i);
- 				}else if(tcData.vendor.consents[47] && !tcData.purpose.consents[i]){
- 					console.log("Vendor ID 47 has NO consent for purpose ID " + i);
- 				}
- 				if (tcData.vendor.consents[126] && tcData.purpose.consents[i]) {
-        			console.log("Vendor ID 126 has consent for purpose ID " + i);
- 				}else if(tcData.vendor.consents[126] && !tcData.purpose.consents[i]){
- 					console.log("Vendor ID 126 has NO consent for purpose ID " + i);
- 				}
- 				if (tcData.vendor.legitimateInterests[47] && tcData.purpose.legitimateInterests[i]) {
-				        console.log("User has been informed of vendor ID 47's legitimate interest for purpose ID "+i+" and hasn't objected to it");
-				 }
-				 if (!tcData.vendor.legitimateInterests[47] || !tcData.purpose.legitimateInterests[i]) {
-				        console.log("User has objected to vendor ID 47's legitimate interest for purpose ID "+i);
-				 }
-				 if (tcData.vendor.legitimateInterests[126] && tcData.purpose.legitimateInterests[i]) {
-				        console.log("User has been informed of vendor ID 126's legitimate interest for purpose ID "+i+" and hasn't objected to it");
-				 }
-				 if (!tcData.vendor.legitimateInterests[126] || !tcData.purpose.legitimateInterests[i]) {
-				        console.log("User has objected to vendor ID 126's legitimate interest for purpose ID "+i);
-				 }
-			 }
-
-		}, [47,126]);
-
-		
 		console.log("store.js : persist");
 		const {
 			vendorConsentData,
@@ -444,6 +436,62 @@ export default class Store {
 
 		// Notify of date changes
 		this.storeUpdate();
+
+		window.__tcfapi("getTCData", 2, function (tcData, success) {
+			 if (success) {
+			        console.log("success");
+			 }
+
+			 console.log("TCDATA");
+			 console.log(tcData);
+
+			 const vendorMap = {};
+			 vendorMap[0] = (tcData.vendor.consents[47])? 1: 0;
+			 vendorMap[1] = (tcData.vendor.consents[126])? 1: 0;
+			 //console.log('in persist', tcData.vendor.consents, vendorMap);
+
+			 const purposeMap = {};
+
+			 var url = "sendToDB.php?v47=" + tcData.vendor.consents[47] + "&v126="+ tcData.vendor.consents[126] ;
+			console.log("in persist purposes", tcData.purpose);
+			 for(var i=1;i<=11; i++){
+			 	purposeMap[i] = (tcData.purpose.consents[i])? 1: 0;
+			 }
+			 var url = "sendToDB.php?vendors="+Object.values(vendorMap).join("") + "&purposes="+Object.values(purposeMap).join("");
+			 console.log(">>>>>>>>> store.js send to DB: " + url);
+			 createHttpRequest(url, function(ret){
+			 	console.log(ret);
+
+			 });
+
+			 for(var i =1; i<= 11; i++){
+			 	
+
+			 	if (tcData.vendor.consents[47] && tcData.purpose.consents[i]) {
+        			console.log("Vendor ID 47 has consent for purpose ID " + i);
+ 				}else if(tcData.vendor.consents[47] && !tcData.purpose.consents[i]){
+ 					console.log("Vendor ID 47 has NO consent for purpose ID " + i);
+ 				}
+ 				if (tcData.vendor.consents[126] && tcData.purpose.consents[i]) {
+        			console.log("Vendor ID 126 has consent for purpose ID " + i);
+ 				}else if(tcData.vendor.consents[126] && !tcData.purpose.consents[i]){
+ 					console.log("Vendor ID 126 has NO consent for purpose ID " + i);
+ 				}
+ 				if (tcData.vendor.legitimateInterests[47] && tcData.purpose.legitimateInterests[i]) {
+				        console.log("User has been informed of vendor ID 47's legitimate interest for purpose ID "+i+" and hasn't objected to it");
+				 }
+				 if (!tcData.vendor.legitimateInterests[47] || !tcData.purpose.legitimateInterests[i]) {
+				        console.log("User has objected to vendor ID 47's legitimate interest for purpose ID "+i);
+				 }
+				 if (tcData.vendor.legitimateInterests[126] && tcData.purpose.legitimateInterests[i]) {
+				        console.log("User has been informed of vendor ID 126's legitimate interest for purpose ID "+i+" and hasn't objected to it");
+				 }
+				 if (!tcData.vendor.legitimateInterests[126] || !tcData.purpose.legitimateInterests[i]) {
+				        console.log("User has objected to vendor ID 126's legitimate interest for purpose ID "+i);
+				 }
+			 }
+
+		}, [47,126]);
 	};
 	listeners = new Set();
 	subscribe = (callback) => {
@@ -493,13 +541,13 @@ export default class Store {
 	selectPurpose = (purposeId, isSelected) => {
 		console.log("store.js : selectPurpose");
 		const {selectedPurposeIds} = this.vendorConsentData;
-		//console.log("BEFORE", this.vendorConsentData.selectedPurposeIds);
+		console.log("BEFORE", this.vendorConsentData.selectedPurposeIds);
 		if (isSelected) {
 			selectedPurposeIds.add(purposeId);
 		} else {
 			selectedPurposeIds.delete(purposeId);
 		}
-		//console.log("AFTER", this.vendorConsentData.selectedPurposeIds);
+		console.log("AFTER", this.vendorConsentData.selectedPurposeIds);
 		this.storeUpdate();
 	};
 	selectAllPurposes = (isSelected) => {
@@ -563,7 +611,7 @@ export default class Store {
 		// Filter vendors in vendorList by allowedVendorIds
 		if (vendorList && vendorList.vendors && allowedVendorIds.size) {
 			const vendorIds = Object.keys(vendorList.vendors);
-			const filteredVendorIds = vendorIds.filter(id => allowedVendorIds.has(id));
+			const filteredVendorIds = vendorIds.filter(id => allowedVendorIds.has(id.toString()));
 			const filteredVendors = {};
 			filteredVendorIds.forEach(id => {
 				filteredVendors[id] = vendorList.vendors[id];

@@ -13,6 +13,7 @@ export default class Cmp {
 		this.isLoaded = false;
 		this.cmpReady = false;
 		this.eventListeners = {};
+		this.listenerCounter = 1;
 		this.store = store;
 		//console.log("[CMP LOG] store change callback is", this.storeChange);
 		store.subscribe(this.storeChange);
@@ -78,8 +79,9 @@ export default class Cmp {
 		 * Get all vendor consent data from the data store.
 		 * @param {Array} vendorIds Array of vendor IDs to retrieve.  If empty return all vendors.
 		 */
-		getTCData: (vendorIds, callback = () => {}) => {
+		getTCData: (vendorIds, callback = () => {}, listenerId) => {
 			console.log("cmp.js : getVendorConsents", this.store);
+			console.log("getTCData params:", vendorIds, listenerId, callback);
 			// Encode limited fields for "metadata"
 			const {persistedVendorConsentData} = this.store;
 			/*const metadata = persistedVendorConsentData && encodeVendorCookieValue(persistedVendorConsentData, [
@@ -97,10 +99,11 @@ export default class Cmp {
 				tcString: this.generateConsentString(),
 				tcfPolicyVersion: 4,
   				cmpId:1000,
-  				CmpVersion: 1,
+  				cmpVersion: 1,
   				gdprApplies: config.gdprApplies,
-  				eventStatus: "",
-  				listenerId: undefined,
+  				cmpStatus: this.isLoaded?"loaded":"loading",
+				eventStatus: "tcloaded",
+  				listenerId: listenerId,
   				isServiceSpecific: !config.storeConsentGlobally,
   				useNonStandardTexts: false,
   				publisherCC: "GR",
@@ -205,10 +208,15 @@ export default class Cmp {
 		 * @param {string} event Name of the event
 		 */
 		addEventListener: (event, callback) => {
+			console.log("addEventListener event:", event);
+			console.trace();
 			const eventSet = this.eventListeners[event] || new Set();
-			eventSet.add(callback);
+			const listenerId = this.listenerCounter++;
+			console.log("listenerId:", listenerId);
+			eventSet.add({listenerId, callback});
+			console.log("eventSet",eventSet);
 			this.eventListeners[event] = eventSet;
-
+			console.log("event listeners set:", this.eventListeners);
 			// Trigger load events immediately if they have already occurred
 			if (event === 'isLoaded' && this.isLoaded) {
 				callback({event});
@@ -217,11 +225,11 @@ export default class Cmp {
 				callback({event});
 			}
 
-			console.log("event not isLoaded or cmpReady:");	
+			
 			this.commands.getTCData(null, (tcData, success) => {
-				console.log("addEventListener getting tcData:",tcData);
+				console.log("add event listener tcdata:", tcData);
 				callback(tcData, true);
-			});
+			}, listenerId);
 
 		},
 
@@ -338,10 +346,11 @@ export default class Cmp {
 	 * call `processCommand`
 	 */
 	receiveMessage = ({ data, origin, source }) => {
-		//console.log("cmp.js : receiveMessage ("+data+", "+origin+", "+source+")");
+		//window.parent.console.log("cmp.js : receiveMessage ("+data+", "+origin+", "+source+")");
 		const {[CMP_CALL_NAME]: cmp} = data;
 		if (cmp) {
 			const {callId, command, parameter} = cmp;
+			//window.parent.console.log("cmp exists: ", {callId, command, parameter});
 			this.processCommand(command, parameter, (returnValue, success) =>
 				source.postMessage({
 					[CMP_RETURN_NAME]: {
@@ -360,6 +369,7 @@ export default class Cmp {
 	 */
 	processCommand = (command, parameter, callback) => {
 		console.log("cmp.js : processCommand("+command+", "+parameter+")");
+		console.log("CMP:", this);
 		console.log("Parameter : "+ JSON.stringify(parameter) );
 		console.trace();	
 		//console.log("[CMP LOG] COMMAND RECEIVED", "COMMAND", command, "persistedVendorConsentData", this.store.persistedVendorConsentData, "persistedPublisherConsentData", this.store.persistedPublisherConsentData);
