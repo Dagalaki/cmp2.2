@@ -250,10 +250,10 @@ function encodeDataToBits(data, definitionMap, includeFields) {
 			PurposesLITransparency: generateLitTransparencyString(data),
 			PurposesOneTreatment: 0,
 			PublisherCC: "GR",
-			MaxVendorId: data.maxVendorId,
+			MaxVendorId: data.MaxVendorId,
 			IsRangeEncoding: 0,
 			BitField: data.vendorIdBitString,
-			MaxVendorIdL: data.maxVendorId,
+			MaxVendorIdL: data.MaxVendorId,
 			IsRangeEncodingL: 0,
 			BitFieldL: data.vendorIdBitString,
 			NumPubRstrictions: 0
