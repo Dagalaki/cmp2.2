@@ -95,6 +95,11 @@ export default class Popup extends Component {
 
 		console.log("popup.jsx handleKeyPress : " + global.config.focusObject);
 
+		if(global.config.focusObject == "details"){
+			global.config.detailsRef.handleKeyPress(key);
+			return true;
+		}
+
 		if(global.config.focusObject == "summary"){
 			global.config.summaryRef.handleKeyPress(key);
 			return true;

@@ -41,24 +41,28 @@ export default class Details extends Component {
 	
 	constructor(props) {
 		super(props);
-		this.focusedId = 1;	
+		this.focusedId = 2;	
+		this.buttons = [];
 	}
 
 	setFocused = (focus) =>{
-		if(this.focusedId == 0){
-				document.getElementById("_back").style.color = "blue";
-				document.getElementById("_save").style.color = "white";
-		}else if(this.focusedId == 1){
-			document.getElementById("_back").style.color = "white";
-			document.getElementById("_save").style.color = "blue";
-		} 
+
+		for(var i = 0; i< this.buttons.length; i++){
+			if(focus){
+				console.log(this.buttons[i].id);
+				if(i == this.focusedId) document.getElementById(this.buttons[i].id).style.color = "blue";
+				else document.getElementById(this.buttons[i].id).style.color = "white";
+			}else document.getElementById(this.buttons[i].id).style.color = "white";
+		}
+
 	}	
 
 	handleKeyPress = (key) =>{
+	console.log("details.jsx " + key);
 		switch(key){
 			case VK_RIGHT:
 				this.focusedId++;
-				if(this.focusedId > 1) this.focusedId = 1;
+				if(this.focusedId > this.buttons.length-1) this.focusedId = this.buttons.length-1;
 				this.setFocused(true);
 				break;
 			case VK_LEFT:
@@ -66,18 +70,33 @@ export default class Details extends Component {
 				if(this.focusedId < 0 ) this.focusedId = 0;
 				this.setFocused(true);
 				break;
+			case VK_UP:
+				global.config.focusObject = "summary";
+				global.config.summaryRef.setFocused(true);
+				break;
+			case VK_DOWN:
+				break;
+			case VK_ENTER:
+				break;
+
 			default:
 				break;
 		}
 	}
 
 	handleButtonClick= () =>{
-		if(this.focusedId == 0){
+		if(this.focusedId == 3){
 			console.log("details.jsx handleButtonClick handleBack");
 			this.handleBack();
-		}else if(this.focusedId == 1){
+		}else if(this.focusedId == 2){
 			console.log("details.jsx handleButtonClick props onSave");
 			this.props.onSave();
+		}else if(this.focusedId == 0){
+			console.log("must implement deny all");
+			this.props.denyAll();
+		}else if (this.focusedId == 1){
+			console.log("must implement accept all");
+			this.props.acceptAll();
 		}
 	}
 
@@ -185,6 +204,14 @@ export default class Details extends Component {
     		})
 			.sort(({ name: n1 }, { name: n2 }) => n1.toLowerCase() === n2.toLowerCase() ? 0 : n1.toLowerCase() > n2.toLowerCase() ? 1 : -1);
 
+		
+		this.buttons[0] = {id:"_denyall", active:true};
+		this.buttons[1] = {id:"_acceptall", active:true};
+		this.buttons[2] = {id:"_save", active:true};
+		/*this.buttons[3] = {id:"_back", active:false};
+*/
+
+
 		return (
 			
 			<div
@@ -250,6 +277,22 @@ export default class Details extends Component {
 						textColor={secondaryTextColor}
 					>&lt; <LocalLabel localizeKey='back'></LocalLabel></Button>
 					}
+					
+					<Button id={"_denyall"}
+						class={style.save}
+						onClick={this.handleDenyAll}
+						backgroundColor={secondaryColor}
+						textColor={secondaryTextColor}
+					><LocalLabel localizeKey='denyall'></LocalLabel></Button>
+					
+					<Button id={"_acceptall"}
+						class={style.save}
+						onClick={this.handleAcceptAll}
+						backgroundColor={secondaryColor}
+						textColor={secondaryTextColor}
+					><LocalLabel localizeKey='acceptall'></LocalLabel></Button>
+					
+					
 					<Button id={"_save"}
 						class={style.save}
 						onClick={onSave}

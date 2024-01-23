@@ -529,6 +529,30 @@ export default class Store {
 		}
 		this.storeUpdate();
 	};
+
+	selectPurposeLegInt = (legIntId, isSelected) => {
+		const {selectedPurposeLegIntIds} = this.vendorConsentData;
+		console.log("selectPurposeLegIntIds: ");
+		console.log(selectedPurposeLegIntIds);
+		if (isSelected) {
+			selectedPurposeLegIntIds.add(legIntId);
+		} else {
+			selectedPurposeLegIntIds.delete(legIntId);
+		}
+		this.storeUpdate();
+	}
+
+	selectPurposeConsent = (consentId, isSelected) => {
+		const {selectedPurposeConsentIds} = this.vendorConsentData;
+		console.log("selectPurposeConsentIds: " + selectedPurposeConsentIds);
+		if (isSelected) {
+			selectedPurposeConsentIds.add(consentId);
+		} else {
+			selectedPurposeConsentIds.delete(consentId);
+		}
+		this.storeUpdate();
+	}
+
 	selectAllPurposesAndVendors = (state) => {
 		console.log("store.js : selectAllPurposesAndVendors");
 		this.selectAllPurposes(state);
@@ -649,10 +673,17 @@ export default class Store {
 			console.log("selectedPurposeIds",this.vendorConsentData.selectedPurposeIds);
 			const vendorsArray = Object.values(vendors);
 			this.vendorConsentData.selectedVendorIds = new Set(vendorsArray.map(v => v.id));
+			this.vendorConsentData.selectedPurposeLegIntIds = new Set(purposesArray.map(p => p.id));
+			this.vendorConsentData.selectedPurposeConsentIds = new Set(purposesArray.map(p => p.id));
+			
 			console.log(this.vendorConsentData.selectedVendorIds);
 		}
 
-		const {selectedVendorIds = new Set(), selectedPurposeIds = new Set()} = this.vendorConsentData;
+
+		const {selectedVendorIds = new Set()} = this.vendorConsentData;
+		const {selectedPurposeLegIntIds = new Set()} = this.vendorConsentData;
+		const {selectedPurposeConsentIds = new Set()} = this.vendorConsentData;
+
 
 		// Find the maxVendorId out of the vendor list and selectedVendorIds
 		this.vendorConsentData.maxVendorId = Math.max(maxVendorId,
