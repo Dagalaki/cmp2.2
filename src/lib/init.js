@@ -30,6 +30,7 @@ export function init(configUpdates) {
 		fetchPubVendorList()
 	])
 		.then(([vendorConsentData, pubVendorsList]) => {
+			console.log("INIT VENDOR CONSENT",vendorConsentData);
 			const {vendors} = pubVendorsList || {};
                                 
 			// Check config for allowedVendorIds then the pubVendorList
@@ -49,7 +50,7 @@ export function init(configUpdates) {
 				pubVendorsList,
 				allowedVendorIds
 			});
-			console.log("[CMP LOG] VENDOR CONSENT DATA", vendorConsentData);
+			console.log("init.js [CMP LOG] VENDOR CONSENT DATA", vendorConsentData);
 			// Pull queued command from __tcfapi stub
 			const {commandQueue = []} = window[CMP_GLOBAL_NAME] || {};
 
@@ -60,7 +61,7 @@ export function init(configUpdates) {
 			window[CMP_GLOBAL_NAME] = cmp.processCommand;
 
 			// Notify listeners that the CMP is loaded
-			log.debug(`Successfully loaded CMP version: ${pack.version} in ${Date.now() - startTime}ms`);
+			console.log(`init.js Successfully loaded CMP version: ${pack.version} in ${Date.now() - startTime}ms`);
 			cmp.isLoaded = true;
 			cmp.notify('isLoaded');
 
@@ -72,7 +73,7 @@ export function init(configUpdates) {
 			// Execute any previously queued command
 			cmp.commandQueue = commandQueue;
 			cmp.processCommandQueue();
-
+			console.log("init.js before fetching gvl");
 			// Request lists
 			return Promise.all([
 				fetchGlobalVendorList().then(store.updateVendorList),

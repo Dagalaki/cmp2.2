@@ -255,8 +255,9 @@ export default class Store {
 
 		// Map requested vendorIds
 		const vendorMap = {};
+		const legIntVendorMap = {};
 		if (vendorIds && vendorIds.length) {
-			vendorIds.forEach(id => vendorMap[id] = selectedVendorIds.has(id) && (!allowedVendorIds.size || allowedVendorIds.has(id.toString())));
+			vendorIds.forEach(id => vendorMap[id] = selectedVendorIds.has(id) && (!allowedVendorIds.size || allowedVendorIds.has(id.toString()))?1:0);
 		} else {
 			// In case the vendor list has not been loaded yet find the highest
 			// vendor ID to map any consent data we already have
@@ -268,35 +269,44 @@ export default class Store {
 
 			// Map all IDs up to the highest vendor ID found
 			for (let i = 1; i <= lastVendorId; i++) {
+				var vend = vendors[i];
+				if(i == 47) console.log("VENDORRRRR", vend);
 			//	console.log("selecting vendor ids");
 			//	console.log(selectedVendorIds, i, selectedVendorIds.has(i));
 			//	console.log(allowedVendorIds.size, allowedVendorIds, allowedVendorIds.has(i.toString()));
 				vendorMap[i] = selectedVendorIds.has(i) && (!allowedVendorIds.size || allowedVendorIds.has(i.toString()));
+				legIntVendorMap[i] = vend && vendorMap[i] && vend.legIntPurposes && vend.legIntPurposes.length > 0;
 			}
 		}
-		console.log("vendorMap", vendorMap);
+		console.log("vendorMap", vendorMap, "legint", legIntVendorMap);
 		const getAllUniquePurposes = (vendorList) => {
-			const allPurposes = Object.values(vendorList).reduce((accumulator, vendor) => {
-				// Check if the properties exist and are iterable
+			const uniquePurposes = [];
+			const uniqueLegIntPurposes = [];
+
+			Object.values(vendorList.vendors).forEach((vendor) => {
+				console.log("vendor", vendor);
 				if (vendor.legIntPurposes && vendor.legIntPurposes.length) {
-					accumulator.uniquePurposes.push(...vendor.legIntPurposes);
-					accumulator.uniqueLegIntPurposes.push(...vendor.legIntPurposes);
+					console.log("legint", vendor.legIntPurposes);
+					uniquePurposes.push(...vendor.legIntPurposes);
+					uniqueLegIntPurposes.push(...vendor.legIntPurposes);
 				}
 				if (vendor.flexiblePurposes && vendor.flexiblePurposes.length) {
-					accumulator.uniquePurposes.push(...vendor.flexiblePurposes);
+					console.log("flex", vendor.flexiblePurposes);
+					uniquePurposes.push(...vendor.flexiblePurposes);
 				}
 				if (vendor.purposes && vendor.purposes.length) {
-					accumulator.uniquePurposes.push(...vendor.purposes);
+					console.log("normal", vendor.purposes);
+					uniquePurposes.push(...vendor.purposes);
 				}
-				return accumulator;
-			}, { uniquePurposes: [], uniqueLegIntPurposes: [] });
+			});
 
-			const uniquePurposes = [...new Set(allPurposes.uniquePurposes)].sort((a, b) => a - b);
-			const uniqueLegIntPurposes = [...new Set(allPurposes.uniqueLegIntPurposes)].sort((a, b) => a - b);
+			// Deduplicate and sort the arrays
+			const sortedUniquePurposes = [...new Set(uniquePurposes)].sort((a, b) => a - b);
+			const sortedUniqueLegIntPurposes = [...new Set(uniqueLegIntPurposes)].sort((a, b) => a - b);
 
 			return {
-				uniquePurposes,
-				uniqueLegIntPurposes
+				uniquePurposes: sortedUniquePurposes,
+				uniqueLegIntPurposes: sortedUniqueLegIntPurposes
 			};
 		};
 		const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
@@ -311,16 +321,19 @@ export default class Store {
 
 		for (let i = 1; i <= lastPurposeId; i++) {
 			console.log(uniquePurposes, i, uniquePurposes.includes(i));
-			purposeMap[i] = uniquePurposes.includes(i)?1:0;
+			purposeMap[i] = uniquePurposes.includes(i);
 		}
-
+		const legIntMap = {};
+		for (let i = 1; i <=lastPurposeId; i++) {
+			legIntMap[i] = uniqueLegIntPurposes.includes(i);
+		}
 	
 		console.log("purposeMap",purposeMap);
-		const vendor = {consents:vendorMap, legitimateInterests: {}};
-		const purpose = {consents:purposeMap, legitimateInterests: {}};
+		const vendor = {consents:vendorMap, legitimateInterests: legIntVendorMap};
+		const purpose = {consents:purposeMap, legitimateInterests: legIntMap};
 		const specialFeatureOptins = {};
-		const publisher = {consents: {}, legitimateInterests: {}};
-		const customPurpose = {consents:{}, legitimateInterests: {}};
+		const publisher = {consents: {}, legitimateInterests: legIntMap};
+		const customPurpose = {consents:{}, legitimateInterests: legIntMap};
 		const restrictions = {};
 		return {
 			purpose,
@@ -597,7 +610,7 @@ export default class Store {
 		this.storeUpdate();
 	};
 	updateVendorList = vendorList => {
-		console.log("store.js : updateVendorList");
+		console.log("store.js : updateVendorList", vendorList);
 		//console.log("[CMP LOG] updateVendorList");
 		const {
 			allowedVendorIds
@@ -605,7 +618,8 @@ export default class Store {
 
 		const {
 			created,
-			maxVendorId = 0
+			maxVendorId = 0,
+			selctedPurposeIds
 		} = this.vendorConsentData;
 
 		// Filter vendors in vendorList by allowedVendorIds
@@ -619,35 +633,59 @@ export default class Store {
 			vendorList.vendors = filteredVendors;
 			//vendorList.vendors = vendorList.vendors.filter(({id}) => allowedVendorIds.has(id));
 		}
+		this.vendorList = vendorList;
 
 		const {
 			vendors = [],
 			purposes = {},
+			specialPurposes = {}
 		} = vendorList || {};
 
 		const purposesArray = Object.values(purposes);
-		console.log("WHAT");
-		console.log("PURPOSES IN STORE", purposes);
-		console.log("PURPOSESARRAY IN STORE", purposesArray);
 		// If vendor consent data has never been persisted set default selected status
+		console.log("purposes array:",purposesArray);
 		if (!created) {
 			this.vendorConsentData.selectedPurposeIds = new Set(purposesArray.map(p => p.id));
-			console.log(this.vendorConsentData.selectedPurposeIds);
+			console.log("selectedPurposeIds",this.vendorConsentData.selectedPurposeIds);
 			const vendorsArray = Object.values(vendors);
 			this.vendorConsentData.selectedVendorIds = new Set(vendorsArray.map(v => v.id));
 			console.log(this.vendorConsentData.selectedVendorIds);
 		}
 
-		const {selectedVendorIds = new Set()} = this.vendorConsentData;
+		const {selectedVendorIds = new Set(), selectedPurposeIds = new Set()} = this.vendorConsentData;
 
 		// Find the maxVendorId out of the vendor list and selectedVendorIds
 		this.vendorConsentData.maxVendorId = Math.max(maxVendorId,
 			...Object.values(vendors).map(({id}) => id),
 			...Array.from(selectedVendorIds)
 		);
-		console.log(this.vendorConsentData);
-		this.vendorList = vendorList;
-		this.storeUpdate();
+		console.log("max vendor id", this.vendorConsentData.maxVendorId);
+		console.log("selectedVendorIds", selectedVendorIds);
+		// Update selectedPurposeIds based on specialPurposes
+		selectedVendorIds.forEach(vendorId => {
+			const vendor = vendors[vendorId];
+			console.log("Vendor:", vendor);
+
+			if (vendor && vendor.specialPurposes && Array.isArray(vendor.specialPurposes)) {
+				console.log("Vendor specialPurposes:", vendor.specialPurposes);
+
+				for (let i = 0; i < vendor.specialPurposes.length; i++) {
+					const specialPurposeId = vendor.specialPurposes[i];
+					console.log("Checking specialPurposeId:", specialPurposeId);
+					console.log("selectedPurposeIds",selectedPurposeIds/*, selectedPurposeIds.has(specialPurposeId)*/);
+					if (!selectedPurposeIds.has(specialPurposeId)) {
+						console.log("selcted purpose ids does NOT have "+specialPurposeId);
+						selectedPurposeIds.add(specialPurposeId);
+						console.log("Added specialPurposeId:", specialPurposeId);
+					} else {
+						console.log("specialPurposeId already in selectedPurposeIds:", specialPurposeId);
+					}
+				}
+			}
+		});
+
+		console.log("UPDATED VENDOR DATA",this.vendorConsentData);
+				this.storeUpdate();
 	};
 	updateCustomPurposeList = customPurposeList => {
 		console.log("store.js : updateCustomPurposeList");

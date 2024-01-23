@@ -15,6 +15,16 @@ export default {
 		{ name: 'SpecialFeatureOptIns', type: 'bits', numBits: 12 },
 		{ name: 'PurposesConsent', type: 'bits', numBits: 24 },
 		{ name: 'PurposesLITransparency', type: 'bits', numBits: 24 },
+		{ name: 'PurposeOneTreatment', type: 'bits', numBits: 1 },
+		{ name: 'PublisherCC', type: '6bitchar', numBits: 12 },
+		{ name: 'MaxVendorId', type: 'int', numBits: 16 },
+		{ name: 'IsRangeEncoding', type: 'bits', numBits: 1 },
+		{ name: 'BitField', type: 'bits', numBits: (decodedObject) => decodedObject.MaxVendorId },
+		{ name: 'MaxVendorIdL', type: 'int', numBits: 16 },
+		{ name: 'IsRangeEncodingL', type: 'bits', numBits: 1 },
+		{ name: 'BitFieldL', type: 'bits', numBits: (decodedObject) => decodedObject.MaxVendorIdL },
+
+		{ name: 'NumPubRestrictions', type: 'int', numBits: 12 }
 		/*{ name: 'publisherPurposeVersion', type: 'int', numBits: 12 },
 		{ name: 'standardPurposeIdBitString', type: 'bits', numBits: 24 },
 		{ name: 'numCustomPurposes', type: 'int', numBits: 6 },

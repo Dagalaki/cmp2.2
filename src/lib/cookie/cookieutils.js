@@ -4,7 +4,7 @@ import {
 	vendorVersionMap,
 	publisherVersionMap
 } from './definitions';
-
+console.log("vendorVersionMap", vendorVersionMap);
 const SIX_BIT_ASCII_OFFSET = 65;
 
 function repeat(count, string='0') {
@@ -132,7 +132,9 @@ function encodeField({ input, field }) {
 
 function encodeFields({ input, fields }) {
 	return fields.reduce((acc, field) => {
+		console.log("encodeFields", acc, input, field);
 		var addition = encodeField({ input, field });
+		console.log("addition:",addition);
 		acc += addition;
 		//acc += encodeField({ input, field });
 		//console.log("encodeFields:",{input, fields}, addition);
@@ -229,26 +231,35 @@ function encodeDataToBits(data, definitionMap, includeFields) {
 		console.error(`Could not find definition to encode cookie version ${cookieVersion}`);
 	}
 	else {
-		//console.log('originalData', data);
+		console.log('originalData', data);
 		let cookieFields = definitionMap[cookieVersion].fields;
 		const renamedData = {
-			Version:data.cookieVersion,
+			Version: data.cookieVersion,
 			Created: data.created,
-			LastUpdated:data.lastUpdated,
-			CmpId:data.cmpId,
-			CmpVersion:data.cmpVersion,
+			LastUpdated: data.lastUpdated,
+			CmpId: data.cmpId,
+			CmpVersion: data.cmpVersion,
 			ConsentLanguage: data.consentLanguage,
 			ConsentScreen: 1,
 			VendorListVersion: data.vendorListVersion,
 			TcfPolicyVersion: 4,
-			IsServiceSpecific: data.isRange?1:0,
+			IsServiceSpecific: 0,
 			UseNonStandardTexts: 0,
 			SpecialFeatureOptIns: "111111111111",
 			PurposesConsent: data.purposeIdBitString,
-			PurposesLITransparency: data.purposeIdBitString
+			PurposesLITransparency: generateLitTransparencyString(data),
+			PurposesOneTreatment: 0,
+			PublisherCC: "GR",
+			MaxVendorId: data.maxVendorId,
+			IsRangeEncoding: 0,
+			BitField: data.vendorIdBitString,
+			MaxVendorIdL: data.maxVendorId,
+			IsRangeEncodingL: 0,
+			BitFieldL: data.vendorIdBitString,
+			NumPubRstrictions: 0
 		}
 		
-		//console.log('renamedData',renamedData);
+		console.log('renamedData',renamedData);
 		//console.log("cookieFields",cookieFields, includeFields);
 		// Filter the set of fields to encode if "includeFields" is provided
 		if (includeFields && includeFields instanceof Array) {
@@ -257,15 +268,39 @@ function encodeDataToBits(data, definitionMap, includeFields) {
 		return encodeFields({ input: renamedData, fields: cookieFields });
 	}
 }
+function generateLitTransparencyString(data) {
+  const { selectedVendorIds, vendorList } = data;
 
+  const purposes = vendorList.purposes || {}; // Assuming purposes is an object
+  const purposeIds = Object.keys(purposes);
+
+  const litTransparencyArray = purposeIds.map((purposeId) => {
+    const hasLitInterest = Array.from(selectedVendorIds).some((vendorId) => {
+      const vendor = vendorList.vendors[vendorId];
+      return vendor && vendor.legIntPurposes && vendor.legIntPurposes.includes(Number(purposeId));
+    });
+
+    return hasLitInterest ? '1' : '0';
+  });
+
+  console.log('Selected Vendor IDs:', selectedVendorIds);
+  console.log('Purposes:', purposes);
+  console.log('Lit Transparency Array:', litTransparencyArray);
+
+  const litTransparencyString = litTransparencyArray.join('');
+
+  console.log('Lit Transparency String:', litTransparencyString);
+
+  return litTransparencyString;
+}
 /**
  * Take all fields required to encode the cookie and produce the
  * URL safe Base64 encoded value.
  */
 function encodeCookieValue(data, definitionMap, includeFields) {
-	console.log("args:",data,definitionMap,includeFields);
+	console.log("args:",data,"DEFINITON MAP",definitionMap,includeFields);
 	const binaryValue = encodeDataToBits(data, definitionMap, includeFields);
-//	console.log("encoding -> binaryValue:",binaryValue);
+	console.log("encoding -> binaryValue:",binaryValue);
 	if (binaryValue) {
 
 		// Pad length to multiple of 8
@@ -280,6 +315,7 @@ function encodeCookieValue(data, definitionMap, includeFields) {
 		}
 
 		// Make base64 string URL friendly
+		console.log("BYTES",bytes);
 		return btoa(bytes)
 			.replace(/\+/g, '-')
 			.replace(/\//g, '_')

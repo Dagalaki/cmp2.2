@@ -20,16 +20,17 @@ const VENDOR_CONSENT_COOKIE_MAX_AGE = 33696000;
 
 
 function encodeVendorIdsToBits(maxVendorId, selectedVendorIds = new Set()) {
-	console.log("cookie.js : encodeVendorIdsToBits");
+	console.log("cookie.js : encodeVendorIdsToBits", maxVendorId, selectedVendorIds);
 	let vendorString = '';
 	for (let id = 1; id <= maxVendorId; id++) {
 		vendorString += (selectedVendorIds.has(id) ? '1' : '0');
 	}
+	console.log("encodeVendorIdsToBits:", vendorString);
 	return padRight(vendorString, Math.max(0, maxVendorId - vendorString.length));
 }
 
 function encodePurposeIdsToBits(purposes, selectedPurposeIds = new Set()) {
-	console.log("cookie.js : encodePurposeIdsToBits");
+	console.log("cookie.js : encodePurposeIdsToBits",purposes, selectedPurposeIds);
 	const maxPurposeId = Math.max(0,
 		...Object.values(purposes).map(({id}) => id),
 		...Array.from(selectedPurposeIds));
@@ -77,17 +78,18 @@ function convertVendorsToRanges(maxVendorId, selectedIds) {
 
 function encodeVendorConsentData(vendorData) {
 	console.log("cookie.js : encodeVendorConsentData");
-	const {vendorList = {}, selectedPurposeIds, selectedVendorIds, maxVendorId} = vendorData;
+	console.trace();
+	const {vendorList = {}, selectedPurposeIds, selectedVendorIds, MaxVendorId} = vendorData;
 	console.log("vendorData",vendorData);
 	const {purposes = {}} = vendorList;
-
+	console.log("selectedVendorIds", selectedVendorIds, encodeVendorIdsToBits(MaxVendorId,selectedVendorIds));
 	// Encode the data with and without ranges and return the smallest encoded payload
 	const noRangesData = encodeVendorCookieValue({
 		...vendorData,
-		maxVendorId,
+		MaxVendorId,
 		purposeIdBitString: encodePurposeIdsToBits(Object.values(purposes), selectedPurposeIds),
 		isRange: false,
-		vendorIdBitString: encodeVendorIdsToBits(selectedVendorIds)
+		vendorIdBitString: encodeVendorIdsToBits(MaxVendorId,selectedVendorIds)
 	});
 
 //	const vendorRangeList = convertVendorsToRanges(maxVendorId, selectedVendorIds);
@@ -102,6 +104,7 @@ function encodeVendorConsentData(vendorData) {
 	});
 */
 //	return noRangesData.length < rangesData.length ? noRangesData : rangesData;
+	console.log("noRangesData",noRangesData);
 	return noRangesData;
 }
 function stringToBinary(string) {
@@ -233,6 +236,8 @@ function decodeVendorConsentData(cookieValue) {
 	  value: convertBinaryToObject(obj.bytes, obj.type),
 	}));
 	console.log("Objects Array Converted:", objectsArrayConverted);*/
+	let decodedCookie = decodeVendorCookieValue(cookieValue);
+	console.log("DECODED COOKIE", decodedCookie);
 	const {
 		Version,
 		CmpId,
@@ -247,23 +252,28 @@ function decodeVendorConsentData(cookieValue) {
 		PurposesLITransparency,
 		SpecialFeatureOptIns,
 		TcfPolicyVersion,
-		UseNonStandardTexts
-	} = decodeVendorCookieValue(cookieValue);
+		UseNonStandardTexts,
+	} = decodedCookie;
 	console.log("decoding cookie:", decodeVendorCookieValue(cookieValue));
 	console.log("purposeIdBitString",PurposesConsent);
 	const cookieData = {
-		cookieVersion: Version,
-		created: Created,
-		lastUpdated: LastUpdated,
-		cmpId: CmpId,
-		cmpVersion: CmpVersion,
-		consentScreen: ConsentScreen,
-		consentLanguage: ConsentLanguage,
-		vendorListVersion: VendorListVersion,
+		cookieVersion: decodedCookie.Version,
+		created: decodedCookie.Created,
+		lastUpdated: decodedCookie.LastUpdated,
+		cmpId: decodedCookie.CmpId,
+		cmpVersion: decodedCookie.CmpVersion,
+		consentScreen: decodedCookie.ConsentScreen,
+		consentLanguage: decodedCookie.ConsentLanguage,
+		vendorListVersion: decodedCookie.VendorListVersion,
 		PurposesConsent: decodeBitsToIds(PurposesConsent),
 		PurposesLITransparency: decodeBitsToIds(PurposesLITransparency),
-		SpeacialFeatureOptIns: decodeBitsToIds(SpecialFeatureOptIns)
-
+		SpeacialFeatureOptIns: decodeBitsToIds(SpecialFeatureOptIns),
+		VendorsConsent: decodeBitsToIds(decodedCookie.BitField),
+		//selectedVendorIds: decodeBitsToIds(decodedCookie.BitField), 
+		MaxVendorId: decodedCookie.MaxVendorId,
+		NumPubRestrictions: decodedCookie.NumPubRestrictions,
+		PublisherCC: decodedCookie.PublisherCC,
+		TcfPolicyVersion: decodedCookie.TcfPolicyVersion
 
 	};
 	console.log("data",cookieData);
@@ -285,9 +295,10 @@ function decodeVendorConsentData(cookieValue) {
 		}
 	}
 	else {
-		//cookieData.selectedVendorIds = decodeBitsToIds(vendorIdBitString);
+		cookieData.selectedVendorIds = cookieData.VendorsConsent;//decodeBitsToIds(decodedCookie.BitField);
+		cookieData.selectedPurposeIds = cookieData.PurposesConsent;
 	}
-
+	console.log("FINAL COOKIE DATA", cookieData);
 	return cookieData;
 }
 
@@ -338,7 +349,8 @@ function readCookie(name) {
 	console.log("cookie.js : readCookie");
 	const value = `; ${document.cookie}`;
 	const parts = value.split(`; ${name}=`);
-
+	console.log("readCookie value:",value);
+	console.log("readCookie parts:",parts);
 	if (parts.length === 2) {
 		return parts.pop().split(';').shift();
 	}

@@ -305,11 +305,14 @@ export default class Cmp {
 			selectedVendorIds = new Set(),
 			selectedPurposeIds = new Set()
 		} = persistedVendorConsentData || {};
-
+		console.log("persistedVendorConsentData",persistedVendorConsentData);
+		console.log("selectedVendorIds",selectedVendorIds);
+		console.log("selectedVendorIds2", Array.from(selectedVendorIds).filter(id => !allowedVendorIds.size || allowedVendorIds.has(id.toString())));
+		console.log("allowedVendorIds",allowedVendorIds);
 		// Encode the persisted data
 		return persistedVendorConsentData && encodeVendorConsentData({
 			...persistedVendorConsentData,
-			selectedVendorIds: new Set(Array.from(selectedVendorIds).filter(id => !allowedVendorIds.size || allowedVendorIds.has(id))),
+			selectedVendorIds: new Set(Array.from(selectedVendorIds).filter(id => !allowedVendorIds.size || allowedVendorIds.has(id.toString()))),
 			selectedPurposeIds: new Set(Array.from(selectedPurposeIds)),
 			vendorList
 		});
