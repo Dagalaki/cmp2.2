@@ -52,6 +52,9 @@ export default class Overview extends Component {
 		this.tabs = [];
 		this.activeTab = 0;
 		this.onTabs = true;
+		this.onConsents = false;
+		this.consentBtns = [];
+		this.activeConsent = 0;
 	}
 
 	static defaultProps = {
@@ -107,6 +110,47 @@ export default class Overview extends Component {
 		}
 	}
 
+	setFocusOnConsent = (focus) => {
+		console.log("focus on consent : " + this.activeConsent);
+		for(var i=0; i< this.consentBtns.length; i++){
+			if(focus){
+				//TODO
+			}
+		}
+	}
+
+	handleConsents = (key) => {
+		switch(key){
+			case VK_DOWN:
+				this.activeConsent++;
+				if(this.activeConsent > this.consentBtns.length -1) this.activeConsent = this.consentBtns.length-1;
+				this.setFocusOnConsent(true);
+				break;
+			case VK_UP:
+				this.activeConsent--;
+				if(this.activeConsent <0 ) this.activeConsent= 0;
+				this.setFocusOnConsent(true);
+				break;
+			case VK_LEFT:
+				var dataId = this.consentBtns[this.activeConsent].id;
+				var isSelected = true;
+				this.handleSelectPurposeConsent({dataId, isSelected: !isSelected});
+				break;
+			case VK_RIGHT:
+				var dataId = this.consentBtns[this.activeConsent].id;
+				var isSelected = false;
+				this.handleSelectPurposeConsent({dataId, isSelected: !isSelected});
+				break;
+			case VK_ENTER:
+				var dataId = this.consentBtns[this.activeConsent].id;
+				var isSelected = false;
+				this.handleSelectPurposeConsent({dataId, isSelected: !isSelected});
+				break;
+			default:
+				break;
+		}
+	}
+
 	handleTabs = (key) => {
 		switch(key){
 			case VK_RIGHT:
@@ -128,6 +172,8 @@ export default class Overview extends Component {
 				break;
 			case VK_DOWN:
 				//must handle consents ... should create consents.jsx
+				this.onConsents=true;
+				this.onTabs = false;
 				break;
 			default:
 				break;
@@ -138,6 +184,11 @@ export default class Overview extends Component {
 
 		if(this.onTabs){
 			this.handleTabs(key);
+			return true;
+		}
+
+		if(this.onConsents){
+			this.handleConsents(key);
 			return true;
 		}
 
@@ -280,6 +331,11 @@ export default class Overview extends Component {
 				vendor.specialPurposes.includes(purposeItem.id)
 			)
 		);
+
+		for(var i=0; i< filteredPurposes.length; i++){
+				var id = filteredPurposes[i].id;
+				this.consentBtns[i] = {id: id};
+			}
 
 console.log("Filtered Purposes: ");
 console.log(filteredPurposes);
