@@ -174,7 +174,7 @@ export default class Details extends Component {
 		} = store;
                 
                 
-		const { selectedPurposeIds, selectedVendorIds } = vendorConsentData;
+		const { selectedPurposeIds, selectedVendorIds, selectedLegIntPurposeIds } = vendorConsentData;
 		const { selectedCustomPurposeIds } = publisherConsentData;
 		const { purposes = [], vendors = [] } = vendorList;
 		const { purposes: customPurposes = [] } = customPurposeList;
@@ -230,6 +230,9 @@ export default class Details extends Component {
 					<Panel selectedIndex={selectedPanelIndex}>
 						<Overview
 							purposes={purposes}
+							selectedVendorIds={selectedVendorIds}
+							selectedPurposeIds={selectedPurposeIds}
+							selectedLegIntPurposeIds={selectedLegIntPurposeIds}
                             customPurposes={customPurposes}
                             visitedCustomPurposes={this.visitedCustomPurposes}
                             publisherConsentData={publisherConsentData}

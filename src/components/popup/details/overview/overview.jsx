@@ -255,8 +255,8 @@ export default class Overview extends Component {
 			theme,
 			vendors,
 			selectedVendorIds,
-			selectedPurposeLegIntIds,
-			selectedPurposeConsentIds
+			selectedPurposeIds,
+			selectedLegIntPurposeIds
 		} = props;
           
 		const {
@@ -346,7 +346,7 @@ console.log(legintpurposes);
 													color={primaryColor}
 													dataId={purposeItem.id}
 													id={"check_" + purposeItem.id}
-													isSelected={selectedPurposeConsentIds.has(purposeItem.id)}
+													isSelected={selectedPurposeIds.has(purposeItem.id)}
 													onClick={this.handleSelectPurposeConsent}
 												/>
 											</span> :
