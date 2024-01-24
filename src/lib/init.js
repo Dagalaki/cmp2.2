@@ -56,7 +56,7 @@ export function init(configUpdates) {
 
 			// Replace the __tcfapi with our implementation
 			const cmp = new Cmp(store);
-
+			store.cmp = cmp;
 			// Expose `processCommand` as the CMP implementation
 			window[CMP_GLOBAL_NAME] = cmp.processCommand;
 

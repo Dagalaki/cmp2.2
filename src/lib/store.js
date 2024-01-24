@@ -401,6 +401,7 @@ export default class Store {
 	};
 	persist = () => {
 		console.log("store.js : persist");
+		console.log("store has cmp ref:",this.cmp);
 		const {
 			vendorConsentData,
 			publisherConsentData,
@@ -449,7 +450,7 @@ export default class Store {
 
 		// Notify of date changes
 		this.storeUpdate();
-
+		var self = this;
 		window.__tcfapi("getTCData", 2, function (tcData, success) {
 			 if (success) {
 			        console.log("success");
@@ -457,6 +458,34 @@ export default class Store {
 
 			 console.log("TCDATA");
 			 console.log(tcData);
+			 
+			 // Iterate through 'tcloaded' event listeners
+			//
+			console.log("EVNT LISTENERS", self.cmp, typeof self.cmp.eventListeners);
+			console.log(Object.values(self.cmp.eventListeners));
+			console.log(Object.values(self.cmp.eventListeners).flat());
+			for (const [key, value] of Object.entries(self.cmp.eventListeners)){	
+				var callback = value;
+				var listenerId = key;
+				console.log("HOPE", listenerId, callback);
+				// You may want to pass relevant information to the callback
+				tcData.listenerId = listenerId;
+				console.log("EVENT LISTENER "+listenerId+" callback",tcData);
+				callback({ tcData: tcData, success: true });
+			};
+			/*self.cmp.eventListeners.forEach(({ callback, listenerId }) => {
+				tcData.listenerId = listenerId;
+				console.log("IN STORE PERSIST, tcloaded:", tcData);
+			  callback({ tcData: tcData, success: true });
+			});
+
+			// Iterate through 'cmpuishown' event listeners
+			(self.cmp.eventListeners['cmpuishown'] || []).forEach(({ callback, listenerId }) => {
+				tcData.listenerId = listenrIdo;	
+				console.log("IN STORE PERSIST, cmpuishown:", tcData);		
+			  callback({ tcData: tcData, success: true });
+			});
+			*/
 
 			 const vendorMap = {};
 			 vendorMap[0] = (tcData.vendor.consents[47])? 1: 0;

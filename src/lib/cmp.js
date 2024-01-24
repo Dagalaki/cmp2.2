@@ -14,6 +14,7 @@ export default class Cmp {
 		this.cmpReady = false;
 		this.eventListeners = {};
 		this.listenerCounter = 1;
+		this.listenerIdToEventMap = {};
 		this.store = store;
 		//console.log("[CMP LOG] store change callback is", this.storeChange);
 		store.subscribe(this.storeChange);
@@ -174,6 +175,7 @@ export default class Cmp {
 			const {vendorListVersion: listVersion} = vendorList || {};
 			console.log(vendorListVersion, listVersion);
 			if (!vendorListVersion || vendorListVersion === listVersion) {
+				console.log("no target version given or same as used");
 				callback(vendorList, true);
 			} else {
 				console.log("else");
@@ -191,15 +193,15 @@ export default class Cmp {
 			const pingReturn = {
 				gdprApplies: config.gdprAppliesGlobally,
 				cmpLoaded: true,
-				cmpStatus: this.isLoaded,
-                               displayStatus: 'hidden', // Adjust as needed based on your implementation
+				cmpStatus: this.isLoaded?"loaded":"stub",
+                               displayStatus: this.showStatus.isBannerShowing || this.showStatus.isModalShowing ? "visible" : "hidden", // Adjust as needed based on your implementation
                                apiVersion: '2.2', // Update to the correct TCF 2.2 API version
                                cmpVersion: 1, // Update with the actual version if available
                                cmpId: 1000, // Update with the actual CMP ID if available
                                gvlVersion: 35, // Update with the actual GVL version if available
                                tcfPolicyVersion: 4 // Update with the actual TCF version if available
                            };
-				console.log(pingReturn);
+				//console.log(pingReturn);
                            callback(pingReturn, true);
                        },
 
@@ -208,7 +210,18 @@ export default class Cmp {
 		 * @param {string} event Name of the event
 		 */
 		addEventListener: (event, callback) => {
-			console.log("addEventListener event:", event);
+			const listenerId = this.listenerCounter++;
+			this.eventListeners[listenerId] = callback;
+
+			// Trigger load events immediately if they have already occurred
+			//if (this.isLoaded) {
+				this.commands.getTCData(null, (tcData, success) => {
+					tcData.listenerId = listenerId;
+
+					callback( tcData, true );
+				});
+			//}
+			/*console.log("addEventListener event:", event);
 			console.trace();
 			const eventSet = this.eventListeners[event] || new Set();
 			const listenerId = this.listenerCounter++;
@@ -217,43 +230,59 @@ export default class Cmp {
 			console.log("eventSet",eventSet);
 			this.eventListeners[event] = eventSet;
 			console.log("event listeners set:", this.eventListeners);
-			// Trigger load events immediately if they have already occurred
-			if (event === 'isLoaded' && this.isLoaded) {
-				callback({event});
-			}
-			if (event === 'cmpReady' && this.cmpReady) {
-				callback({event});
-			}
-
-			
+			this.listenerIdToEventMap[listenerId] = eventSet;
 			this.commands.getTCData(null, (tcData, success) => {
-				console.log("add event listener tcdata:", tcData);
-				callback(tcData, true);
-			}, listenerId);
+				tcData.listenerId = listenerId;
+				// Trigger load events immediately if they have already occurred
+				if (event === 'isLoaded' && this.isLoaded) {
+					callback(tcData,true);
+				}
+				if (event === 'cmpReady' && this.cmpReady) {
+					callback(tcData,true);
+				}
 
+
+				console.log("add event listener tcdata:", tcData);
+			//	callback(tcData, true);
+			}, listenerId);
+			*/
 		},
 
 		/**
 		 * Remove a callback for an event.
 		 * @param {string} event Name of the event to remove callback from
 		 */
-		removeEventListener: (event, callback) => {
+		removeEventListener: (listenerId,callback) => {
+			console.log("REMOVING EVNT LISTENER", listenerId); 
 			// If an event is supplied remove the specific listener
-			if (event) {
-				const eventSet = this.eventListeners[event] || new Set();
-				// If a callback is supplied remove it
-				if (callback) {
-					eventSet.delete(callback);
+			if (listenerId) {
+				//const eventSet = this.eventListeners[event] || new Set();
+				const eventSet = this.eventListeners[listenerId];
+				console.log("EVENT FOUND",eventSet);
+				if(eventSet){
+					// If a callback is supplied remove it
+					/*if (callback) {
+						//eventSet.delete(callback);
+						eventSet.
+					}
+					// If no callback is supplied clear all listeners for this event
+					else {
+						eventSet.clear();
+					}*/
+					delete this.listenerIdToEventMap[listenerId];
+					console.log("EVNT DELETED", listenerId);
+					callback( true);
+					/*if (eventSet.size === 0) {
+						const event = eventSet.event;
+						delete this.eventListeners[event];
+					}*/
 				}
-				// If no callback is supplied clear all listeners for this event
-				else {
-					eventSet.clear();
-				}
-				this.eventListeners[event] = eventSet;
+				//this.eventListeners[event] = eventSet;
 			}
 			// If no event is supplied clear ALL listeners
 			else {
-				this.eventListeners = {};
+//				this.eventListeners = {};
+				callback( false );
 			}
 		},
 
@@ -371,7 +400,7 @@ export default class Cmp {
 	 * @param {*} parameter Expected parameter for command
 	 */
 	processCommand = (command, parameter, callback) => {
-		console.log("cmp.js : processCommand("+command+", "+parameter+")");
+		console.log("cmp.js : processCommand("+command+", "+parameter+")", callback);
 		console.log("CMP:", this);
 		console.log("Parameter : "+ JSON.stringify(parameter) );
 		console.trace();	
