@@ -311,7 +311,6 @@ export default class Store {
 			};
 		};
 		const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
-				
 		//const uniquePurposes =  getAllUniquePurposes(vendorList);
 		const purposeMap = {};
 		console.log("both purpose arrays", {uniquePurposes, uniqueLegIntPurposes});
@@ -599,12 +598,13 @@ export default class Store {
 	};
 	selectPurpose = (purposeId, isSelected) => {
 		console.log("store.js : selectPurpose");
-		const {selectedPurposeIds} = this.vendorConsentData;
+		const {selectedPurposeIds, selectedLegIntPurposeIds} = this.vendorConsentData;
 		console.log("BEFORE", this.vendorConsentData.selectedPurposeIds);
 		if (isSelected) {
 			selectedPurposeIds.add(purposeId);
 		} else {
 			selectedPurposeIds.delete(purposeId);
+			selectedLegIntPurposeIds.delete(purposeId);
 		}
 		console.log("AFTER", this.vendorConsentData.selectedPurposeIds);
 		this.storeUpdate();
@@ -712,7 +712,7 @@ export default class Store {
 			console.log("selectedPurposeIds",this.vendorConsentData.selectedPurposeIds);
 			const vendorsArray = Object.values(vendors);
 			this.vendorConsentData.selectedVendorIds = new Set(vendorsArray.map(v => v.id));
-			this.vendorConsentData.selectedLegIntPurposeIds = new Set(purposesArray.map(p => p.id));
+			this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes.map(p => p.id));
 			
 			console.log(this.vendorConsentData.selectedVendorIds);
 		}

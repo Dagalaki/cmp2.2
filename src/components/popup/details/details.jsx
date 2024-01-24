@@ -233,6 +233,7 @@ export default class Details extends Component {
 							selectedVendorIds={selectedVendorIds}
 							selectedPurposeIds={selectedPurposeIds}
 							selectedLegIntPurposeIds={selectedLegIntPurposeIds}
+							selectedPurposeDetails={selectedPurposeDetails}
                             customPurposes={customPurposes}
                             visitedCustomPurposes={this.visitedCustomPurposes}
                             publisherConsentData={publisherConsentData}

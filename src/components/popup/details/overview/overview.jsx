@@ -4,6 +4,7 @@ import Switch from '../../../switch/switch';
 import style2 from '../vendors/vendors.less';
 import detailsStyle from '../details.less';
 import Label from "../../../label/label";
+import VendorConsents from "./vendorconsents/vendorconsents";
 import '../../../../lib/globals';
 
 
@@ -256,7 +257,8 @@ export default class Overview extends Component {
 			vendors,
 			selectedVendorIds,
 			selectedPurposeIds,
-			selectedLegIntPurposeIds
+			selectedLegIntPurposeIds,
+			selectedPurposeDetails
 		} = props;
           
 		const {
@@ -292,9 +294,12 @@ console.log(filteredPurposes);
 
 console.log("Filtered Leg Int Purposes: ");
 console.log(filteredLegIntPurposes);
-const legintpurposes = filteredLegIntPurposes.map(function(purposeItem) {return purposeItem.id;});
+/*var me =this;
+const legintpurposes = filteredLegIntPurposes.map(function(purposeItem, me) {
+	me.handleSelectPurposeLegInt(purposeItem.id, true);
+});
 console.log(legintpurposes);
-
+*/
                // console.log("visitedCustomPurposes", visitedCustomPurposes);
 		return (
 			<div 
@@ -339,7 +344,7 @@ console.log(legintpurposes);
 													color={primaryColor}
 													dataId={purposeItem.id}
 													id={"legInt_" + purposeItem.id}
-													isSelected={legintpurposes.includes(purposeItem.id)}
+													isSelected={selectedLegIntPurposeIds.has(purposeItem.id)}
 													onClick={this.handleSelectPurposeLegInt}
 												/>
 												<LocalLabel  id={"accept_" + purposeItem.id} localizeKey='links.purposes.consent'></LocalLabel> <Switch 
@@ -358,7 +363,13 @@ console.log(legintpurposes);
 						</div>
 					))}
 				</div>
-				
+				<VendorConsents
+					selectedVendorIds={selectedVendorIds}
+					selectedPurposeDetails={selectedPurposeDetails}
+					vendors={vendors}
+					selectedLegIntPurposeIds={selectedLegIntPurposeIds}
+					theme={theme}
+				/>
 				<div class={detailsStyle.description} style="display:none; margin-bottom: 30px;">
 					<center>
 						<a id="acceptGeneral" class={detailsStyle.selectAllConds} onClick={this.handleGeneralePurposeClick(true)} style="background-color: #FFFFFF;display: block;float: left;width: 40%;margin: 0 5%0 5%;">
