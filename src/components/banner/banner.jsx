@@ -63,7 +63,7 @@ export default class Banner extends Component {
 				break;
 			case 1:
 				console.log("banner.jsx: Manage Your Choices");
-				global.config.focusObject = "modal";
+				global.config.focusObject = "details";
 				me.handleLearnMore();
 				break;
 			case 2:

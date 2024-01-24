@@ -27,7 +27,11 @@ export default {
 					title: 'Purposes for storing information',
 					description: '',
 					titleCustom: 'Other',
-					titleGeneral: 'Third Party Vendors'
+					titleGeneral: 'Third Party Vendors', 
+					titleVendors: "Vendors",
+					titlePurposes: "Purposes",
+					legInt: "Legitimate Interests",
+					consent: "Consent"
 				},
 				features: {
 					title: 'Features',
@@ -67,6 +71,8 @@ export default {
 			}
 		},
 		details: {
+			acceptall: "Accept All",
+			denyall: "Deny All",
 			back: 'Back',
 			save: 'Continue Using Site'
 		},
