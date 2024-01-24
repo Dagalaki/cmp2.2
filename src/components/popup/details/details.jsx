@@ -4,6 +4,7 @@ import Button from '../../button/button';
 import Vendors from './vendors/vendors';
 import VendorList from './vendorList/vendorList';
 import Summary from './summary/summary';
+import Overview from './overview/overview';
 import Panel from '../../panel/panel';
 import PurposeList from './purposeList/purposeList';
 import Label from "../../label/label";
@@ -227,7 +228,7 @@ export default class Details extends Component {
 			}}>
 				<div class={style.body}>
 					<Panel selectedIndex={selectedPanelIndex}>
-						<Summary
+						<Overview
 							purposes={purposes}
                             customPurposes={customPurposes}
                             visitedCustomPurposes={this.visitedCustomPurposes}

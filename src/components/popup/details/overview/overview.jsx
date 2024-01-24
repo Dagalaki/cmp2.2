@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import style from './summary.less';
+import style from './overview.less';
 import Switch from '../../../switch/switch';
 import style2 from '../vendors/vendors.less';
 import detailsStyle from '../details.less';
@@ -40,7 +40,7 @@ class PurposesLabel extends Label {
 }
 
 
-export default class Summary extends Component {
+export default class Overview extends Component {
 
 	constructor(props) {
 		super(props);
@@ -218,13 +218,13 @@ export default class Summary extends Component {
 	handleSelectPurposeLegInt = ({dataId, isSelected}) => {
 	console.log("handle legitimate interest");
 		console.log("summary.jsx handleSelectPurposeLegInt ("+dataId+" ," +isSelected+") ");
-		global.config.store.selectPurposeLegInt(dataId, isSelected); //in store.js
+		global.config.store.selectLegIntPurpose(dataId, isSelected); //in store.js
 	};
 
 	handleSelectPurposeConsent = ({dataId, isSelected}) => {
 	console.log("handle consent");
-		console.log("summary.jsx handleSelectPurposeConsent ("+dataId+" ," +isSelected+") ");
-		global.config.store.selectPurposeConsent(dataId, isSelected); // in store.js
+		console.log("overview.jsx handleSelectPurposeConsent ("+dataId+" ," +isSelected+") ");
+		global.config.store.selectPurpose(dataId, isSelected); // in store.js
 	};
         
         handleGeneralePurposeClick = purposeItem => {
@@ -278,6 +278,23 @@ export default class Summary extends Component {
 				vendor.specialPurposes.includes(purposeItem.id)
 			)
 		);
+
+console.log("Filtered Purposes: ");
+console.log(filteredPurposes);
+
+
+		const filteredLegIntPurposes = Object.values(purposes).filter((purposeItem) => 
+			vendors.some(
+				(vendor) =>
+				vendor.legIntPurposes.includes(purposeItem.id)
+			)
+		);
+
+console.log("Filtered Leg Int Purposes: ");
+console.log(filteredLegIntPurposes);
+const legintpurposes = filteredLegIntPurposes.map(function(purposeItem) {return purposeItem.id;});
+console.log(legintpurposes);
+
                // console.log("visitedCustomPurposes", visitedCustomPurposes);
 		return (
 			<div 
@@ -322,7 +339,7 @@ export default class Summary extends Component {
 													color={primaryColor}
 													dataId={purposeItem.id}
 													id={"legInt_" + purposeItem.id}
-													isSelected={selectedPurposeLegIntIds.has(purposeItem.id)}
+													isSelected={legintpurposes.includes(purposeItem.id)}
 													onClick={this.handleSelectPurposeLegInt}
 												/>
 												<LocalLabel  id={"accept_" + purposeItem.id} localizeKey='links.purposes.consent'></LocalLabel> <Switch 
