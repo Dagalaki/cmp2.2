@@ -5,6 +5,8 @@ module.exports = global.config = {
 	summaryRef: null,
 	vendorsRef: null,
 	modalRef:null,
+	overviewRef:null,
+	vendorConsentsRef:null,
 	store:null
 	
 };

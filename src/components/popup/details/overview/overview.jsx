@@ -86,6 +86,7 @@ export default class Overview extends Component {
 		for(var i = 0; i< this.buttons.length ; i++){
 			if(focus){
 				if(i == this.focusedId){
+					console.log(this.buttons[i].id);
 					document.getElementById(this.buttons[i].id).style.color = "blue";
 					/*document.getElementsByClassName(this.purposesClassname)[i].style.color = "blue";*/
 				}else{
@@ -100,7 +101,7 @@ export default class Overview extends Component {
 	}
 
 	openTab = () => {
-	
+		
 		for(var i = 0; i< this.tabs.length; i++){
 			console.log("opentab: "+this.tabs[i].contId);
 			if(i == this.activeTab ) {
@@ -117,6 +118,7 @@ export default class Overview extends Component {
 	}
 
 	setFocusOnConsent = (focus) => {
+	this.onTabs = true;
 		console.log("focus on consent : " + this.activeConsent);
 		for(var i=0; i< this.consentBtns.length; i++){
 			if(focus){
@@ -183,6 +185,9 @@ export default class Overview extends Component {
 				break;
 			case VK_ENTER:
 				this.openTab();
+				if(this.activeTab == 1){ //vendorconsents
+					global.config.focusObject ="vendorconsents";
+				}
 				break;
 			case VK_UP:
 				global.config.focusObject = "modal";
@@ -395,9 +400,9 @@ console.log(legintpurposes);
 		return (
 			<div id="_overviewMainCont"
 			ref={el => {
-					this.summaryRef = el;
-					if (this.props.setSummaryRef) {
-    					this.props.setSummaryRef(this); // Pass the Summary component instance
+					this.overviewRef = el;
+					if (this.props.setOverviewRef) {
+    					this.props.setOverviewRef(this); // Pass the Overview component instance
   					}
 				}}
 			class={style.summary}>
@@ -460,6 +465,7 @@ console.log(legintpurposes);
 					vendors={vendors}
 					selectedLegIntPurposeIds={selectedLegIntPurposeIds}
 					theme={theme}
+					setVendorConsentsRef={ref => this.vendorConsentRef= global.config.vendorConsentRef = ref}
 				/>
 				<div class={detailsStyle.description} style="display:none; margin-bottom: 30px;">
 					<center>

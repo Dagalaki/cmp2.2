@@ -251,7 +251,7 @@ export default class Details extends Component {
 							onVendorListClick={this.handlePanelClick(SECTION_VENDOR_LIST)}
 							onPurposeListClick={this.handlePanelClick(SECTION_PURPOSE_LIST)}
 							theme={theme}
-							setSummaryRef={ref => this.summaryRef= global.config.summaryRef = ref}
+							setOverviewRef={ref => this.overviewRef= global.config.overviewRef = ref}
 							vendors={formattedVendors}
 						/>
 						<VendorList
