@@ -114,8 +114,9 @@ export default class Overview extends Component {
 		console.log("focus on consent : " + this.activeConsent);
 		for(var i=0; i< this.consentBtns.length; i++){
 			if(focus){
-				//TODO
-			}
+				if(i == this.activeConsent) document.getElementById("check_"+this.consentBtns[i].id).classList.add("consentfocus");
+				else document.getElementById("check_"+this.consentBtns[i].id).classList.remove("consentfocus");
+			}else document.getElementById("check_"+this.consentBtns[i].id).classList.remove("consentfocus");
 		}
 	}
 

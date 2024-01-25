@@ -29,14 +29,14 @@ export default class Switch extends Component {
 				class={[style.switch, props.class, isSelected ? style.isSelected : ''].join(' ')}
 				onClick={this.handleClicked}
 			>
-				<input id={id}
+				<input 
 					checked={isSelected}
 					className={style.native}
 					disabled={isDisabled}
 					type='checkbox'
 				/>
 				<span class={style.visualizationContainer} style={{backgroundColor: isSelected ? color : null}} />
-				<span class={style.visualizationGlow} style={{backgroundColor: color}} />
+				<span id={id} class={style.visualizationGlow} style={{backgroundColor: color}} />
 				<span class={style.visualizationHandle} />
 			</span>
 		);

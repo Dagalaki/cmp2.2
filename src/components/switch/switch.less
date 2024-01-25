@@ -56,6 +56,11 @@
 		width: @Switch-glow-radius * 2;
 	}
 
+	.visualizationGlow.consentfocus{
+		opacity: 0.3;
+		transform: @Switch-glow-scale;
+	}
+
 	.visualizationHandle {
 		background-color: white;
 		border-radius: @Switch-handle-radius;
@@ -71,6 +76,8 @@
 		opacity: 0.3;
 		transform: @Switch-glow-scale;
 	}
+
+
 
 	&:hover .visualizationHandle {
 		transform: @Switch-handle-scale;
