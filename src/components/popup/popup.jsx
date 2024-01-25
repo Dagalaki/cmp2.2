@@ -13,8 +13,8 @@ export default class Popup extends Component {
 
 	constructor(props) {
 		super(props);
-		this.length = 4;
-		this.focusedId = 3;	
+		this.length = 3;
+		this.focusedId = 1;	
 	}
 
 	handleClose = () => {
@@ -147,6 +147,10 @@ export default class Popup extends Component {
    				}
 				if(me.focusedId > me.length -1){
 					me.focusedId = me.length-1;
+					me.setFocused(false);
+					global.config.detailsRef.setFocused(true);
+					global.config.focusObject = "details";
+					break;
 				}
 				me.setFocused(true);
 				break;

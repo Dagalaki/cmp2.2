@@ -46,6 +46,9 @@ export default class Details extends Component {
 		this.buttons = [];
 	}
 
+
+//main buttons, deny all accept all , continue to site
+
 	setFocused = (focus) =>{
 
 		for(var i = 0; i< this.buttons.length; i++){
@@ -78,6 +81,7 @@ export default class Details extends Component {
 			case VK_DOWN:
 				break;
 			case VK_ENTER:
+				this.handleMainButtons();
 				break;
 
 			default:
@@ -85,19 +89,23 @@ export default class Details extends Component {
 		}
 	}
 
-	handleButtonClick= () =>{
-		if(this.focusedId == 3){
-			console.log("details.jsx handleButtonClick handleBack");
-			this.handleBack();
-		}else if(this.focusedId == 2){
-			console.log("details.jsx handleButtonClick props onSave");
-			this.props.onSave();
-		}else if(this.focusedId == 0){
-			console.log("must implement deny all");
-			this.props.denyAll();
-		}else if (this.focusedId == 1){
-			console.log("must implement accept all");
-			this.props.acceptAll();
+	handleMainButtons = () => {
+		var action = this.buttons[this.focusedId].id;
+		console.log("handlemain action: " +action);
+		switch(action){
+			case "_save":
+				this.props.onSave();
+				break;
+			case "_denyall":
+				global.config.store.selectAllPurposesAndVendors(false);
+				break;
+			case "_acceptall":
+				console.log("Click on Accept All");
+				global.config.store.selectAllPurposesAndVendors(true);
+				break;
+			case "_back":
+				this.handleBack();
+				break;
 		}
 	}
 

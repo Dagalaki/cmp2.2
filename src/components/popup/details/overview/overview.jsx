@@ -82,16 +82,19 @@ export default class Overview extends Component {
 	setFocused = (focus) => {
 		if(this.onTabs) this.setFocusOnTabs(true);
 		this.purposeClassname = "summary_learnMore--QHtl7";
-		console.log("summary.jsx focus on : " + this.focusedId);
+		console.log("overview.jsx focus on : " + this.focusedId);
 		for(var i = 0; i< this.buttons.length ; i++){
 			if(focus){
 				if(i == this.focusedId){
-					document.getElementsByClassName(this.purposesClassname)[i].style.color = "blue";
+					document.getElementById(this.buttons[i].id).style.color = "blue";
+					/*document.getElementsByClassName(this.purposesClassname)[i].style.color = "blue";*/
 				}else{
-					document.getElementsByClassName(this.purposesClassname)[i].style.color = "#41afbb";
+					document.getElementById(this.buttons[i].id).style.color = "#41afbb";
+					/*document.getElementsByClassName(this.purposesClassname)[i].style.color = "#41afbb";*/
 				}
 			}else{
-				document.getElementsByClassName(this.purposesClassname)[i].style.color = "#41afbb";
+				document.getElementById(this.buttons[i].id).style.color = "#41afbb";
+				/*document.getElementsByClassName(this.purposesClassname)[i].style.color = "#41afbb";*/
 			}
 		}
 	}
@@ -127,7 +130,17 @@ export default class Overview extends Component {
 		switch(key){
 			case VK_DOWN:
 				this.activeConsent++;
-				if(this.activeConsent > this.consentBtns.length -1) this.activeConsent = this.consentBtns.length-1;
+				if(this.activeConsent > this.consentBtns.length -1){ 		this.activeConsent = this.consentBtns.length-1;
+					this.setFocusOnConsent(false);
+					console.log("end of consents, go to basic menu, must scroll up ");
+					this.scrollUp();
+					global.config.modalRef.focusedId = 1;
+					global.config.modalRef.setFocused(true);
+					global.config.focusObject = "modal";
+					this.onConsents = false;
+					this.onTabs = false;
+					break;
+				}
 				this.setFocusOnConsent(true);
 				break;
 			case VK_UP:
@@ -185,6 +198,17 @@ export default class Overview extends Component {
 		}
 	}
 
+	scrollUp = () => {
+		document.getElementById("_overviewMainCont").style.position = "relative";
+		document.getElementById("_overviewMainCont").style.top="-355px";
+	}
+
+	scrollDown = () => {
+		document.getElementsByClassName("summary_summary--39BrN")[0].style.position = "relative";
+		document.getElementsByClassName("summary_summary--39BrN")[0].style.top="0px";
+
+	}
+
 	handleKeyPress = (key) => {
 
 		if(this.onTabs){
@@ -203,6 +227,7 @@ export default class Overview extends Component {
 			return true;
 		}
 
+
 		console.log("overview.jsx key: " + key);
 		switch(key){
 			case VK_UP:
@@ -220,6 +245,7 @@ export default class Overview extends Component {
 				this.setFocused(true);
 				break;
 			case VK_DOWN:
+				
 				this.focusedId++;
 				if(this.focusedId > this.buttons.length-1) {
 					this.focusedId = this.buttons.length-1;
@@ -353,6 +379,10 @@ console.log(filteredPurposes);
 			)
 		);
 
+		this.buttons[0] = {id:"closeX"};
+		this.buttons[1] = {id:"wholink"};
+		this.buttons[2] = {id:"whatlink"};
+
 console.log("Filtered Leg Int Purposes: ");
 console.log(filteredLegIntPurposes);
 /*var me =this;
@@ -363,7 +393,7 @@ console.log(legintpurposes);
 */
                // console.log("visitedCustomPurposes", visitedCustomPurposes);
 		return (
-			<div 
+			<div id="_overviewMainCont"
 			ref={el => {
 					this.summaryRef = el;
 					if (this.props.setSummaryRef) {

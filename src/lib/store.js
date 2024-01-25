@@ -578,7 +578,12 @@ export default class Store {
 		console.log("store.js : selectAllPurposesAndVendors");
 		this.selectAllPurposes(state);
 		const {purposes = []} = this.vendorList || {};
-		purposes.forEach(({id}) => this.selectAllVendors(state, id));
+		console.log("store.js purposes:");
+		console.log(purposes);
+		//purposes.forEach(({id}) => this.selectAllVendors(state, id));
+		Object.values(purposes).map(purpose =>{
+			this.selectAllVendors(state, purpose.id);	
+		});
 	};
 	selectAllVendors = (isSelected, purposeId) => {
 		console.log("store.js : selectAllVendors");
@@ -630,7 +635,12 @@ export default class Store {
 		const {purposes = []} = this.vendorList || {};
 		const operation = isSelected ? 'add' : 'delete';
 		//console.log("BEFORE", this.vendorConsentData.selectedPurposeIds);
-		purposes.forEach(({id}) => this.vendorConsentData.selectedPurposeIds[operation](id));
+		console.log(purposes);
+		//purposes.forEach(({id}) => this.vendorConsentData.selectedPurposeIds[operation](id));
+		Object.values(purposes).map(purpose =>{
+			this.vendorConsentData.selectedPurposeIds[operation](purpose.id);
+		});
+
 		//console.log("AFTER", this.vendorConsentData.selectedPurposeIds);
 		this.storeUpdate();
 	};
