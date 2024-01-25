@@ -99,13 +99,16 @@ export default class Overview extends Component {
 	openTab = () => {
 	
 		for(var i = 0; i< this.tabs.length; i++){
+			console.log("opentab: "+this.tabs[i].contId);
 			if(i == this.activeTab ) {
-			
-				document.getElementById(this.tabs[i].contId).style.display = "block";
+				console.log("br1");
+				console.log(this.tabs[i].contId);
+				if(document.getElementById(this.tabs[i].contId)) document.getElementById(this.tabs[i].contId).style.display = "block";
 			}
 			else{
-				
-				 document.getElementById(this.tabs[i].contId).style.display = "none";
+				console.log("br2");
+				console.log(this.tabs[i].contId);
+				if(document.getElementById(this.tabs[i].contId)) document.getElementById(this.tabs[i].contId).style.display = "none";
 				 }
 		}
 	}
@@ -153,6 +156,7 @@ export default class Overview extends Component {
 	}
 
 	handleTabs = (key) => {
+		console.log("handle tabs");
 		switch(key){
 			case VK_RIGHT:
 				this.activeTab++;
@@ -199,7 +203,7 @@ export default class Overview extends Component {
 			return true;
 		}
 
-		console.log("summary.jsx key: " + key);
+		console.log("overview.jsx key: " + key);
 		switch(key){
 			case VK_UP:
 				this.focusedId--;
@@ -253,16 +257,16 @@ export default class Overview extends Component {
 
 	addPurposeItemAtag = (purposeItem, classname) => {
 
-		global.config.focusObject = "summary";
+		global.config.focusObject = "overview";
 
-		console.log("summary.jsx class: "+classname);
+		console.log("overview.jsx class: "+classname);
 		this.buttons[this.i] = purposeItem;
 		this.purposesClassname = classname;
 		this.i++;
 	}
 
 	handlePurposeItemClick = purposeItem => {
-		console.log("summary.jsx PurposeItemClick , purposeItem: " + purposeItem);
+		console.log("overview.jsx PurposeItemClick , purposeItem: " + purposeItem);
 		return () => {
 			this.props.onPurposeClick(purposeItem);
 		};
@@ -270,7 +274,7 @@ export default class Overview extends Component {
 
 	handleSelectPurposeLegInt = ({dataId, isSelected}) => {
 	console.log("handle legitimate interest");
-		console.log("summary.jsx handleSelectPurposeLegInt ("+dataId+" ," +isSelected+") ");
+		console.log("overview.jsx handleSelectPurposeLegInt ("+dataId+" ," +isSelected+") ");
 		global.config.store.selectLegIntPurpose(dataId, isSelected); //in store.js
 	};
 
@@ -281,13 +285,13 @@ export default class Overview extends Component {
 	};
         
         handleGeneralePurposeClick = purposeItem => {
-        console.log("summary.jsx handleGeneralePurposeClick , purposeItem: " + purposeItem);
+        console.log("overview.jsx handleGeneralePurposeClick , purposeItem: " + purposeItem);
 		return () => {
 			this.props.onGeneralPurposeClick(purposeItem);
 		};
 	};
         handleCustomPurposeItemClick = (customPurposeItem, visitedCustomPurposes) => {
-        console.log("summary.jsx handleCustomPurposeItemClick");
+        console.log("overview.jsx handleCustomPurposeItemClick");
                 return () => {
 			this.props.onCustomPurposeClick(customPurposeItem, visitedCustomPurposes);
 		};
@@ -297,7 +301,7 @@ export default class Overview extends Component {
 
 	render(props, state)
 	{
-	console.log("summary.jsx : render");
+	console.log("overview.jsx : render");
 		const {
 			purposes,
                         customPurposes,
