@@ -122,9 +122,19 @@ export default class Overview extends Component {
 		console.log("focus on consent : " + this.activeConsent);
 		for(var i=0; i< this.consentBtns.length; i++){
 			if(focus){
-				if(i == this.activeConsent) document.getElementById("check_"+this.consentBtns[i].id).classList.add("consentfocus");
-				else document.getElementById("check_"+this.consentBtns[i].id).classList.remove("consentfocus");
-			}else document.getElementById("check_"+this.consentBtns[i].id).classList.remove("consentfocus");
+				if(i == this.activeConsent) {
+					document.getElementById("check_"+this.consentBtns[i].id).style.opacity = "0.3";
+					document.getElementById("check_"+this.consentBtns[i].id).style.transform = "scale(1.556)";
+					//classList.add("consentfocus");
+				}else{
+					 document.getElementById("check_"+this.consentBtns[i].id).style.opacity = "0";
+					document.getElementById("check_"+this.consentBtns[i].id).style.transform = "none";
+				}
+			}else {
+				document.getElementById("check_"+this.consentBtns[i].id).style.opacity = "0";
+					document.getElementById("check_"+this.consentBtns[i].id).style.transform = "none)";
+			}
+			
 		}
 	}
 
@@ -147,7 +157,14 @@ export default class Overview extends Component {
 				break;
 			case VK_UP:
 				this.activeConsent--;
-				if(this.activeConsent <0 ) this.activeConsent= 0;
+				if(this.activeConsent <0 ) {
+					this.activeConsent= 0;
+					this.onConsents = false;
+					this.onTabs = true;
+					this.setFocusOnConsent(false);
+					this.setFocusOnTabs(true);
+					break;
+				}
 				this.setFocusOnConsent(true);
 				break;
 			case VK_LEFT:
@@ -171,6 +188,7 @@ export default class Overview extends Component {
 	}
 
 	handleTabs = (key) => {
+		document.activeElement.blur();
 		console.log("handle tabs");
 		switch(key){
 			case VK_RIGHT:
@@ -187,6 +205,7 @@ export default class Overview extends Component {
 				this.openTab();
 				if(this.activeTab == 1){ //vendorconsents
 					global.config.focusObject ="vendorconsents";
+					global.config.vendorConsentsRef.setFocused(true);
 				}
 				break;
 			case VK_UP:
@@ -197,15 +216,18 @@ export default class Overview extends Component {
 				//must handle consents ... should create consents.jsx
 				this.onConsents=true;
 				this.onTabs = false;
+				this.setFocusOnConsent(true);
+				this.setFocusOnTabs(false);
 				break;
 			default:
 				break;
 		}
 	}
 
-	scrollUp = () => {
+	scrollUp = (top) => {
 		document.getElementById("_overviewMainCont").style.position = "relative";
-		document.getElementById("_overviewMainCont").style.top="-355px";
+		if(!top)document.getElementById("_overviewMainCont").style.top="-355px";
+		else document.getElementById("_overviewMainCont").style.top="-"+top+"";
 	}
 
 	scrollDown = () => {
@@ -216,13 +238,13 @@ export default class Overview extends Component {
 
 	handleKeyPress = (key) => {
 
-		if(this.onTabs){
-			this.handleTabs(key);
+		if(this.onConsents){
+			this.handleConsents(key);
 			return true;
 		}
 
-		if(this.onConsents){
-			this.handleConsents(key);
+		if(this.onTabs){
+			this.handleTabs(key);
 			return true;
 		}
 
@@ -465,7 +487,7 @@ console.log(legintpurposes);
 					vendors={vendors}
 					selectedLegIntPurposeIds={selectedLegIntPurposeIds}
 					theme={theme}
-					setVendorConsentsRef={ref => this.vendorConsentRef= global.config.vendorConsentRef = ref}
+					setVendorConsentsRef={ref => this.vendorConsentsRef= global.config.vendorConsentsRef = ref}
 				/>
 				<div class={detailsStyle.description} style="display:none; margin-bottom: 30px;">
 					<center>

@@ -105,8 +105,8 @@ export default class Popup extends Component {
 			return true;
 		}
 
-		if(global.config.focusObject == "summary"){
-			global.config.summaryRef.handleKeyPress(key);
+		if(global.config.focusObject == "summary" || global.config.focusObject == "overview"){
+			global.config.overviewRef.handleKeyPress(key);
 			return true;
 		}
 
@@ -145,9 +145,9 @@ export default class Popup extends Component {
    				me.focusedId++;
    				if(me.focusedId == 1){
    					me.setFocused(false);
-					global.config.focusObject = "summary";
-					global.config.summaryRef.focusedId = 0;
-					global.config.summaryRef.setFocused(true);
+					global.config.focusObject = "overview";
+					global.config.overviewRef.focusedId = 0;
+					global.config.overviewRef.setFocused(true);
 					break;
    				}
 				if(me.focusedId > me.length -1){
@@ -169,8 +169,8 @@ export default class Popup extends Component {
 				if(me.focusedId == 0){
    					me.setFocused(false);
 					global.config.focusObject = "summary";
-					global.config.summaryRef.focusedId = 4;
-					global.config.summaryRef.setFocused(true);
+					global.config.overviewRef.focusedId = 4;
+					global.config.overviewRef.setFocused(true);
 					document.getElementsByClassName("summary_summary--39BrN")[0].style.position = "relative";
 					document.getElementsByClassName("summary_summary--39BrN")[0].style.top="0px";
 					break;

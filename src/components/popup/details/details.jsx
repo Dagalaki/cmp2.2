@@ -62,6 +62,7 @@ export default class Details extends Component {
 	}	
 
 	handleKeyPress = (key) =>{
+	document.activeElement.blur();
 	console.log("details.jsx " + key);
 		switch(key){
 			case VK_RIGHT:
@@ -76,7 +77,7 @@ export default class Details extends Component {
 				break;
 			case VK_UP:
 				global.config.focusObject = "summary";
-				global.config.summaryRef.setFocused(true);
+				global.config.overviewRef.setFocused(true);
 				break;
 			case VK_DOWN:
 				break;
