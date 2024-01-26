@@ -180,26 +180,8 @@ export default class Store {
 			...Array.from(selectedPurposeIds)
 		);
 		console.log(typeof vendorList.vendors, vendorList.vendors);	
-		const getAllUniquePurposes = (vendorList) => {
-			const allPurposes = Object.values(vendorList.vendors).reduce((accumulator, vendor) => {
-   				 // Check if the properties exist and are iterable
-				if (vendor.legIntPurposes && vendor.legIntPurposes.length) {
-					console.log("legintpurposes:",vendor.legIntPurposes);
-					 accumulator.push(...vendor.legIntPurposes);
-					console.log("legIntPurposes accum", accumulator);
-				}
-				if (vendor.flexiblePurposes && vendor.flexiblePurposes.length) {
-					accumulator.push(...vendor.flexiblePurposes);
-				}
-				if (vendor.purposes && vendor.purposes.length) {
-					accumulator.push(...vendor.purposes);
-				}
-				return accumulator;
-			}, []);
-			const uniquePurposes = [...new Set(allPurposes)].sort((a,b) => a - b);
-			return uniquePurposes;
-		};
-		const uniquePurposes =  getAllUniquePurposes(vendorList);
+
+		const uniquePurposes =  this.getAllUniquePurposes(vendorList);
 		const purposeMap = {};
 		for (let i = 1; i <= lastPurposeId; i++) {
 			console.log(uniquePurposes, i, uniquePurposes.includes(i));
@@ -223,7 +205,38 @@ export default class Store {
 			restrictions
 		};
 	};
-	
+
+	getAllUniquePurposes = (vendorList) => {
+		const uniquePurposes = [];
+		const uniqueLegIntPurposes = [];
+
+		Object.values(vendorList.vendors).forEach((vendor) => {
+			console.log("vendor", vendor);
+			if (vendor.legIntPurposes && vendor.legIntPurposes.length) {
+				console.log("legint", vendor.legIntPurposes);
+				uniquePurposes.push(...vendor.legIntPurposes);
+				uniqueLegIntPurposes.push(...vendor.legIntPurposes);
+			}
+			if (vendor.flexiblePurposes && vendor.flexiblePurposes.length) {
+				console.log("flex", vendor.flexiblePurposes);
+				uniquePurposes.push(...vendor.flexiblePurposes);
+			}
+			if (vendor.purposes && vendor.purposes.length) {
+				console.log("normal", vendor.purposes);
+				uniquePurposes.push(...vendor.purposes);
+			}
+		});
+
+			// Deduplicate and sort the arrays
+		const sortedUniquePurposes = [...new Set(uniquePurposes)].sort((a, b) => a - b);
+		const sortedUniqueLegIntPurposes = [...new Set(uniqueLegIntPurposes)].sort((a, b) => a - b);
+
+		return {
+			uniquePurposes: sortedUniquePurposes,
+			uniqueLegIntPurposes: sortedUniqueLegIntPurposes
+		};
+	};
+
 	getVendorConsentsObject = (vendorIds) => {
 		console.log("store.js : getVendorConsentsObject", this);
 		const {
@@ -280,37 +293,8 @@ export default class Store {
 			}
 		}
 		console.log("vendorMap", vendorMap, "legint", legIntVendorMap);
-		const getAllUniquePurposes = (vendorList) => {
-			const uniquePurposes = [];
-			const uniqueLegIntPurposes = [];
 
-			Object.values(vendorList.vendors).forEach((vendor) => {
-				console.log("vendor", vendor);
-				if (vendor.legIntPurposes && vendor.legIntPurposes.length) {
-					console.log("legint", vendor.legIntPurposes);
-					uniquePurposes.push(...vendor.legIntPurposes);
-					uniqueLegIntPurposes.push(...vendor.legIntPurposes);
-				}
-				if (vendor.flexiblePurposes && vendor.flexiblePurposes.length) {
-					console.log("flex", vendor.flexiblePurposes);
-					uniquePurposes.push(...vendor.flexiblePurposes);
-				}
-				if (vendor.purposes && vendor.purposes.length) {
-					console.log("normal", vendor.purposes);
-					uniquePurposes.push(...vendor.purposes);
-				}
-			});
-
-			// Deduplicate and sort the arrays
-			const sortedUniquePurposes = [...new Set(uniquePurposes)].sort((a, b) => a - b);
-			const sortedUniqueLegIntPurposes = [...new Set(uniqueLegIntPurposes)].sort((a, b) => a - b);
-
-			return {
-				uniquePurposes: sortedUniquePurposes,
-				uniqueLegIntPurposes: sortedUniqueLegIntPurposes
-			};
-		};
-		const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
+		const {uniquePurposes, uniqueLegIntPurposes} = this.getAllUniquePurposes(vendorList);
 		//const uniquePurposes =  getAllUniquePurposes(vendorList);
 		const purposeMap = {};
 		console.log("both purpose arrays", {uniquePurposes, uniqueLegIntPurposes});
@@ -697,7 +681,7 @@ export default class Store {
 		} = this.vendorConsentData;
 		console.log("store.js : updateVendorList got vendorConsentData");
 		
-		console.log("store.js : updateVendorList getAllUniquePurposes");
+		
 		// Filter vendors in vendorList by allowedVendorIds
 		if (vendorList && vendorList.vendors && allowedVendorIds.size) {
 			const vendorIds = Object.keys(vendorList.vendors);
@@ -726,10 +710,22 @@ export default class Store {
 			const vendorsArray = Object.values(vendors);
 			console.log("vendorsArray",vendorsArray);
 			this.vendorConsentData.selectedVendorIds = new Set(vendorsArray.map(v => v.id));
+			console.log(vendorList?"vendorList found":"vendorList not yet loaded");
 			if(vendorList){
-				const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
+				console.log("store.js : updateVendorList getAllUniquePurposes");
+				if (typeof this.getAllUniquePurposes === 'function') {
+					console.log("getAllUniquePurposes is defined");
+
+					const { uniquePurposes, uniqueLegIntPurposes } = this.getAllUniquePurposes(vendorList);
+
+					console.log("After calling getAllUniquePurposes", { uniquePurposes, uniqueLegIntPurposes });
+				} else {
+					console.error("getAllUniquePurposes is not defined");
+				}
+				//const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
 				console.log("uniqueLegIntPurposes",uniqueLegIntPurposes);
 				this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes.map(p => p.id));
+				console.log()
 			}
 			console.log(this.vendorConsentData.selectedVendorIds);
 		}
