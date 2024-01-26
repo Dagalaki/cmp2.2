@@ -161,20 +161,27 @@ export default class Popup extends Component {
 				break;
 			case 38:
 				console.log("key is UP");
-
+   				
+				if(me.focusedId == 1){
+   					me.setFocused(false);
+					
+					if(global.config.overviewRef.activeTab == 0){// Purposes
+						this.setFocused(false);
+						global.config.focusObject = "overview";
+						global.config.overviewRef.setFocusOnConsent(true);
+						global.config.overviewRef.onConsents =true;
+					}else if(global.config.overviewRef.activeTab == 1){// Vendors
+						global.config.focusObject = "vendorconsents";
+						this.setFocused(false);
+						global.config.vendorConsentsRef.setFocused(true);
+					}
+					global.config.overviewRef.scrollDown();
+					break;
+   				}
    				me.focusedId--;
 				if(me.focusedId < 0) {
 					me.focusedId = 0;
 				}
-				if(me.focusedId == 0){
-   					me.setFocused(false);
-					global.config.focusObject = "summary";
-					global.config.overviewRef.focusedId = 4;
-					global.config.overviewRef.setFocused(true);
-					document.getElementsByClassName("summary_summary--39BrN")[0].style.position = "relative";
-					document.getElementsByClassName("summary_summary--39BrN")[0].style.top="0px";
-					break;
-   				}
 				me.setFocused(true);
 				break;
 			case 461:

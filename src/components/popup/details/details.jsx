@@ -76,8 +76,19 @@ export default class Details extends Component {
 				this.setFocused(true);
 				break;
 			case VK_UP:
-				global.config.focusObject = "summary";
-				global.config.overviewRef.setFocused(true);
+				if(global.config.overviewRef.activeTab == 0){ // Purposes
+					global.config.focusObject = "overview";
+					global.config.overviewRef.setFocusOnTabs(true);
+					global.config.overviewRef.onTabs = true;
+					global.config.overviewRef.activeConsent = 0;
+					global.config.overviewRef.scrollDown();
+				}else if (global.config.overviewRef.activeTab == 1){
+					global.config.focusObject = "vendorconsents";
+					global.config.vendorconsents.focusedId = 0;
+					global.config.vendorconsents.setFocused(true);
+					global.config.overviewRef.scrollDown();
+				}
+				
 				break;
 			case VK_DOWN:
 				break;

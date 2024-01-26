@@ -81,21 +81,21 @@ export default class Overview extends Component {
 
 	setFocused = (focus) => {
 		if(this.onTabs) this.setFocusOnTabs(true);
-		this.purposeClassname = "summary_learnMore--QHtl7";
+		
 		console.log("overview.jsx focus on : " + this.focusedId);
 		for(var i = 0; i< this.buttons.length ; i++){
 			if(focus){
 				if(i == this.focusedId){
 					console.log(this.buttons[i].id);
 					document.getElementById(this.buttons[i].id).style.color = "blue";
-					/*document.getElementsByClassName(this.purposesClassname)[i].style.color = "blue";*/
+					
 				}else{
 					document.getElementById(this.buttons[i].id).style.color = "#41afbb";
-					/*document.getElementsByClassName(this.purposesClassname)[i].style.color = "#41afbb";*/
+					
 				}
 			}else{
 				document.getElementById(this.buttons[i].id).style.color = "#41afbb";
-				/*document.getElementsByClassName(this.purposesClassname)[i].style.color = "#41afbb";*/
+				
 			}
 		}
 	}
@@ -142,10 +142,11 @@ export default class Overview extends Component {
 		switch(key){
 			case VK_DOWN:
 				this.activeConsent++;
+				if(this.activeConsent > 4) this.scrollUp();
 				if(this.activeConsent > this.consentBtns.length -1){ 		this.activeConsent = this.consentBtns.length-1;
 					this.setFocusOnConsent(false);
 					console.log("end of consents, go to basic menu, must scroll up ");
-					this.scrollUp();
+					
 					global.config.modalRef.focusedId = 1;
 					global.config.modalRef.setFocused(true);
 					global.config.focusObject = "modal";
@@ -156,6 +157,7 @@ export default class Overview extends Component {
 				this.setFocusOnConsent(true);
 				break;
 			case VK_UP:
+				if(this.activeConsent == 4) this.scrollDown();
 				this.activeConsent--;
 				if(this.activeConsent <0 ) {
 					this.activeConsent= 0;
@@ -210,7 +212,9 @@ export default class Overview extends Component {
 				break;
 			case VK_UP:
 				global.config.focusObject = "modal";
+				global.config.modalRef.focusedId = 0;
 				global.config.modalRef.setFocused(true);
+				this.setFocusOnTabs(false);
 				break;
 			case VK_DOWN:
 				//must handle consents ... should create consents.jsx
@@ -231,9 +235,7 @@ export default class Overview extends Component {
 	}
 
 	scrollDown = () => {
-		document.getElementsByClassName("summary_summary--39BrN")[0].style.position = "relative";
-		document.getElementsByClassName("summary_summary--39BrN")[0].style.top="0px";
-
+		document.getElementById("_overviewMainCont").style.top="0px";
 	}
 
 	handleKeyPress = (key) => {
