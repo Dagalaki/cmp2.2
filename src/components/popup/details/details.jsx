@@ -208,6 +208,8 @@ export default class Details extends Component {
                 
                 
 		const { selectedPurposeIds, selectedVendorIds, selectedLegIntPurposeIds } = vendorConsentData;
+		console.log("details.jsx selectedLegIntPurposeIds");
+		console.log(selectedLegIntPurposeIds);
 		const { selectedCustomPurposeIds } = publisherConsentData;
 		const { purposes = [], vendors = [] } = vendorList;
 		const { purposes: customPurposes = [] } = customPurposeList;
@@ -227,7 +229,8 @@ export default class Details extends Component {
                     });
                 }                
                 //console.log("[CMP LOG] details.jsx...visitedCustomPurposes (2)", this.visitedCustomPurposes, this.visitedCustomPurposes.length);
-                
+       
+       	console.log("one line before the bug...");         
 		const formattedVendors = Object.values(vendors)
 			.map(vendor => {
 				console.log('Current vendor:', vendor); // Log the current vendor

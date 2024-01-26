@@ -292,6 +292,7 @@ export default class Store {
 				legIntVendorMap[i] = vend && vendorMap[i] && vend.legIntPurposes && vend.legIntPurposes.length > 0;
 			}
 		}
+		this.vendorConsentData.selectedLegIntPurposeIds = legIntVendorMap;
 		console.log("vendorMap", vendorMap, "legint", legIntVendorMap);
 
 		const {uniquePurposes, uniqueLegIntPurposes} = this.getAllUniquePurposes(vendorList);
@@ -720,8 +721,14 @@ export default class Store {
 	
 				//const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
 				console.log("uniqueLegIntPurposes",uniqueLegIntPurposes);
+<<<<<<< Updated upstream
 				this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes);
 				console.log("this.vendorConsentData.selectedLegIntPurposeIds",this.vendorConsentData.selectedLegIntPurposeIds);
+=======
+				this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes.map(p => p.id));
+				console.log("@@@@@store.js");
+				console.log(this.vendorConsentData.selectedLegIntPurposeIds);
+>>>>>>> Stashed changes
 			}
 			console.log(this.vendorConsentData.selectedVendorIds);
 		}
