@@ -80,6 +80,7 @@ export default class Details extends Component {
 				if(global.config.activeElem == "vendorlist"){
 					global.config.focusObject = "vendorlist";
 					global.config.vendorlistRef.focusOnUpOption(true);
+					
 					break;
 				}
 				if(global.config.activeElem == "purposelist" ){
@@ -96,8 +97,8 @@ export default class Details extends Component {
 					global.config.overviewRef.scrollDown();
 				}else if (global.config.overviewRef.activeTab == 1){
 					global.config.focusObject = "vendorconsents";
-					global.config.vendorconsents.focusedId = 0;
-					global.config.vendorconsents.setFocused(true);
+					global.config.vendorConsentsRef.focusedId = 0;
+					global.config.vendorConsentsRef.setFocused(true);
 					global.config.overviewRef.scrollDown();
 				}
 				

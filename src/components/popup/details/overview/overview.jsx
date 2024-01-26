@@ -119,7 +119,7 @@ export default class Overview extends Component {
 
 	setFocusOnConsent = (focus) => {
 	this.onTabs = true;
-		console.log("focus on consent : " + this.activeConsent);
+		console.log("overview.jsx focus on consent : " + this.activeConsent);
 		for(var i=0; i< this.consentBtns.length; i++){
 			if(focus){
 				if(i == this.activeConsent) {
@@ -191,7 +191,7 @@ export default class Overview extends Component {
 
 	handleTabs = (key) => {
 		document.activeElement.blur();
-		console.log("handle tabs");
+		console.log("handle tabs active Tab: " + this.activeTab);
 		switch(key){
 			case VK_RIGHT:
 				this.activeTab++;
