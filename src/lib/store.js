@@ -677,7 +677,7 @@ export default class Store {
 		const {
 			created,
 			maxVendorId = 0,
-			selctedPurposeIds
+			selectedPurposeIds
 		} = this.vendorConsentData;
 		console.log("store.js : updateVendorList got vendorConsentData");
 		
@@ -713,19 +713,15 @@ export default class Store {
 			console.log(vendorList?"vendorList found":"vendorList not yet loaded");
 			if(vendorList){
 				console.log("store.js : updateVendorList getAllUniquePurposes");
-				if (typeof this.getAllUniquePurposes === 'function') {
-					console.log("getAllUniquePurposes is defined");
 
-					const { uniquePurposes, uniqueLegIntPurposes } = this.getAllUniquePurposes(vendorList);
+				const { uniquePurposes, uniqueLegIntPurposes } = this.getAllUniquePurposes(vendorList);
 
-					console.log("After calling getAllUniquePurposes", { uniquePurposes, uniqueLegIntPurposes });
-				} else {
-					console.error("getAllUniquePurposes is not defined");
-				}
+				console.log("After calling getAllUniquePurposes", { uniquePurposes, uniqueLegIntPurposes });
+	
 				//const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
 				console.log("uniqueLegIntPurposes",uniqueLegIntPurposes);
-				this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes.map(p => p.id));
-				console.log()
+				this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes);
+				console.log("this.vendorConsentData.selectedLegIntPurposeIds",this.vendorConsentData.selectedLegIntPurposeIds);
 			}
 			console.log(this.vendorConsentData.selectedVendorIds);
 		}
