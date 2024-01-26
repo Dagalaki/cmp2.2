@@ -63,7 +63,7 @@ export default class Details extends Component {
 
 	handleKeyPress = (key) =>{
 	document.activeElement.blur();
-	console.log("details.jsx " + key);
+	
 		switch(key){
 			case VK_RIGHT:
 				this.focusedId++;
@@ -76,6 +76,18 @@ export default class Details extends Component {
 				this.setFocused(true);
 				break;
 			case VK_UP:
+			
+				if(global.config.activeElem == "vendorlist"){
+					global.config.focusObject = "vendorlist";
+					global.config.vendorlistRef.focusOnUpOption(true);
+					break;
+				}
+				if(global.config.activeElem == "purposelist" ){
+					global.config.focusObject = "purposelist";
+					global.config.purposelistRef.focusOnUpOption(true);
+					break;
+				}
+
 				if(global.config.overviewRef.activeTab == 0){ // Purposes
 					global.config.focusObject = "overview";
 					global.config.overviewRef.setFocusOnTabs(true);
@@ -273,13 +285,13 @@ export default class Details extends Component {
 							onBack={this.handleBack}
 							onSave={onSave}
 							theme={theme}
-							setVendorListRef={ref => this.vendorListRef =ref}
+							setVendorListRef={ref => this.vendorListRef = global.config.vendorlistRef= ref}
 						/>
 						<PurposeList
 							onSave={onSave}
 							onBack={this.handleBack}
 							theme={theme}
-							setPurposeListRef={ref => this.purposeListRef = ref}
+							setPurposeListRef={ref => this.purposeListRef =global.config.purposelistRef= ref}
 						/>
 						<Vendors
 							vendors={formattedVendors}
@@ -318,7 +330,7 @@ export default class Details extends Component {
 					><LocalLabel localizeKey='acceptall'></LocalLabel></Button>
 					
 					
-					<Button id={"_save"}
+					<Button id={"_save"}  
 						class={style.save}
 						onClick={onSave}
 						backgroundColor={primaryColor}

@@ -13,10 +13,6 @@ export default class PurposeList extends Component {
 
 	constructor(props) {
 		super(props);
-		this.length = 2;
-		this.focusedId = 1;	
-		this.activeElem = null;
-		this.upOption = false;
 	}
 
 	static defaultProps = {
@@ -24,29 +20,7 @@ export default class PurposeList extends Component {
 		onSave: () => {}
 	};
 
-	setFocused = (focus) =>{
-		if(focus){
-			if(this.focusedId == 0){
-				document.getElementById("_back").style.color = "blue";
-				document.getElementById("_save").style.color = "white";
-			}else if(this.focusedId == 1){
-				document.getElementById("_back").style.color = "white";
-				document.getElementById("_save").style.color = "blue";
-			} 
-		}
-
-	}
-
-	setFocused2 = () =>{
-
-		for(var i = 0; i<length; i++){
-			if(i == this.focusedId ){
-				document.getElementsByClassName("button_button--lgX0P")[i].style.color = "blue";
-			}else {
-				document.getElementsByClassName("button_button--lgX0P")[i].style.color = "white";
-			}
-		}
-	}
+	
 
 	focusOnUpOption = (focus) =>{
 		if(focus){
@@ -56,27 +30,7 @@ export default class PurposeList extends Component {
 		}
 	}
 
-	handle = () =>{
-
-		var me = this;
-		if(this.upOption){
-			//do smth...
-			me.props.onBack();
-			return;
-		}
-
-		switch(this.focusedId){
-			case 0:
-				me.props.onBack();
-				break;
-			case 1:
-				console.log(me.props);
-				me.props.onSave();
-				break;
-			default:
-				break;
-		}
-	}
+	
 
 	handleKeyPress = (key) => {
 		var me = this;
@@ -85,31 +39,22 @@ export default class PurposeList extends Component {
 		switch(key){
 			case 13:
 				//enter
-				this.handle();
+				global.config.activeElem = null;
+				global.config.focusObject = "details";
+				this.props.onBack();
 				break;
 			case 40:
 				//down
-				this.upOption = false;
 				this.focusOnUpOption(false);
-				this.setFocused(true);
+				global.config.focusObject = "details";
+				global.config.detailsRef.setFocused(true);
 				break;
 			case 38:
 				//up
-				this.upOption = true;
-				this.focusOnUpOption(true);
-				this.setFocused(false);
-				break;
-			case 37:
-				//left
-				this.focusedId--;
-				if(this.focusedId < 0) this.focusedId = 0;
-				this.setFocused(true);
-				break;
-			case 39:
-				//right
-				this.focusedId++;
-				if(this.focusedId > this.length-1) this.focusedId = this.length-1;
-				this.setFocused(true);
+				this.focusOnUpOption(false);
+				global.config.focusObject = "modal";
+				global.config.modalRef.focusedId = 0;
+				global.config.modalRef.setFocused(true);
 				break;
 			default:
 				break;

@@ -37,17 +37,22 @@ export default class Popup extends Component {
 			case 1:
 				//summary.who.link
 				console.log("popup.jsx Who is using this information");
+				global.config.activeElem = "vendorlist";
+				global.config.focusObject = "details";
+				global.config.detailsRef.buttons[3] = {id:"_back", active:false};
 				me.props.onChangeDetailsPanel(Math.max(0, SECTION_VENDOR_LIST)); 
-				me.detailsRef.activeElem = "vendorList";
-				global.config.focusObject = "vendorList";
+				
+
 				break;
 			case 2:
 				//summary.what.link
 				console.log("popup.jsx What information is being used");
-				//store.toggleModalShowing(true);
+				
+				global.config.activeElem = "purposelist";
+				global.config.focusObject = "details";
+				if(!global.config.detailsRef.buttons[3]) global.config.detailsRef.buttons[3] = {id:"_back", active:false};
 				me.props.onChangeDetailsPanel(Math.max(0, SECTION_PURPOSE_LIST)); 
-				me.detailsRef.activeElem = "purposeList";
-				global.config.focusObject = "purposeList";
+				
 				break;
 			case 3:
 				console.log("popup.jsx onSave Continue Using site");
@@ -93,6 +98,15 @@ export default class Popup extends Component {
 
 	handleKeyPress = (key) => {
 
+		if(global.config.focusObject == "vendorlist"){
+			global.config.vendorlistRef.handleKeyPress(key);
+			return true;
+		}
+		if(global.config.focusObject == "purposelist"){
+			global.config.purposelistRef.handleKeyPress(key);
+			return true;
+		}
+
 		if(global.config.focusObject == "vendorconsents"){
 			global.config.vendorConsentsRef.handleKeyPress(key);
 			return true;
@@ -114,6 +128,8 @@ export default class Popup extends Component {
 			global.config.vendorsRef.handleKeyPress(key);
 			return true;
 		}
+
+		
 
 		if(this.detailsRef.activeElem == "purposeList" || global.config.focusObject == "purposeList"){
 			console.log("active elem is "  + this.detailsRef.activeElem);

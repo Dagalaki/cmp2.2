@@ -1,5 +1,6 @@
 
 module.exports = global.config = {
+	activeElem: null,
 	focusObject : null,
 	detailsRef: null,
 	summaryRef: null,
@@ -7,6 +8,8 @@ module.exports = global.config = {
 	modalRef:null,
 	overviewRef:null,
 	vendorConsentsRef:null,
+	vendorlistRef: null,
+	purposelistRed: null,
 	store:null
 	
 };
