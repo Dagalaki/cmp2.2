@@ -41,6 +41,7 @@ export default class PurposeList extends Component {
 				//enter
 				global.config.activeElem = null;
 				global.config.focusObject = "details";
+				global.config.detailsRef.setFocused(true);
 				this.props.onBack();
 				break;
 			case 40:
