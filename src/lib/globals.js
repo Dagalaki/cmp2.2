@@ -1,6 +1,7 @@
 
 module.exports = global.config = {
 	activeElem: null,
+	activeTab: null,
 	focusObject : null,
 	detailsRef: null,
 	summaryRef: null,
