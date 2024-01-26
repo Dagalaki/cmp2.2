@@ -76,7 +76,11 @@ export function init(configUpdates) {
 			console.log("init.js before fetching gvl");
 			// Request lists
 			return Promise.all([
-				fetchGlobalVendorList().then(store.updateVendorList),
+				fetchGlobalVendorList().then((vendorList) => {
+					store.vendorList = vendorList;
+					return vendorList;	
+				})
+				.then(store.updateVendorList),
 				fetchPurposeList().then(store.updateCustomPurposeList)
 			]).then(() => {
 				cmp.cmpReady = true;

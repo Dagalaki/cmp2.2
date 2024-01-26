@@ -684,6 +684,7 @@ export default class Store {
 	};
 	updateVendorList = vendorList => {
 		console.log("store.js : updateVendorList", vendorList);
+		console.trace();
 		//console.log("[CMP LOG] updateVendorList");
 		const {
 			allowedVendorIds
@@ -694,7 +695,9 @@ export default class Store {
 			maxVendorId = 0,
 			selctedPurposeIds
 		} = this.vendorConsentData;
-
+		console.log("store.js : updateVendorList got vendorConsentData");
+		
+		console.log("store.js : updateVendorList getAllUniquePurposes");
 		// Filter vendors in vendorList by allowedVendorIds
 		if (vendorList && vendorList.vendors && allowedVendorIds.size) {
 			const vendorIds = Object.keys(vendorList.vendors);
@@ -707,7 +710,7 @@ export default class Store {
 			//vendorList.vendors = vendorList.vendors.filter(({id}) => allowedVendorIds.has(id));
 		}
 		this.vendorList = vendorList;
-
+		console.log("store.js : updateVendorList updated vendorlist");
 		const {
 			vendors = [],
 			purposes = {},
@@ -721,9 +724,13 @@ export default class Store {
 			this.vendorConsentData.selectedPurposeIds = new Set(purposesArray.map(p => p.id));
 			console.log("selectedPurposeIds",this.vendorConsentData.selectedPurposeIds);
 			const vendorsArray = Object.values(vendors);
+			console.log("vendorsArray",vendorsArray);
 			this.vendorConsentData.selectedVendorIds = new Set(vendorsArray.map(v => v.id));
-			this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes.map(p => p.id));
-			
+			if(vendorList){
+				const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
+				console.log("uniqueLegIntPurposes",uniqueLegIntPurposes);
+				this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes.map(p => p.id));
+			}
 			console.log(this.vendorConsentData.selectedVendorIds);
 		}
 
