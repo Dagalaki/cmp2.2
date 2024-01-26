@@ -208,6 +208,7 @@ export default class Overview extends Component {
 				if(this.activeTab == 1){ //vendorconsents
 					global.config.focusObject ="vendorconsents";
 					global.config.vendorConsentsRef.setFocused(true);
+					this.setFocusOnTabs(false);
 				}
 				break;
 			case VK_UP:
@@ -220,7 +221,14 @@ export default class Overview extends Component {
 				//must handle consents ... should create consents.jsx
 				this.onConsents=true;
 				this.onTabs = false;
-				this.setFocusOnConsent(true);
+				if(this.activeTab == 0){ // purposes 
+					this.setFocusOnConsent(true);
+				}else if(this.activeTab == 1){// vendors
+					global.config.focusObject ="vendorconsents";
+					global.config.vendorConsentsRef.setFocused(true);
+					this.setFocusOnTabs(false);
+				}
+				
 				this.setFocusOnTabs(false);
 				break;
 			default:
