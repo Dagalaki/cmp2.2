@@ -181,12 +181,12 @@ export default class Popup extends Component {
 				if(me.focusedId == 1){
    					me.setFocused(false);
 					
-					if(global.config.overviewRef.activeTab == 0){// Purposes
+					if(global.config.activeTab == 0){// Purposes
 						this.setFocused(false);
 						global.config.focusObject = "overview";
 						global.config.overviewRef.setFocusOnConsent(true);
 						global.config.overviewRef.onConsents =true;
-					}else if(global.config.overviewRef.activeTab == 1){// Vendors
+					}else if(global.config.activeTab == 1){// Vendors
 						global.config.focusObject = "vendorconsents";
 						this.setFocused(false);
 						global.config.vendorConsentsRef.setFocused(true);

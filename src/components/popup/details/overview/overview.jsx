@@ -119,7 +119,7 @@ export default class Overview extends Component {
 
 	setFocusOnConsent = (focus) => {
 	this.onTabs = true;
-		console.log("focus on consent : " + this.activeConsent);
+		console.log("overview.jsx focus on consent : " + this.activeConsent);
 		for(var i=0; i< this.consentBtns.length; i++){
 			if(focus){
 				if(i == this.activeConsent) {
@@ -191,7 +191,7 @@ export default class Overview extends Component {
 
 	handleTabs = (key) => {
 		document.activeElement.blur();
-		console.log("handle tabs");
+		console.log("handle tabs active Tab: " + this.activeTab);
 		switch(key){
 			case VK_RIGHT:
 				this.activeTab++;
@@ -208,6 +208,7 @@ export default class Overview extends Component {
 				if(this.activeTab == 1){ //vendorconsents
 					global.config.focusObject ="vendorconsents";
 					global.config.vendorConsentsRef.setFocused(true);
+					this.setFocusOnTabs(false);
 				}
 				break;
 			case VK_UP:
@@ -220,7 +221,14 @@ export default class Overview extends Component {
 				//must handle consents ... should create consents.jsx
 				this.onConsents=true;
 				this.onTabs = false;
-				this.setFocusOnConsent(true);
+				if(this.activeTab == 0){ // purposes 
+					this.setFocusOnConsent(true);
+				}else if(this.activeTab == 1){// vendors
+					global.config.focusObject ="vendorconsents";
+					global.config.vendorConsentsRef.setFocused(true);
+					this.setFocusOnTabs(false);
+				}
+				
 				this.setFocusOnTabs(false);
 				break;
 			default:

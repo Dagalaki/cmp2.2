@@ -36,17 +36,18 @@ export default class VendorList extends Component {
 		switch(key){
 			case 13:
 				//enter
+				global.config.activeTab =1;
 				global.config.activeElem = null;
-				global.config.focusObject = "details";
-				global.config.detailsRef.setFocused(true);
+				global.config.focusObject = "modal";
+				global.config.modalRef.setFocused(true);
 				this.props.onBack();
 				break;
 			case 40:
 				//down
 				
 				this.focusOnUpOption(false);
-				global.config.focusObject = "details";
-				global.config.detailsRef.setFocused(true);
+				global.config.focusObject = "modal";
+				global.config.modalRef.setFocused(true);
 				break;
 			case 38:
 				//up
