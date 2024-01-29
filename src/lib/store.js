@@ -571,14 +571,18 @@ export default class Store {
 		});
 	};
 	selectAllVendors = (isSelected, purposeId) => {
+		
 		console.log("store.js : selectAllVendors");
 		const {vendors = {}} = this.vendorList || {};
 		const vendorArray = Object.values(vendors);
+		console.log("Vendor array: ");
+		console.log(vendorArray);
 		const operation = isSelected ? 'add' : 'delete';
 		//console.log("VENDORS BEFORE", "PURPOSE", purposeId, "LIST", this.vendorConsentData.selectedVendorIds);
-		vendorArray.forEach(({id, purposeIds = []}) => {
+		vendorArray.forEach(({id, purposes = []}) => {
 			// If a purposeId is supplied only toggle vendors that support that purpose
-			if (typeof purposeId !== 'number' || purposeIds.indexOf(purposeId) > -1) {
+			if (typeof purposeId !== 'number' || purposes.indexOf(purposeId) > -1) {
+				console.log("select vendor is " + id);
 				this.vendorConsentData.selectedVendorIds[operation](id);
 			}
 		});

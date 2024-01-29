@@ -129,6 +129,7 @@ export default class Details extends Component {
 		console.log("handlemain action: " +action);
 		switch(action){
 			case "_save":
+				alert("onSave");
 				this.props.onSave();
 				break;
 			case "_denyall":

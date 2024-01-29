@@ -247,6 +247,7 @@ export default class Overview extends Component {
 	}
 
 	handleKeyPress = (key) => {
+		if(global.config.focusObject != "overview") return true;
 
 		if(this.onConsents){
 			this.handleConsents(key);
@@ -472,7 +473,7 @@ console.log(legintpurposes);
 													color={primaryColor}
 													dataId={purposeItem.id}
 													id={"legInt_" + purposeItem.id}
-													isSelected={selectedLegIntPurposeIds.has(purposeItem.id)}
+													isSelected={selectedLegIntPurposeIds && selectedLegIntPurposeIds.has(purposeItem.id)}
 													onClick={this.handleSelectPurposeLegInt}
 												/>
 												<LocalLabel  id={"accept_" + purposeItem.id} localizeKey='links.purposes.consent'></LocalLabel> <Switch 
@@ -500,14 +501,7 @@ console.log(legintpurposes);
 					setVendorConsentsRef={ref => this.vendorConsentsRef= global.config.vendorConsentsRef = ref}
 				/>
 				<div class={detailsStyle.description} style="display:none; margin-bottom: 30px;">
-					<center>
-						<a id="acceptGeneral" class={detailsStyle.selectAllConds} onClick={this.handleGeneralePurposeClick(true)} style="background-color: #FFFFFF;display: block;float: left;width: 40%;margin: 0 5%0 5%;">
-							<SummaryLabel localizeKey='acceptAll'></SummaryLabel>
-						</a>
-						<a id="denyGeneral" class={detailsStyle.selectAllConds}  onClick={this.handleGeneralePurposeClick(false)} style={{color: textLinkColor}} style="background-color: #FFFFFF;display: block;float: left;width: 40%;margin: 0 5%0 5%;">
-							<SummaryLabel localizeKey='denyAll'></SummaryLabel>
-						</a>
-					</center>
+					
 				</div>
 				<div class={style.customPurposeSeparator}>
 					<LocalLabel localizeKey='links.purposes.titleCustom'></LocalLabel>

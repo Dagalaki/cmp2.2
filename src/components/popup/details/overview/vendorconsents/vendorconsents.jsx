@@ -60,6 +60,7 @@ export default class VendorConsents extends Component {
 	}
 
 	handleKeyPress = (key) => {
+	if(global.config.focusObject != "vendorconsents") return true;
 
 		switch(key){
 			case VK_UP:
@@ -169,7 +170,7 @@ for(var i=0; i< vendors.length; i++){
 													color={primaryColor}
 													dataId={id}
 													id={"legInt_" + id}
-													isSelected={selectedLegIntPurposeIds.has(id)}
+													isSelected={selectedLegIntPurposeIds && selectedLegIntPurposeIds.has(id)}
 													onClick={this.handleSelectPurposeLegInt}
 												/>
 												<LocalLabel  id={"accept_" + id} localizeKey='links.purposes.consent'></LocalLabel> <Switch 
