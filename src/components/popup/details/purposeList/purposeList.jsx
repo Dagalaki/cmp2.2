@@ -48,8 +48,8 @@ export default class PurposeList extends Component {
 			case 40:
 				//down
 				this.focusOnUpOption(false);
-				global.config.focusObject = "modal";
-				global.config.modalRef.setFocused(true);
+				global.config.focusObject = "details";
+				global.config.detailsRef.setFocused(true);
 				break;
 			case 38:
 				//up

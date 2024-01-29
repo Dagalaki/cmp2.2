@@ -46,8 +46,8 @@ export default class VendorList extends Component {
 				//down
 				
 				this.focusOnUpOption(false);
-				global.config.focusObject = "modal";
-				global.config.modalRef.setFocused(true);
+				global.config.focusObject = "details";
+				global.config.detailsRef.setFocused(true);
 				break;
 			case 38:
 				//up

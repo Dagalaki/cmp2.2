@@ -50,10 +50,14 @@ export default class Details extends Component {
 //main buttons, deny all accept all , continue to site
 
 	setFocused = (focus) =>{
-
+		console.log("details.jsx set focus buttons.length " + this.buttons.length);
+		console.log(this.buttons);
 		for(var i = 0; i< this.buttons.length; i++){
 			if(focus){
-				console.log(this.buttons[i].id);
+				
+				if(!document.getElementById(this.buttons[i].id)){
+					continue;
+				}
 				if(i == this.focusedId) document.getElementById(this.buttons[i].id).style.color = "blue";
 				else document.getElementById(this.buttons[i].id).style.color = "white";
 			}else document.getElementById(this.buttons[i].id).style.color = "white";
@@ -67,7 +71,12 @@ export default class Details extends Component {
 		switch(key){
 			case VK_RIGHT:
 				this.focusedId++;
-				if(this.focusedId > this.buttons.length-1) this.focusedId = this.buttons.length-1;
+				if(this.focusedId == 3 && !document.getElementById(this.buttons[3].id)){
+					this.focusedId = 2;
+				}
+				if(this.focusedId > this.buttons.length-1) {
+					this.focusedId = this.buttons.length-1;
+				}
 				this.setFocused(true);
 				break;
 			case VK_LEFT:
@@ -89,6 +98,7 @@ export default class Details extends Component {
 					break;
 				}
 
+				
 				if(global.config.overviewRef.activeTab == 0){ // Purposes
 					global.config.focusObject = "overview";
 					global.config.overviewRef.setFocusOnTabs(true);
@@ -145,6 +155,10 @@ export default class Details extends Component {
 		this.activeElem = null;
 		console.log("details.jsx handleBack");
 		this.props.onChangeDetailsPanel(SECTION_PURPOSES);
+		global.config.focusObject = "details";
+		global.config.detailsRef.focusedId =2;
+		global.config.activeElem = null;
+		global.config.detailsRef.setFocused(true);
 	}; 
 
 	handlePurposeClick = purposeItem => {
@@ -242,10 +256,10 @@ export default class Details extends Component {
 			.sort(({ name: n1 }, { name: n2 }) => n1.toLowerCase() === n2.toLowerCase() ? 0 : n1.toLowerCase() > n2.toLowerCase() ? 1 : -1);
 
 		
-		this.buttons[0] = {id:"_denyall", active:true};
+		/*this.buttons[0] = {id:"_denyall", active:true};
 		this.buttons[1] = {id:"_acceptall", active:true};
 		this.buttons[2] = {id:"_save", active:true};
-		/*this.buttons[3] = {id:"_back", active:false};
+		this.buttons[3] = {id:"_back", active:false};
 */
 
 
@@ -310,6 +324,31 @@ export default class Details extends Component {
 					</Panel>
 				</div>
 				<div class={style.footer} style={{ borderColor: dividerColor }}>
+					
+					
+					<Button id={"_denyall"}
+						class={style.save}
+						onClick={this.handleDenyAll}
+						backgroundColor={secondaryColor}
+						textColor={secondaryTextColor}
+					><LocalLabel localizeKey='denyall'></LocalLabel></Button>
+					{this.buttons[0] = {id:"_denyall", active:true}}
+					<Button id={"_acceptall"}
+						class={style.save}
+						onClick={this.handleAcceptAll}
+						backgroundColor={secondaryColor}
+						textColor={secondaryTextColor}
+					><LocalLabel localizeKey='acceptall'></LocalLabel></Button>
+					{this.buttons[1] = {id:"_acceptall", active:true}}
+					
+					<Button id={"_save"}  
+						class={style.save}
+						onClick={onSave}
+						backgroundColor={primaryColor}
+						textColor={secondaryTextColor}
+					><LocalLabel localizeKey='save'></LocalLabel></Button>
+					{this.buttons[2] = {id:"_save", active:true}}
+
 					{selectedPanelIndex > 0 &&
 					<Button id={"_back"}
 						class={style.back}
@@ -318,28 +357,7 @@ export default class Details extends Component {
 						textColor={secondaryTextColor}
 					>&lt; <LocalLabel localizeKey='back'></LocalLabel></Button>
 					}
-					
-					<Button id={"_denyall"}
-						class={style.save}
-						onClick={this.handleDenyAll}
-						backgroundColor={secondaryColor}
-						textColor={secondaryTextColor}
-					><LocalLabel localizeKey='denyall'></LocalLabel></Button>
-					
-					<Button id={"_acceptall"}
-						class={style.save}
-						onClick={this.handleAcceptAll}
-						backgroundColor={secondaryColor}
-						textColor={secondaryTextColor}
-					><LocalLabel localizeKey='acceptall'></LocalLabel></Button>
-					
-					
-					<Button id={"_save"}  
-						class={style.save}
-						onClick={onSave}
-						backgroundColor={primaryColor}
-						textColor={"blue"}
-					><LocalLabel localizeKey='save'></LocalLabel></Button>
+					{this.buttons[3] = {id:"_back", active:true}}
 				</div>
 			</div>
 		);

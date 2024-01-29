@@ -49,6 +49,7 @@ export default class Banner extends Component {
 				break;
 			case 1:
 				console.log("banner.jsx: Manage Your Choices");
+
 				me.handleLearnMore();
 				break;
 			case 2:
@@ -208,6 +209,7 @@ export default class Banner extends Component {
 
 	handleLearnMore = () => {
 		this.props.onShowModal(true);
+		global.config.detailsRef.setFocused(true);
 	};
 
 	handlePurposeItemClick = purposeItem => {

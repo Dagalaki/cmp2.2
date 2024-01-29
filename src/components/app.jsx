@@ -85,7 +85,7 @@ export default class App extends Component {
 		this.setState({
 			selectedDetailsPanelIndex: Math.max(0, panelIndex)
 		});
-                
+        global.config.detailsRef.setFocused(true);     
 	};
 	onGeneralAcceptance = state => {
 		//console.log("ENDED BY HERE", state);    

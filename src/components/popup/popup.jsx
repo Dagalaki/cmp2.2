@@ -39,7 +39,7 @@ export default class Popup extends Component {
 				console.log("popup.jsx Who is using this information");
 				global.config.activeElem = "vendorlist";
 				global.config.focusObject = "details";
-				global.config.detailsRef.buttons[3] = {id:"_back", active:false};
+				global.config.detailsRef.buttons[3] = {id:"_back", active:true};
 				me.props.onChangeDetailsPanel(Math.max(0, SECTION_VENDOR_LIST)); 
 				
 
@@ -50,7 +50,7 @@ export default class Popup extends Component {
 				
 				global.config.activeElem = "purposelist";
 				global.config.focusObject = "details";
-				if(!global.config.detailsRef.buttons[3]) global.config.detailsRef.buttons[3] = {id:"_back", active:false};
+				if(!global.config.detailsRef.buttons[3]) global.config.detailsRef.buttons[3] = {id:"_back", active:true};
 				me.props.onChangeDetailsPanel(Math.max(0, SECTION_PURPOSE_LIST)); 
 				
 				break;
