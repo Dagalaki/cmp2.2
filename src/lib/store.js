@@ -693,6 +693,10 @@ export default class Store {
 			});
 			vendorList.vendors = filteredVendors;
 			//vendorList.vendors = vendorList.vendors.filter(({id}) => allowedVendorIds.has(id));
+			const { uniquePurposes, uniqueLegIntPurposes } = this.getAllUniquePurposes(vendorList);
+			this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes);
+			console.log("this.vendorConsentData.selectedLegIntPurposeIds",this.vendorConsentData.selectedLegIntPurposeIds);
+			
 		}
 		this.vendorList = vendorList;
 		console.log("store.js : updateVendorList updated vendorlist");
@@ -721,14 +725,9 @@ export default class Store {
 	
 				//const {uniquePurposes, uniqueLegIntPurposes} = getAllUniquePurposes(vendorList);
 				console.log("uniqueLegIntPurposes",uniqueLegIntPurposes);
-<<<<<<< Updated upstream
+
 				this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes);
 				console.log("this.vendorConsentData.selectedLegIntPurposeIds",this.vendorConsentData.selectedLegIntPurposeIds);
-=======
-				this.vendorConsentData.selectedLegIntPurposeIds = new Set(uniqueLegIntPurposes.map(p => p.id));
-				console.log("@@@@@store.js");
-				console.log(this.vendorConsentData.selectedLegIntPurposeIds);
->>>>>>> Stashed changes
 			}
 			console.log(this.vendorConsentData.selectedVendorIds);
 		}
