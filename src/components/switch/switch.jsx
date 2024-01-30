@@ -19,6 +19,7 @@ export default class Switch extends Component {
 	render(props) {
 		const {
 			id,
+			inputId, 
 			isSelected,
 			isDisabled,
 			color
@@ -29,7 +30,7 @@ export default class Switch extends Component {
 				class={[style.switch, props.class, isSelected ? style.isSelected : ''].join(' ')}
 				onClick={this.handleClicked}
 			>
-				<input 
+				<input id={inputId}
 					checked={isSelected}
 					className={style.native}
 					disabled={isDisabled}

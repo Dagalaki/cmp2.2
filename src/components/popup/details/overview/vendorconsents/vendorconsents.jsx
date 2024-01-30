@@ -30,6 +30,8 @@ export default class VendorConsents extends Component {
 		this.buttons = [];
 		this.pursposesClassname = null;
 		this.focusedId = 0;
+		this.columnId = 0;
+		this.columnsLength= 3;
 	}
 
 	static defaultProps = {
@@ -43,25 +45,41 @@ export default class VendorConsents extends Component {
 	setFocused = (focus) => {
 		console.log("vendorconsents.jsx focus on : " + this.focusedId);
 		for(var i=0; i< this.buttons.length; i++){
+			var o = document.getElementById("row_" + i);
 			if(focus){
 				if(i == this.focusedId) {
-					document.getElementById("check_"+this.buttons[i].id).style.opacity = "0.3";
-					document.getElementById("check_"+this.buttons[i].id).style.transform = "scale(1.556)";
-					//classList.add("consentfocus");
+					document.getElementById("check_"+this.buttons[i].id).style.opacity = "0";
+					document.getElementById("check_"+this.buttons[i].id).style.transform = "none";
+					o.getElementsByClassName("policyurlTag")[0].style.color="black";
+					o.getElementsByClassName("legintclaimurlTag")[0].style.color="black";
+console.log("COLUMNID : "+this.columnId);
+					if(this.columnId == 0){
+						document.getElementById("check_"+this.buttons[i].id).style.opacity = "0.3";
+						document.getElementById("check_"+this.buttons[i].id).style.transform = "scale(1.556)";
+						//classList.add("consentfocus");
+					}else if(this.columnId == 1){
+						o.getElementsByClassName("policyurlTag")[0].style.color="blue";
+					}else if(this.columnId == 2){
+						o.getElementsByClassName("legintclaimurlTag")[0].style.color="blue";
+					}
 				}else{
 					 document.getElementById("check_"+this.buttons[i].id).style.opacity = "0";
 					document.getElementById("check_"+this.buttons[i].id).style.transform = "none";
+					o.getElementsByClassName("policyurlTag")[0].style.color="black";
+					o.getElementsByClassName("legintclaimurlTag")[0].style.color="black";
 				}
 			}else {
 				document.getElementById("check_"+this.buttons[i].id).style.opacity = "0";
 					document.getElementById("check_"+this.buttons[i].id).style.transform = "none)";
+					o.getElementsByClassName("policyurlTag")[0].style.color="black";
+					o.getElementsByClassName("legintclaimurlTag")[0].style.color="black";
 			}
 		}
 	}
 
 	handleKeyPress = (key) => {
 	if(global.config.focusObject != "vendorconsents") return true;
-
+document.activeElement.blur();
 		switch(key){
 			case VK_UP:
 				this.focusedId--;
@@ -90,18 +108,21 @@ export default class VendorConsents extends Component {
 				this.setFocused(true);
 				break;
 			case VK_LEFT:
-				var dataId = this.buttons[this.focusedId].id;
-				var isSelected = true;
-				this.handleSelectVendorConsent({dataId, isSelected: !isSelected});
+				this.columnId--;
+				if(this.columnId <0 ){
+					this.columnId = 0;
+				}
+				this.setFocused(true);
 				break;
 			case VK_RIGHT:
-				var dataId = this.buttons[this.focusedId].id;
-				var isSelected = false;
-				this.handleSelectVendorConsent({dataId, isSelected: !isSelected});
+				this.columnId++;
+				if(this.columnId > this.columnsLength-1) this.columnId = this.columnsLength-1;
+				this.setFocused(true);
 				break;
 			case VK_ENTER:
 				var dataId = this.buttons[this.focusedId].id;
-				var isSelected = false;
+				var ind = "check_vendor_" + this.buttons[this.focusedId].id;
+				var isSelected = document.getElementById(ind).checked;
 				this.handleSelectVendorConsent({dataId, isSelected: !isSelected});
 				break;
 			default:
@@ -191,14 +212,14 @@ for(var i=0; i< vendors.length; i++){
 			class={style.purposeItems}>
 					{vendors.map(({cookieMaxAgeSeconds, cookieRefresh, dataRetention, id, name, purposes: purposeIds, policyUrl, policyUrlDisplay, urls}, index) => (
 
-						<div  class={style.purposeItem} >
+						<div id={"row_" + index}  class={style.purposeItem} >
 							<div class="vrow">
 							<div class={style.vendorName}>
 											{name}
 											
 										</div>
 							<table>
-								<tr>
+								<tr >
 									<td class={style2.allowColumn}>
 										{id > -1 ?
 											<span   class={style2.allowSwitch}>
@@ -213,6 +234,7 @@ for(var i=0; i< vendors.length; i++){
 													color={primaryColor}
 													dataId={id}
 													id={"check_" + id}
+													inputId={"check_vendor_" + id}
 													isSelected={selectedVendorIds.has(id)}
 													onClick={this.handleSelectVendoConsent}
 												/>
@@ -220,13 +242,13 @@ for(var i=0; i< vendors.length; i++){
 											<VendorsLabel localizeKey='optOut'>requires opt-out</VendorsLabel>
 											
 										}
-											<span>Policy Url</span>
+											<span class="policyurlTag">Policy Url</span>
 											<span>
-												<a href={urls[0].privacy} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
+												<a  href={urls[0].privacy} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
 											</span>
-											<span>LegInt Url</span>
+											<span class="legintclaimurlTag">LegInt Url</span>
 											<span>
-												<a href={urls[0].legIntClaim} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
+												<a  href={urls[0].legIntClaim} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
 											</span>
 									</td>
 								</tr>
