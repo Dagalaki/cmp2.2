@@ -236,6 +236,19 @@ export default class Overview extends Component {
 		}
 	}
 
+	getVendorsStr = (purposeId) =>{
+		const phaistos = [1,3,4];
+		const doubleVerify = [2,7,10];
+
+		var str = "";
+
+		if(phaistos.includes(purposeId)) str += "Phaistos, ";
+		if(doubleVerify.includes(purposeId)) str += "DoubleVerify, ";
+
+		 str = str.slice(0, -2);
+		 return str; 
+	}
+
 	scrollUp = (top) => {
 		document.getElementById("_overviewMainCont").style.position = "relative";
 		if(!top)document.getElementById("_overviewMainCont").style.top="-355px";
@@ -421,14 +434,7 @@ console.log(filteredPurposes);
 		this.buttons[1] = {id:"wholink"};
 		this.buttons[2] = {id:"whatlink"};
 
-console.log("Filtered Leg Int Purposes: ");
-console.log(filteredLegIntPurposes);
-/*var me =this;
-const legintpurposes = filteredLegIntPurposes.map(function(purposeItem, me) {
-	me.handleSelectPurposeLegInt(purposeItem.id, true);
-});
-console.log(legintpurposes);
-*/
+
                // console.log("visitedCustomPurposes", visitedCustomPurposes);
 		return (
 			<div id="_overviewMainCont"
@@ -463,11 +469,15 @@ console.log(legintpurposes);
 					{Object.values(filteredPurposes).map((purposeItem, index) => (
 						
 						<div  class={style.purposeItem} style={{borderColor: dividerColor}}>
-							<span class={style.purposeTitle}><PurposesLabel localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel></span>
+							<span class={style.purposeTitle}><PurposesLabel localizeKey={`purpose${purposeItem.id}.menu`}>{purposeItem.name}</PurposesLabel>
+							<br/>
+							<label style="font-size: 12px;font-weight: bold;color: black;">{this.getVendorsStr(purposeItem.id)}</label>
+							</span>
+
 							<table>
 								<tr>
 									<td class={style2.allowColumn}>
-										{purposeItem.id > -1 ?
+										{purposeItem.id > -1 && selectedLegIntPurposeIds.has(purposeItem.id) ?
 											<span   class={style2.allowSwitch}>
 												<LocalLabel  id={"legint_accept_" + purposeItem.id} localizeKey='links.purposes.legInt'></LocalLabel> <Switch 
 													color={primaryColor}
@@ -484,7 +494,15 @@ console.log(legintpurposes);
 													onClick={this.handleSelectPurposeConsent}
 												/>
 											</span> :
-											<VendorsLabel localizeKey='optOut'>requires opt-out</VendorsLabel>
+											<span>
+											<LocalLabel  id={"accept_" + purposeItem.id} localizeKey='links.purposes.consent'></LocalLabel> <Switch 
+													color={primaryColor}
+													dataId={purposeItem.id}
+													id={"check_" + purposeItem.id}
+													isSelected={selectedPurposeIds.has(purposeItem.id)}
+													onClick={this.handleSelectPurposeConsent}
+												/>
+												</span>
 										}
 									</td>
 								</tr>

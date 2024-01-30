@@ -448,8 +448,8 @@ export default class Store {
 			 // Iterate through 'tcloaded' event listeners
 			//
 			console.log("EVNT LISTENERS", self.cmp, typeof self.cmp.eventListeners);
-			console.log(Object.values(self.cmp.eventListeners));
-			console.log(Object.values(self.cmp.eventListeners).flat());
+			//console.log(Object.values(self.cmp.eventListeners));
+			//console.log(Object.values(self.cmp.eventListeners).flat());
 			for (const [key, value] of Object.entries(self.cmp.eventListeners)){	
 				var callback = value;
 				var listenerId = key;
@@ -485,6 +485,7 @@ export default class Store {
 			 for(var i=1;i<=11; i++){
 			 	purposeMap[i] = (tcData.purpose.consents[i])? 1: 0;
 			 }
+			 console.log("send to Database : ");
 			 var url = "sendToDB.php?vendors="+Object.values(vendorMap).join("") + "&purposes="+Object.values(purposeMap).join("");
 			 console.log(">>>>>>>>> store.js send to DB: " + url);
 			 createHttpRequest(url, function(ret){
