@@ -597,6 +597,7 @@ export default class Store {
 		console.log("BEFORE", this.vendorConsentData.selectedPurposeIds);
 		if (isSelected) {
 			selectedPurposeIds.add(purposeId);
+			selectedLegIntPurposeIds.add(purposeId);
 		} else {
 			selectedPurposeIds.delete(purposeId);
 			selectedLegIntPurposeIds.delete(purposeId);

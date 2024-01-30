@@ -6,7 +6,9 @@ import detailsStyle from '../../details.less';
 import Label from "../../../../label/label";
 import '../../../../../lib/globals';
 import ExternalLinkIcon from '../../../../externallinkicon/externallinkicon'
-
+/*import QRCodeGenerator from './QRCodeGenerator/QRCodeGenerator'
+*/
+/*import QRCode from 'qrcode.react';*/
 
 export const VK_LEFT = 37;
 export const VK_RIGHT = 39;
@@ -32,6 +34,7 @@ export default class VendorConsents extends Component {
 		this.focusedId = 0;
 		this.columnId = 0;
 		this.columnsLength= 3;
+		this.qrCodeGeneratorRef = null;
 	}
 
 	static defaultProps = {
@@ -42,6 +45,17 @@ export default class VendorConsents extends Component {
 		selectedPurposeDetails: {}
 	};
 
+	
+	/*handleQRCodeGeneration = () => {
+	    url = "www.test.org";
+	    QRCode.toDataURL(url, { width: 300 }, (err, dataUrl) => {
+	      
+	      if (err) console.error(err);
+	      // set dataUrl state to dataUrl
+	      setDataUrl(dataUrl);
+	    });
+	  };
+*/
 	setFocused = (focus) => {
 		console.log("vendorconsents.jsx focus on : " + this.focusedId);
 		for(var i=0; i< this.buttons.length; i++){
@@ -120,6 +134,10 @@ document.activeElement.blur();
 				this.setFocused(true);
 				break;
 			case VK_ENTER:
+				/*if(this.columnId != 0){
+					this.handleQRCodeGeneration();
+					break;
+				}*/
 				var dataId = this.buttons[this.focusedId].id;
 				var ind = "check_vendor_" + this.buttons[this.focusedId].id;
 				var isSelected = document.getElementById(ind).checked;
@@ -202,6 +220,7 @@ for(var i=0; i< vendors.length; i++){
 			}
 
 		return (
+
 			<div id="_vendorConsents" style="display:none" 
 			ref={el => {
 					this.vendorConsentsRef = el;
