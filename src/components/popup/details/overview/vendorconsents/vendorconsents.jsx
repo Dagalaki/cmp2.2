@@ -134,9 +134,9 @@ secondsToDhms = (seconds) => {
 	var m = Math.floor(seconds % 3600 / 60);
 	var s = Math.floor(seconds % 60);
 
-	var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
-	var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-	var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+	var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days ") : "";
+	var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours ") : "";
+	var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes ") : "";
 	var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
 	return dDisplay + hDisplay + mDisplay + sDisplay;
 	}
@@ -189,13 +189,13 @@ for(var i=0; i< vendors.length; i++){
   					}
 				}}
 			class={style.purposeItems}>
-					{vendors.map(({cookieMaxAgeSeconds, cookieRefresh, dataRetention, id, name, purposes: purposeIds, policyUrl, policyUrlDisplay}, index) => (
+					{vendors.map(({cookieMaxAgeSeconds, cookieRefresh, dataRetention, id, name, purposes: purposeIds, policyUrl, policyUrlDisplay, urls}, index) => (
 
 						<div  class={style.purposeItem} >
 							<div class="vrow">
 							<div class={style.vendorName}>
 											{name}
-											<a href={policyUrl} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
+											
 										</div>
 							<table>
 								<tr>
@@ -218,12 +218,21 @@ for(var i=0; i< vendors.length; i++){
 												/>
 											</span> :
 											<VendorsLabel localizeKey='optOut'>requires opt-out</VendorsLabel>
+											
 										}
+											<span>Policy Url</span>
+											<span>
+												<a href={urls[0].privacy} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
+											</span>
+											<span>LegInt Url</span>
+											<span>
+												<a href={urls[0].legIntClaim} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
+											</span>
 									</td>
 								</tr>
 							</table>
 							</div>
-							<div class="vrow" style="position:relative; left:100px">
+							<div class="vrow" style="position:relative; left:10px">
 							<table style="text-align:left">
 							<tr><th>Maximum Device Storage: </th><td>{this.secondsToDhms(cookieMaxAgeSeconds)}</td></tr>
 							<tr><th>Refresh State: </th><td>{this.mayRefresh(cookieRefresh)}</td></tr>
