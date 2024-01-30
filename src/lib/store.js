@@ -591,6 +591,7 @@ export default class Store {
 		this.selectPurpose(purposeId, isSelected);
 		this.storeUpdate();
 	};
+	
 	selectPurpose = (purposeId, isSelected) => {
 		console.log("store.js : selectPurpose");
 		const {selectedPurposeIds, selectedLegIntPurposeIds} = this.vendorConsentData;
