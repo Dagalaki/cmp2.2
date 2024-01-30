@@ -4,6 +4,13 @@ import detailsStyle from '../details.less';
 import ExternalLinkIcon from '../../../externallinkicon/externallinkicon';
 import Label from "../../../label/label";
 
+export const VK_LEFT = 37;
+export const VK_RIGHT = 39;
+export const VK_UP = 38;
+export const VK_DOWN = 40;
+export const VK_ENTER = 13;
+export const VK_BACK = 461;
+
 class LocalLabel extends Label {
 	static defaultProps = {
 		prefix: 'vendors'
@@ -34,7 +41,7 @@ export default class VendorList extends Component {
 		
 		document.activeElement.blur();
 		switch(key){
-			case 13:
+			case VK_ENTER:
 				//enter
 				global.config.activeTab =1;
 				global.config.activeElem = null;
@@ -42,14 +49,14 @@ export default class VendorList extends Component {
 				global.config.modalRef.setFocused(true);
 				this.props.onBack();
 				break;
-			case 40:
+			case VK_DOWN:
 				//down
 				
 				this.focusOnUpOption(false);
 				global.config.focusObject = "details";
 				global.config.detailsRef.setFocused(true);
 				break;
-			case 38:
+			case VK_UP:
 				//up
 				
 				this.focusOnUpOption(false);

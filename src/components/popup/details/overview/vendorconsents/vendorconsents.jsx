@@ -81,7 +81,7 @@ export default class VendorConsents extends Component {
 					this.focusedId = this.buttons.length-1;
 					this.setFocused(false);
 					console.log("end of consents, go to basic menu, must scroll up ");
-					global.config.overviewRef.scrollUp(100);
+					global.config.overviewRef.scrollUp(200);
 					global.config.modalRef.focusedId = 1;
 					global.config.modalRef.setFocused(true);
 					global.config.focusObject = "modal";
@@ -107,6 +107,38 @@ export default class VendorConsents extends Component {
 			default:
 				break;
 		}
+	}
+
+
+mayRefresh = (val) =>{
+	if(val == false ) return "No Refresh";
+	else return "May Refresh";
+}
+	
+	toHHMMSS = (secs) => {
+    var sec_num = parseInt(secs, 10)
+    var hours   = Math.floor(sec_num / 3600)
+    var minutes = Math.floor(sec_num / 60) % 60
+    var seconds = sec_num % 60
+
+    return [hours,minutes,seconds]
+        .map(v => v < 10 ? "0" + v : v)
+        .filter((v,i) => v !== "00" || i > 0)
+        .join(":")
+	}
+
+secondsToDhms = (seconds) => {
+	seconds = Number(seconds);
+	var d = Math.floor(seconds / (3600*24));
+	var h = Math.floor(seconds % (3600*24) / 3600);
+	var m = Math.floor(seconds % 3600 / 60);
+	var s = Math.floor(seconds % 60);
+
+	var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
+	var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+	var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+	var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+	return dDisplay + hDisplay + mDisplay + sDisplay;
 	}
 
 	handleSelectVendorConsent = ({dataId, isSelected}) => {
@@ -140,6 +172,9 @@ const {
 const validVendors = vendors
 			.filter(({legIntPurposes = [], purposes = []}) => legIntPurposes.indexOf(selectedPurposeId) > -1 || purposes.indexOf(selectedPurposeId) > -1);
 
+console.log("Vendors: ");
+console.log(vendors);
+
 for(var i=0; i< vendors.length; i++){
 				var id = vendors[i].id;
 				this.buttons[i] = {id: id};
@@ -154,9 +189,10 @@ for(var i=0; i< vendors.length; i++){
   					}
 				}}
 			class={style.purposeItems}>
-					{vendors.map(({id, name, purposes: purposeIds, policyUrl, policyUrlDisplay}, index) => (
+					{vendors.map(({cookieMaxAgeSeconds, cookieRefresh, dataRetention, id, name, purposes: purposeIds, policyUrl, policyUrlDisplay}, index) => (
 
 						<div  class={style.purposeItem} >
+							<div class="vrow">
 							<div class={style.vendorName}>
 											{name}
 											<a href={policyUrl} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
@@ -186,6 +222,15 @@ for(var i=0; i< vendors.length; i++){
 									</td>
 								</tr>
 							</table>
+							</div>
+							<div class="vrow" style="position:relative; left:100px">
+							<table style="text-align:left">
+							<tr><th>Maximum Device Storage: </th><td>{this.secondsToDhms(cookieMaxAgeSeconds)}</td></tr>
+							<tr><th>Refresh State: </th><td>{this.mayRefresh(cookieRefresh)}</td></tr>
+							<tr><th>Retention Period: </th><td>{dataRetention.stdRetention} days</td></tr>
+							</table>
+							
+							</div>
 						</div>
 					))}
 				</div>
