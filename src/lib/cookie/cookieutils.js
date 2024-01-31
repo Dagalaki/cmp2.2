@@ -7,6 +7,30 @@ import {
 console.log("vendorVersionMap", vendorVersionMap);
 const SIX_BIT_ASCII_OFFSET = 65;
 
+function setCookie(key, value, expireDays, expireHours, expireMinutes, expireSeconds) {
+        var expireDate = new Date();
+        if (expireDays) {
+            expireDate.setDate(expireDate.getDate() + expireDays);
+        }
+        if (expireHours) {
+            expireDate.setHours(expireDate.getHours() + expireHours);
+        }
+        if (expireMinutes) {
+            expireDate.setMinutes(expireDate.getMinutes() + expireMinutes);
+        }
+        if (expireSeconds) {
+            expireDate.setSeconds(expireDate.getSeconds() + expireSeconds);
+        }
+        document.cookie = key +"="+ escape(value) +
+            ";domain="+ window.location.hostname +
+            ";path=/"+
+            ";expires="+expireDate.toUTCString();
+    }
+
+    function deleteCookie(name) {
+        setCookie(name, "", null , null , null, 1);
+    }
+
 function repeat(count, string='0') {
 	let padString = '';
 	for (let i = 0; i < count; i++) {
@@ -363,12 +387,14 @@ function decodeCookieValue(cookieValue, definitionMap, includeFields) {
 
 function decodeCookieBitValue(bitString, definitionMap, includeFields) {
 	const cookieVersion = decodeBitsToInt(bitString, 0, NUM_BITS_VERSION);
+	
 	console.log("Version:",cookieVersion);
 	if (typeof cookieVersion !== 'number') {
 		console.error('Could not find cookieVersion to decode');
 		return {};
 	}
 	else if (!vendorVersionMap[cookieVersion]) {
+		deleteCookie("euconsent");
 		console.error(`Could not find definition to decode cookie version ${cookieVersion}`);
 		return {};
 	}
