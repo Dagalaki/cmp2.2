@@ -32,6 +32,7 @@ export default class Banner extends Component {
 
 	constructor(props) {
 		super(props);
+		this.ulTop = 0;
 		this.rmlength = 3;
 		this.rmfocusedId = 2;
 		this.rmfocusedIdBullet = 0;
@@ -75,13 +76,24 @@ export default class Banner extends Component {
 		}
 	};
 
+	scrollULListUp = () =>{
+		this.ulTop -= 300;
+		document.getElementsByClassName("banner_content--1bZDZ")[0].style.top = this.ulTop+"px";
+		document.getElementsByClassName("banner_content--1bZDZ")[0].style.position = "relative";
+	}
+
+	scrollULListDown = () =>{
+		this.ulTop += 300;
+		document.getElementsByClassName("banner_content--1bZDZ")[0].style.top = this.ulTop+"px";
+		document.getElementsByClassName("banner_content--1bZDZ")[0].style.position = "relative";
+	}
+
 	ulsetFocused = (focus)=>{
 
-			
-
+		
 		var ullist = document.getElementById("purpose-list").getElementsByTagName("li");
 		
-		if(this.ulfocusedId == ullist.length-1){
+		/*if(this.ulfocusedId == ullist.length-1){
 				document.getElementsByClassName("banner_content--1bZDZ")[0].style.top = "-220px";
 				document.getElementsByClassName("banner_content--1bZDZ")[0].style.position = "relative";
 			}
@@ -89,7 +101,7 @@ export default class Banner extends Component {
 				document.getElementsByClassName("banner_content--1bZDZ")[0].style.top = "-0px";
 				document.getElementsByClassName("banner_content--1bZDZ")[0].style.position = "relative";
 			}
-
+*/
 		for(var i=0; i<ullist.length; i++){
 			if(focus){
 				if(i == this.ulfocusedId ) ullist[i].getElementsByTagName("a")[0].style.color = "blue";
@@ -144,7 +156,7 @@ export default class Banner extends Component {
 		}
 		var me =this;
 		for(var i=0; i < this.RMB.length; i++){
-			//console.log(i,me.rmfocusedIdBullet,  this.RMB[i]) ;
+			console.log(i,me.rmfocusedIdBullet,  this.RMB[i]) ;
 			if(i == me.rmfocusedIdBullet){
 				
 
@@ -206,8 +218,11 @@ export default class Banner extends Component {
 					this.ulsetFocused(false);
 					global.config.focusObject = null;
 					this.rmfocusedIdBullet = 0;
-					rmsetFocusedBullets();
+					this.rmsetFocusedBullets();
+					break;
 				}
+				if([3, 6, 9].includes(this.ulfocusedId)) this.scrollULListDown();
+
 				this.ulsetFocused(true);
 				break;
 			case VK_DOWN:
@@ -218,8 +233,11 @@ export default class Banner extends Component {
 					this.ulsetFocused(false);
 					global.config.focusObject = null;
 					this.rmfocusedIdBullet = 2;
-					rmsetFocusedBullets();
+					this.rmsetFocusedBullets();
+					break;
 				}
+				if([4, 7, 10].includes(this.ulfocusedId)) this.scrollULListUp();
+
 				this.ulsetFocused(true);
 				break;
 			case VK_ENTER:
@@ -243,7 +261,7 @@ export default class Banner extends Component {
 
 		var me = this;
 			console.log("banner.jsx : handle key press " + key);
-   			if(key == 13){
+   			if(key == VK_ENTER){
    				console.log("key is ENTER");
    				if(!me.onBullets){
    					me.rmhandle();
@@ -252,19 +270,19 @@ export default class Banner extends Component {
    						document.querySelector("[class^=banner_learnMore--").click();
    					}
    				}
-   			}else if (key == 37){
+   			}else if (key == VK_LEFT){
    				console.log("key is LEFT");
    				if(!me.onBullets){
    					me.onBullets = true;
    					me.rmsetFocusedBullets();
    				}
-   			}else if (key == 39) {
+   			}else if (key == VK_RIGHT) {
    				console.log("key is RIGHT");
    				if(me.onBullets){
    					me.onBullets = false;
    					me.rmsetFocused();
    				}
-   			}else if(key == 40){
+   			}else if(key == VK_DOWN){
    				console.log("key is DOWN");
    				console.log("in bullets:"+me.onBullets);
    				if(me.onBullets){
@@ -273,9 +291,8 @@ export default class Banner extends Component {
 					if(me.rmfocusedIdBullet > me.RMB.length - 1) {
 						me.rmfocusedIdBullet = me.RMB.length - 1;
 						console.log("rm focused bullet id : " + me.rmfocusedIdBullet);
-						me.rmsetFocusedBullets();
-
 					}
+					me.rmsetFocusedBullets();
    				}else{
    					console.log("rm focused id : " + me.rmfocusedId);
    					me.rmfocusedId++;
