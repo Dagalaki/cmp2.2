@@ -138,6 +138,7 @@ export default class Overview extends Component {
 	}
 
 	handleConsents = (key) => {
+	global.config.activeTab = 0;
 		switch(key){
 			case VK_DOWN:
 				this.activeConsent++;

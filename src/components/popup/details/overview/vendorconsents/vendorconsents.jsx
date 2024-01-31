@@ -94,6 +94,7 @@ console.log("COLUMNID : "+this.columnId);*/
 	}
 
 	handleKeyPress = (key) => {
+	global.config.activeTab = 1;
 	if(global.config.focusObject != "vendorconsents") return true;
 document.activeElement.blur();
 		switch(key){
