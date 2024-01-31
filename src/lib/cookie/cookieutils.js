@@ -387,7 +387,7 @@ function decodeCookieValue(cookieValue, definitionMap, includeFields) {
 
 function decodeCookieBitValue(bitString, definitionMap, includeFields) {
 	const cookieVersion = decodeBitsToInt(bitString, 0, NUM_BITS_VERSION);
-	deleteCookie("euconsent");
+	
 	console.log("Version:",cookieVersion);
 	if (typeof cookieVersion !== 'number') {
 		console.error('Could not find cookieVersion to decode');
