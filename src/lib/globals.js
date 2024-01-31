@@ -10,7 +10,7 @@ console.log = function(message) {
     console.olog(message);
     global.config.lines++;
     
-    if(global.config.lines > 20){
+    if(global.config.lines > 18){
     	document.getElementById('debug').innerHTML = "";
     	global.config.lines = 0;
     }
