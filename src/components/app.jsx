@@ -29,6 +29,10 @@ export default class App extends Component {
 	handleKeyUp = (e) => {
 		e.preventDefault();
 		
+		if(global.config.focusObject == null){
+			global.config.store.toggleConsentToolShowing(true);
+		}
+
 		console.log("app.jsx : globals focus on " + global.config.focusObject);
 
 		const key = e.keyCode || e.which;
@@ -188,7 +192,6 @@ export default class App extends Component {
 		global.config.store = store;
 		const { purposes = [] } = vendorList; 
 		return (
-			
 			<div class={[style.gdpr, (isBannerShowing  || isModalShowing) ? style.gdpr_visible : ''].join(' ')}>
 				<Banner isShowing={isBannerShowing}
 						isModalShowing={isModalShowing}
