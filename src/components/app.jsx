@@ -80,6 +80,7 @@ export default class App extends Component {
 		const { store, notify } = this.props;
 		store.persist();
 		notify('onSubmit');
+		global.config.focusObject = null;
 		store.toggleConsentToolShowing(false);
 	};
 
