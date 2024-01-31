@@ -662,6 +662,7 @@ export default class Store {
 		this.isBannerShowing = typeof isShown === 'boolean' ? isShown : !this.isBannerShowing;
 		this.isModalShowing = false;
 		this.isFooterShowing = false;
+		global.config.focusObject = null;
 		this.storeUpdate();
 	};
 
