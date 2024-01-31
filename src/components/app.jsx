@@ -193,6 +193,7 @@ export default class App extends Component {
 		const { purposes = [] } = vendorList; 
 		return (
 			<div class={[style.gdpr, (isBannerShowing  || isModalShowing) ? style.gdpr_visible : ''].join(' ')}>
+				
 				<Banner isShowing={isBannerShowing}
 						isModalShowing={isModalShowing}
 						onSave={this.onSave}

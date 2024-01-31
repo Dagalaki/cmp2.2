@@ -7,6 +7,7 @@ import { fetchPubVendorList, fetchGlobalVendorList, fetchPurposeList } from './v
 import log from './log';
 import pack from '../../package.json';
 import config from './config';
+import "globals";
 
 const CMP_VERSION = 1;
 
