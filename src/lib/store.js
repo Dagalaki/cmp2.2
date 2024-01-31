@@ -591,14 +591,16 @@ export default class Store {
 		this.selectPurpose(purposeId, isSelected);
 		this.storeUpdate();
 	};
-	
+
 	selectPurpose = (purposeId, isSelected) => {
 		console.log("store.js : selectPurpose");
 		const {selectedPurposeIds, selectedLegIntPurposeIds} = this.vendorConsentData;
 		console.log("BEFORE", this.vendorConsentData.selectedPurposeIds);
 		if (isSelected) {
 			selectedPurposeIds.add(purposeId);
-			selectedLegIntPurposeIds.add(purposeId);
+			if(purposeId == 2 || purposeId == 7 || purposeId == 10){
+				selectedLegIntPurposeIds.add(purposeId);
+			}
 		} else {
 			selectedPurposeIds.delete(purposeId);
 			selectedLegIntPurposeIds.delete(purposeId);

@@ -61,34 +61,34 @@ export default class VendorConsents extends Component {
 	setFocused = (focus) => {
 		console.log("vendorconsents.jsx focus on : " + this.focusedId);
 		for(var i=0; i< this.buttons.length; i++){
-			var o = document.getElementById("row_" + i);
+			/*var o = document.getElementById("row_" + i);*/
 			if(focus){
 				if(i == this.focusedId) {
 					document.getElementById("check_"+this.buttons[i].id).style.opacity = "0";
 					document.getElementById("check_"+this.buttons[i].id).style.transform = "none";
-					o.getElementsByClassName("policyurlTag")[0].style.color="black";
+					/*o.getElementsByClassName("policyurlTag")[0].style.color="black";
 					o.getElementsByClassName("legintclaimurlTag")[0].style.color="black";
-console.log("COLUMNID : "+this.columnId);
+console.log("COLUMNID : "+this.columnId);*/
 					if(this.columnId == 0){
 						document.getElementById("check_"+this.buttons[i].id).style.opacity = "0.3";
 						document.getElementById("check_"+this.buttons[i].id).style.transform = "scale(1.556)";
 						//classList.add("consentfocus");
-					}else if(this.columnId == 1){
+					}/*else if(this.columnId == 1){
 						o.getElementsByClassName("policyurlTag")[0].style.color="blue";
 					}else if(this.columnId == 2){
 						o.getElementsByClassName("legintclaimurlTag")[0].style.color="blue";
-					}
+					}*/
 				}else{
 					 document.getElementById("check_"+this.buttons[i].id).style.opacity = "0";
 					document.getElementById("check_"+this.buttons[i].id).style.transform = "none";
-					o.getElementsByClassName("policyurlTag")[0].style.color="black";
-					o.getElementsByClassName("legintclaimurlTag")[0].style.color="black";
+					/*o.getElementsByClassName("policyurlTag")[0].style.color="black";
+					o.getElementsByClassName("legintclaimurlTag")[0].style.color="black";*/
 				}
 			}else {
 				document.getElementById("check_"+this.buttons[i].id).style.opacity = "0";
 					document.getElementById("check_"+this.buttons[i].id).style.transform = "none)";
-					o.getElementsByClassName("policyurlTag")[0].style.color="black";
-					o.getElementsByClassName("legintclaimurlTag")[0].style.color="black";
+					/*o.getElementsByClassName("policyurlTag")[0].style.color="black";
+					o.getElementsByClassName("legintclaimurlTag")[0].style.color="black";*/
 			}
 		}
 	}
@@ -124,16 +124,24 @@ document.activeElement.blur();
 				this.setFocused(true);
 				break;
 			case VK_LEFT:
-				this.columnId--;
+				var dataId = this.buttons[this.focusedId].id;
+				var ind = "check_vendor_" + this.buttons[this.focusedId].id;
+				var isSelected = true;
+				this.handleSelectVendorConsent({dataId, isSelected: !isSelected});
+				/*this.columnId--;
 				if(this.columnId <0 ){
 					this.columnId = 0;
 				}
-				this.setFocused(true);
+				this.setFocused(true);*/
 				break;
 			case VK_RIGHT:
-				this.columnId++;
+				var dataId = this.buttons[this.focusedId].id;
+				var ind = "check_vendor_" + this.buttons[this.focusedId].id;
+				var isSelected = false;
+				this.handleSelectVendorConsent({dataId, isSelected: !isSelected});
+				/*this.columnId++;
 				if(this.columnId > this.columnsLength-1) this.columnId = this.columnsLength-1;
-				this.setFocused(true);
+				this.setFocused(true);*/
 				break;
 			case VK_ENTER:
 				/*if(this.columnId != 0){
@@ -263,15 +271,12 @@ for(var i=0; i< vendors.length; i++){
 											<VendorsLabel localizeKey='optOut'>requires opt-out</VendorsLabel>
 											
 										}
-											<span class="policyurlTag">Policy Url</span>
-											<span>
-												<a  href={urls[0].privacy} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
-											</span>
-											<span class="legintclaimurlTag">LegInt Url</span>
-											<span>
-												<a  href={urls[0].legIntClaim} class={style.policy} target='_blank'><ExternalLinkIcon /></a>
-											</span>
+
+										
 									</td>
+								</tr>
+								<tr>
+									<td><span class="policyurlTag" >{urls[0].privacy} </span></td>
 								</tr>
 							</table>
 							</div>
