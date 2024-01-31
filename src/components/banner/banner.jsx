@@ -33,6 +33,7 @@ export default class Banner extends Component {
 	constructor(props) {
 		super(props);
 		this.ulTop = 0;
+		this.onDescVendorLink =false;
 		this.rmlength = 3;
 		this.rmfocusedId = 2;
 		this.rmfocusedIdBullet = 0;
@@ -146,7 +147,8 @@ export default class Banner extends Component {
 		}
 		
 	};
-	rmsetFocusedBullets = () => {
+	rmsetFocusedBullets = (focus) => {
+	document.getElementsByClassName("banner_content--1bZDZ")[0].style.top = "0px";
 		console.log("set focus on bullet " + this.rmfocusedIdBullet);
 		document.activeElement.blur();
 		if(!this.RMB){
@@ -157,13 +159,20 @@ export default class Banner extends Component {
 		var me =this;
 		for(var i=0; i < this.RMB.length; i++){
 			console.log(i,me.rmfocusedIdBullet,  this.RMB[i]) ;
+			
+			if(!focus){
+				var o = this.RMB[i];
+				o.style.color = "unset";
+				continue;
+			}
 			if(i == me.rmfocusedIdBullet){
 				
 
 				var o = this.RMB[i];
 				//console.log(o);
-				if(i<3)
+				if(i<3){
 					o.classList.add("banner_expanded--2lZxB");
+				}
 				else
 					o.style.color= "#27686f";
 
@@ -218,7 +227,7 @@ export default class Banner extends Component {
 					this.ulsetFocused(false);
 					global.config.focusObject = null;
 					this.rmfocusedIdBullet = 0;
-					this.rmsetFocusedBullets();
+					this.rmsetFocusedBullets(true);
 					break;
 				}
 				if([3, 6, 9].includes(this.ulfocusedId)) this.scrollULListDown();
@@ -233,7 +242,7 @@ export default class Banner extends Component {
 					this.ulsetFocused(false);
 					global.config.focusObject = null;
 					this.rmfocusedIdBullet = 2;
-					this.rmsetFocusedBullets();
+					this.rmsetFocusedBullets(true);
 					break;
 				}
 				if([4, 7, 10].includes(this.ulfocusedId)) this.scrollULListUp();
@@ -263,6 +272,16 @@ export default class Banner extends Component {
 			console.log("banner.jsx : handle key press " + key);
    			if(key == VK_ENTER){
    				console.log("key is ENTER");
+   				if(this.onDescVendorLink){
+	   				
+	   				global.config.focusObject = "vendorlist";
+					var elem = document.getElementById("purpose_" + this.ulfocusedId);
+					global.config.activeElem = "vendorlist";
+					global.config.focusObject = "details";
+					global.config.modalRef.props.onChangeDetailsPanel(Math.max(0, SECTION_VENDOR_LIST)); 
+					global.config.store.toggleModalShowing(true);
+					return true;
+   				}
    				if(!me.onBullets){
    					me.rmhandle();
    				}else{
@@ -274,7 +293,7 @@ export default class Banner extends Component {
    				console.log("key is LEFT");
    				if(!me.onBullets){
    					me.onBullets = true;
-   					me.rmsetFocusedBullets();
+   					me.rmsetFocusedBullets(true);
    				}
    			}else if (key == VK_RIGHT) {
    				console.log("key is RIGHT");
@@ -291,8 +310,12 @@ export default class Banner extends Component {
 					if(me.rmfocusedIdBullet > me.RMB.length - 1) {
 						me.rmfocusedIdBullet = me.RMB.length - 1;
 						console.log("rm focused bullet id : " + me.rmfocusedIdBullet);
+						document.getElementById("_descriptionvendorlink").style.color = "blue";
+						me.rmsetFocusedBullets(false);
+						this.onDescVendorLink= true;
+						return true;
 					}
-					me.rmsetFocusedBullets();
+					me.rmsetFocusedBullets(true);
    				}else{
    					console.log("rm focused id : " + me.rmfocusedId);
    					me.rmfocusedId++;
@@ -307,7 +330,7 @@ export default class Banner extends Component {
    					me.rmfocusedIdBullet--;
 					if(me.rmfocusedIdBullet < 0) me.rmfocusedIdBullet = 0;
 					console.log("rm focused bullet id : " + me.rmfocusedIdBullet);
-					me.rmsetFocusedBullets();
+					me.rmsetFocusedBullets(true);
    				}else{
    					console.log("rm focused id : " + me.rmfocusedId);
    					me.rmfocusedId--;
@@ -469,7 +492,7 @@ export default class Banner extends Component {
 								</div>
 								<div class={style.optionDetails} style={{ color: textLightColor }}>	
 									<a class={style.learnMore} onClick={this.handleVendorListClick} style={{color: textLinkColor}}>
-										<LocalLabel localizeKey='descriptionvendorlink'>
+										<LocalLabel id="_descriptionvendorlink" localizeKey='descriptionvendorlink'>
 										</LocalLabel>
 									</a>
 								</div>
