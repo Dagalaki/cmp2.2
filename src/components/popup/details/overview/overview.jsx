@@ -7,7 +7,6 @@ import Label from "../../../label/label";
 import VendorConsents from "./vendorconsents/vendorconsents";
 import '../../../../lib/globals';
 
-
 export const VK_LEFT = 37;
 export const VK_RIGHT = 39;
 export const VK_UP = 38;

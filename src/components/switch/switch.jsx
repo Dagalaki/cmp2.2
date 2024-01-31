@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import style from './switch.less';
-
 export default class Switch extends Component {
 
 	static defaultProps = {

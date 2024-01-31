@@ -1,11 +1,13 @@
 import { h, Component } from 'preact';
 import style from '../overview.less';
+
 import Switch from '../../../../switch/switch';
 import style2 from '../../vendors/vendors.less';
 import detailsStyle from '../../details.less';
 import Label from "../../../../label/label";
 import '../../../../../lib/globals';
 import ExternalLinkIcon from '../../../../externallinkicon/externallinkicon'
+
 /*import QRCodeGenerator from './QRCodeGenerator/QRCodeGenerator'
 */
 /*import QRCode from 'qrcode.react';*/

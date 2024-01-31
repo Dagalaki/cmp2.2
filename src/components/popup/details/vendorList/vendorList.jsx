@@ -4,6 +4,7 @@ import detailsStyle from '../details.less';
 import ExternalLinkIcon from '../../../externallinkicon/externallinkicon';
 import Label from "../../../label/label";
 
+
 export const VK_LEFT = 37;
 export const VK_RIGHT = 39;
 export const VK_UP = 38;
