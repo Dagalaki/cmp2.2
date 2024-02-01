@@ -71,7 +71,7 @@ export default class VendorConsents extends Component {
 console.log("COLUMNID : "+this.columnId);*/
 					if(this.columnId == 0){
 						document.getElementById("check_"+this.buttons[i].id).style.opacity = "0.3";
-						document.getElementById("check_"+this.buttons[i].id).style.transform = "scale(1.556)";
+						document.getElementById("check_"+this.buttons[i].id).style.transform = "scale(2.556)";
 						//classList.add("consentfocus");
 					}/*else if(this.columnId == 1){
 						o.getElementsByClassName("policyurlTag")[0].style.color="blue";

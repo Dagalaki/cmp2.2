@@ -66,14 +66,14 @@ export default class Overview extends Component {
 		for(var i = 0; i<this.tabs.length; i++){
 			if(focus){
 				if(i == this.activeTab){
-					document.getElementById(this.tabs[i].id).addClass("tabfocused");
+					document.getElementById(this.tabs[i].id).addClass(style.tabfocused);
 					//.style.borderBottom = "solid 3px blue";
 				}else{
-					document.getElementById(this.tabs[i].id).removeClass("tabfocused");
+					document.getElementById(this.tabs[i].id).removeClass(style.tabfocused);
 					//.style.borderBottom = "solid 3px transparent";
 				}
 			}else{
-					document.getElementById(this.tabs[i].id).removeClass("tabfocused");
+					document.getElementById(this.tabs[i].id).removeClass(style.tabfocused);
 					//.style.borderBottom = "solid 3px transparent";
 				}
 		}
@@ -125,7 +125,7 @@ export default class Overview extends Component {
 			if(focus){
 				if(i == this.activeConsent) {
 					document.getElementById("check_"+this.consentBtns[i].id).style.opacity = "0.3";
-					document.getElementById("check_"+this.consentBtns[i].id).style.transform = "scale(1.556)";
+					document.getElementById("check_"+this.consentBtns[i].id).style.transform = "scale(2.556)";
 					//classList.add("consentfocus");
 				}else{
 					 document.getElementById("check_"+this.consentBtns[i].id).style.opacity = "0";

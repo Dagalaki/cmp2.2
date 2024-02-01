@@ -74,17 +74,23 @@ export default class Popup extends Component {
 		var whatLink = document.getElementById("whatlink");
 		if(this.focusedId == 2 && focus){
 			console.log("focus on 2");
-			if(whatLink) whatLink.style.color = "blue";
+			if(whatLink) {
+				whatLink.addClass(style.focused);
+				//whatLink.style.color = "blue";
+				}
 		}else {
-			if(whatLink) whatLink.style.color = "#41afbb";
+			if(whatLink) {	
+				whatLink.removeClass(style.focused);
+				//whatLink.style.color = "#41afbb";
+			}
 		}
 
 		var whoLink = document.getElementById("wholink");
 		if(this.focusedId == 1 && focus){
 			console.log("focus on 1");
-			if(whoLink) whoLink.style.color = "blue";
+			if(whoLink) whoLink.addClass(style.focused);//whoLink.style.color = "blue";
 		}else {
-			if(whoLink) whoLink.style.color = "#41afbb";
+			if(whoLink) whoLink.removeClass(style.focused);//whoLink.style.color = "#41afbb";
 		}
 
 		var btn = document.querySelector("[class^=button_button--]");
