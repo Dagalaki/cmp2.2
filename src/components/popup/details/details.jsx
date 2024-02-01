@@ -58,9 +58,9 @@ export default class Details extends Component {
 				if(!document.getElementById(this.buttons[i].id)){
 					continue;
 				}
-				if(i == this.focusedId) document.getElementById(this.buttons[i].id).style.color = "blue";
-				else document.getElementById(this.buttons[i].id).style.color = "white";
-			}else document.getElementById(this.buttons[i].id).style.color = "white";
+				if(i == this.focusedId) document.getElementById(this.buttons[i].id).addClass(style.focused);//.style.color = "blue";
+				else document.getElementById(this.buttons[i].id).removeClass(style.focused);//.style.color = "white";
+			}else document.getElementById(this.buttons[i].id).removeClass(style.focused);//.style.color = "white";
 		}
 
 	}	

@@ -3,7 +3,6 @@ import style from './overview.less';
 import Switch from '../../../switch/switch';
 import style2 from '../vendors/vendors.less';
 import detailsStyle from '../details.less';
-import "./overview.css";
 import Label from "../../../label/label";
 import VendorConsents from "./vendorconsents/vendorconsents";
 import '../../../../lib/globals';
