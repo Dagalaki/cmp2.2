@@ -1,4 +1,21 @@
 
+Object.prototype.addClass = function (className) {
+	if (!this.hasClass(className)) {
+		if (this.className) this.className += " " + className;
+		else this.className = className;
+	}
+};
+Object.prototype.removeClass = function (className) {
+	var regexp = this.addClass[className];
+	if (!regexp) regexp = this.addClass[className] = new RegExp("(^|\\s)" + className + "(\\s|$)");
+	if(typeof this.className.replace === "function") this.className = this.className.replace(regexp, "$2");
+};
+
+Object.prototype.hasClass = function (className) {
+	var regexp = this.addClass[className];
+	if (!regexp) regexp = this.addClass[className] = new RegExp("(^|\\s)" + className + "(\\s|$)");
+	return regexp.test(this.className);
+};
 
 if (typeof console  != "undefined") 
     if (typeof console.log != 'undefined')

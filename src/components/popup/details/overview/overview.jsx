@@ -3,6 +3,7 @@ import style from './overview.less';
 import Switch from '../../../switch/switch';
 import style2 from '../vendors/vendors.less';
 import detailsStyle from '../details.less';
+import "./overview.css";
 import Label from "../../../label/label";
 import VendorConsents from "./vendorconsents/vendorconsents";
 import '../../../../lib/globals';
@@ -13,8 +14,6 @@ export const VK_UP = 38;
 export const VK_DOWN = 40;
 export const VK_ENTER = 13;
 export const VK_BACK = 461;
-
-
 
 class VendorsLabel extends Label {
 	static defaultProps = {
@@ -67,12 +66,15 @@ export default class Overview extends Component {
 		for(var i = 0; i<this.tabs.length; i++){
 			if(focus){
 				if(i == this.activeTab){
-					document.getElementById(this.tabs[i].id).style.borderBottom = "solid 3px blue";
+					document.getElementById(this.tabs[i].id).addClass("tabfocused");
+					//.style.borderBottom = "solid 3px blue";
 				}else{
-					document.getElementById(this.tabs[i].id).style.borderBottom = "solid 3px transparent";
+					document.getElementById(this.tabs[i].id).removeClass("tabfocused");
+					//.style.borderBottom = "solid 3px transparent";
 				}
 			}else{
-					document.getElementById(this.tabs[i].id).style.borderBottom = "solid 3px transparent";
+					document.getElementById(this.tabs[i].id).removeClass("tabfocused");
+					//.style.borderBottom = "solid 3px transparent";
 				}
 		}
 		
